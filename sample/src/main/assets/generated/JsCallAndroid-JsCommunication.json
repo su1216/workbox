@@ -1,0 +1,22 @@
+[
+	{
+		"description":"关闭当前webview",
+		"functionName":"finish",
+		"parameters":""
+	},
+	{
+		"description":"打开一个新的webview ",
+		"functionName":"webview",
+		"parameters":"{\n  \"title\": \"test1\",\n  \"webViewUrl\": \"https://www.baidu.com\",\n  \"refresh\": true\n}"
+	},
+	{
+		"description":"复制内容到粘贴板中",
+		"functionName":"setClipBoard",
+		"parameters":"{\n  \"content\": \"找个输入框长按试试\"\n}"
+	},
+	{
+		"description":"在android中输出log，使用adb命令查看",
+		"functionName":"log",
+		"parameters":"{\n  \"tag\": \"FROM_JS\",\n  \"level\": \"e\",\n  \"content\": \"在終端中执行adb logcat -v time -s FROM_JS (你的tag)就能看到log了\"\n}"
+	}
+]

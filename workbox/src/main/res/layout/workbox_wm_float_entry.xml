@@ -1,0 +1,6 @@
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+           android:id="@+id/icon"
+           android:layout_width="48dip"
+           android:layout_height="48dip"
+           android:scaleType="fitXY"
+           android:src="@drawable/workbox_menu_gather"/>

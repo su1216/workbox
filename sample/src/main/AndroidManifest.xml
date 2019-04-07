@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.su.sample">
+    <permission android:name="com.su.sample.test" android:protectionLevel="normal" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name = "com.su.sample.test" />
+    <uses-feature android:name = "android.hardware.camera" />
+    <application
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:name=".SampleApplication"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/ToolbarTheme">
+        <activity android:name=".SampleListActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".RequestActivity"/>
+        <activity android:name=".ObjectParameterActivity"/>
+        <activity android:name=".web.WebViewActivity" android:windowSoftInputMode="stateAlwaysHidden"/>
+        <service android:name=".component.TestService" />
+        <receiver android:name=".component.TestReceiver"
+                  android:exported="false"
+                  android:permission="com.su.sample.test">
+            <intent-filter>
+                <action android:name="test"/>
+            </intent-filter>
+        </receiver>
+        <provider
+            android:authorities="com.su.sample.test"
+            android:name=".component.TestProvider"
+            android:enabled="false"/>
+    </application>
+</manifest>

@@ -1,0 +1,55 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        buildConfigField "String", "WORKBOX_VERSION", "\"${rootProject.ext.version}\""
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    libraryVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = new File("workbox-no-opp-${rootProject.ext.version}.aar")
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    api project(':annotations')
+    api 'com.android.support:support-annotations:' + rootProject.ext.supportVersion
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+publish {
+    artifactId = 'workbox-no-op'
+    uploadName = 'workbox-no-op'
+    bintrayUser = properties.getProperty("bintray.user")
+    bintrayKey = properties.getProperty("bintray.apikey")
+    dryRun = false
+
+    userOrg = 'su1216'
+    repoName = 'maven'
+    desc = 'debug and mock for android'
+    groupId = 'com.su' // 组名
+    publishVersion = '0.8.3' // 版本号
+}

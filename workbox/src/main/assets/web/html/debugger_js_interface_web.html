@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <style type="text/css">
+        body{
+            font-family: "\5FAE\8F6F\96C5\9ED1","Microsoft YaHei","Hiragino Sans GB",Verdana,Arial,Helvetica,sans-serif;
+            font-size: 18px;
+            color: #333;
+        }
+        #name{
+            margin-left: 13px;
+        }
+        .button_border{
+            padding: 0 0;
+            width: 90%;
+            margin: 20px auto 0 auto;
+            text-align: center;
+        }
+        .go{
+            color: white;
+            background: #3F51B5;
+        }
+        .go a{
+            line-height: 40px;color:white;
+            text-decoration: none;
+            display: block;
+        }
+
+        #assist{
+            text-align: right;
+        }
+        #assist a{
+            display: inline-block;
+            width: 80px;
+            background: #3F51B5;
+            text-decoration: none;
+            color: white;
+            text-align: center;
+            line-height: 40px;
+        }
+        #hint{
+            color: red;
+            font-size: 14px;
+        }
+
+    </style>
+    <script type="text/javascript">
+        sName = "";
+        sParameter = "";
+
+        function setContent(name,parameter){
+            sName = name;
+            sParameter = parameter;
+            document.getElementById('name').innerHTML= sName;
+            if(isNull(sParameter)){
+                document.getElementById('assist').setAttribute('style','display:none');
+                document.getElementById('parameter').parentNode.setAttribute('style','display:none');
+            }else{
+                setParamContent(JSON.stringify(JSON.parse(sParameter),null,2));
+            }
+        }
+
+        function format(){
+          try{
+            var json = JSON.stringify(JSON.parse(getParamContent()),null,2);
+            setParamContent(json);
+            document.getElementById('hint').innerHTML = "";
+            return true;
+          }catch(e){
+            document.getElementById('hint').innerHTML = e.description+":"+e.message;
+            return false;
+          }
+        }
+
+        function reset(){
+            setParamContent(JSON.stringify(JSON.parse(sParameter),null,2));
+        }
+
+        function go(){
+            if(isNull(sParameter)){
+                this.location.href = "javascript:" + document.getElementById('obj').innerHTML + "." + sName + "()";
+            }else{
+                if(format()){
+                    this.location.href = "javascript:" + document.getElementById('obj').innerHTML + "." + sName + "('" + getParamContent() + "')";
+                }
+            }
+        }
+
+        function getParamContent(){
+            return document.getElementById('parameter').value;
+        }
+
+        function setParamContent(json){
+            document.getElementById('parameter').value = json;
+            var s_height = document.getElementById('parameter').scrollHeight;
+            document.getElementById('parameter').setAttribute('style','height:'+s_height+'px;width:100%;padding:0px;');
+        }
+
+        function isNull(data){
+            return (data == "" || data == undefined || data == null) ? true : false;
+        }
+
+        function GetQueryString(name){
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if(r!=null) return decodeURIComponent(r[2]); return null;
+        }
+
+        function initJavascriptInterfaceObject() {
+            document.getElementById('obj').innerHTML=GetQueryString("javascriptInterfaceObjectName");
+        }
+
+    </script>
+</head>
+<body>
+<div>
+    <span>方法名:</span><span id="name">onclick</span>
+</div>
+<div>
+    <span>注入对象:</span><span id="obj">obj</span>
+</div>
+<div>
+    <p>参数:</p>
+    <textarea id="parameter"></textarea>
+</div>
+
+<div id="hint"></div>
+
+<div id="assist" class="button_border">
+    <a href="javascript:format()">format</a>
+    <a href="javascript:reset()">reset</a>
+</div>
+
+<div class="go button_border">
+    <a id="go" href="javascript:go()">run</a>
+</div>
+<script type="text/javascript">
+    setContent(GetQueryString("functionName"),GetQueryString("functionParameter"));
+    initJavascriptInterfaceObject();
+</script>
+</body>
+</html>

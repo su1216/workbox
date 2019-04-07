@@ -1,0 +1,37 @@
+<resources>
+    <style name="ToolbarThemeBase" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- customize the color palette -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="@style/ToolbarThemeBase">
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="dropDownListViewStyle">@style/SamplePopupMenuListView</item>
+        <item name="toolbarStyle">@style/SampleToolbarStyle</item>
+        <item name="navigationIcon">@drawable/ic_ab_back</item>
+        <!--TextView-->
+        <item name="android:textIsSelectable">false</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+        <item name="actionMenuTextAppearance">@style/SampleMenuTextStyle</item>
+    </style>
+
+    <style name="SampleMenuTextStyle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+    <style name="ToolBarTitleTextStyle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="SampleToolbarStyle" parent="@style/Widget.AppCompat.Toolbar">
+        <item name="titleTextAppearance">@style/ToolBarTitleTextStyle</item>
+    </style>
+    <style name="SamplePopupMenuListView" parent="@style/Widget.AppCompat.Light.ListView.DropDown">
+        <item name="android:divider">@color/divider_normal</item>
+        <item name="android:dividerHeight">1dp</item>
+    </style>
+</resources>

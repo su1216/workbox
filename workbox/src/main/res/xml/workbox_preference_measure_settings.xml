@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <android.support.v7.preference.Preference
+        android:key="measure_color"
+        android:title="工具颜色"/>
+    <android.support.v7.preference.Preference
+        android:key="measure_result_color"
+        android:title="结果颜色"/>
+    <android.support.v7.preference.CheckBoxPreference
+        android:defaultValue="false"
+        android:key="measure_status_bar"
+        android:thumb="@drawable/workbox_switch_button"
+        android:title="状态栏"
+        android:track="@drawable/workbox_switch_track_selector"/>
+    <android.support.v7.preference.CheckBoxPreference
+        android:defaultValue="false"
+        android:key="measure_navigation_bar"
+        android:thumb="@drawable/workbox_switch_button"
+        android:title="导航栏"
+        android:track="@drawable/workbox_switch_track_selector"/>
+</android.support.v7.preference.PreferenceScreen>

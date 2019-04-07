@@ -1,0 +1,177 @@
+<resources>
+    <style name="WorkboxOverFlow" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+        <item name="android:src">@drawable/workbox_ic_menu_moreoverflow</item>
+    </style>
+    <style name="WorkboxHeadTabLayout" parent="@style/Widget.Design.TabLayout">
+        <item name="tabIndicatorHeight">1dp</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="tabSelectedTextColor">@color/workbox_first_text</item>
+        <item name="tabTextAppearance">@style/WorkboxTabTextAppearance.Design</item>
+    </style>
+    <style name="WorkboxTabTextAppearance.Design" parent="TextAppearance.Design.Tab">
+        <item name="android:textColor">@color/workbox_second_text</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="WorkboxBottomButton">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/workbox_button_bottom_main</item>
+    </style>
+    <style name="WorkboxMajorButton">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@drawable/workbox_tab_text_selector</item>
+        <item name="android:background">@drawable/workbox_button_major</item>
+    </style>
+
+    <style name="WorkboxBase" parent="Theme.AppCompat.Light.NoActionBar"/>
+    <style name="WorkboxToolbarThemeBase" parent="WorkboxBase">
+        <item name="colorPrimary">@color/workbox_color_primary</item>
+        <item name="colorPrimaryDark">@color/workbox_color_primary_dark</item>
+        <item name="colorAccent">@color/workbox_color_accent</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="WorkboxToolbarTheme" parent="@style/WorkboxToolbarThemeBase">
+        <item name="actionOverflowMenuStyle">@style/WorkboxOverflowMenuStyle</item>
+        <item name="actionOverflowButtonStyle">@style/WorkboxOverFlow</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="dropDownListViewStyle">@style/WorkboxPopupMenuListView</item>
+        <item name="toolbarStyle">@style/WorkboxToolbarStyle</item>
+        <item name="navigationIcon">@drawable/workbox_ic_ab_back</item>
+        <!--TextView-->
+        <item name="android:textIsSelectable">false</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+        <item name="actionMenuTextAppearance">@style/WorkboxMenuTextStyle</item>
+    </style>
+
+    <!--溢出菜单样式 -->
+    <style name="WorkboxOverflowMenuStyle" parent="@style/Widget.AppCompat.Light.PopupMenu.Overflow">
+        <item name="overlapAnchor">false</item>
+        <item name="android:dropDownWidth">wrap_content</item>
+        <item name="android:paddingEnd">5dp</item>
+        <item name="android:dropDownVerticalOffset">4dip</item>
+        <item name="android:dropDownHorizontalOffset">4dip</item>
+    </style>
+
+    <!-- OverFlow menu Styles -->
+    <style name="WorkboxPopupMenuListView" parent="@style/Widget.AppCompat.Light.ListView.DropDown">
+        <item name="android:divider">@color/workbox_divider_normal</item>
+        <item name="android:dividerHeight">1dp</item>
+    </style>
+
+    <style name="WorkboxActionBarTitleTextStyle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="WorkboxToolBarTitleTextStyle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="WorkboxToolbarStyle" parent="@style/Widget.AppCompat.Toolbar">
+        <item name="titleTextAppearance">@style/WorkboxToolBarTitleTextStyle</item>
+    </style>
+
+    <style name="WorkboxMenuTextStyle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="WorkboxListTheme" parent="@style/WorkboxToolbarTheme">
+        <item name="preferenceTheme">@style/WorkboxPreferenceTheme</item>
+    </style>
+
+    <style name="WorkboxPreferenceTheme" parent="@style/PreferenceThemeOverlay">
+        <item name="preferenceScreenStyle">@style/Preference.PreferenceScreen</item>
+        <item name="preferenceFragmentCompatStyle">@style/WorkboxPreferenceFragmentStyle</item>
+        <item name="preferenceFragmentStyle">@style/WorkboxPreferenceFragmentStyle</item>
+        <item name="preferenceCategoryStyle">@style/WorkboxPreference.WorkboxListPreferenceCategoryStyle</item>
+        <item name="preferenceStyle">@style/WorkboxPreference</item>
+        <item name="checkBoxPreferenceStyle">@style/WorkboxPreference.CheckBoxPreference</item>
+        <item name="switchPreferenceCompatStyle">@style/WorkboxPreference.SwitchPreferenceCompat</item>
+        <item name="switchPreferenceStyle">@style/WorkboxPreference.SwitchPreference</item>
+        <item name="dialogPreferenceStyle">@style/WorkboxPreference.DialogPreference</item>
+        <item name="editTextPreferenceStyle">@style/WorkboxPreference.DialogPreference.EditTextPreference</item>
+        <item name="preferenceFragmentListStyle">@style/WorkboxPreferenceFragmentList</item>
+    </style>
+
+    <style name="WorkboxPreference">
+        <item name="android:layout">@layout/workbox_preference_debug</item>
+    </style>
+
+    <style name="WorkboxPreference.WorkboxListPreferenceCategoryStyle">
+        <item name="android:shouldDisableView">false</item>
+        <item name="android:selectable">false</item>
+        <item name="android:layout">@layout/workbox_preference_category_debug</item>
+    </style>
+
+    <style name="WorkboxPreferenceFragmentStyle">
+        <item name="android:divider">@drawable/workbox_shape_preference_list_divider_debug</item>
+    </style>
+
+    <style name="WorkboxPreference.CheckBoxPreference">
+        <item name="android:widgetLayout">@layout/preference_widget_checkbox</item>
+    </style>
+
+    <style name="WorkboxPreference.SwitchPreferenceCompat">
+        <item name="android:widgetLayout">@layout/preference_widget_switch_compat</item>
+        <item name="android:switchTextOn">@string/v7_preference_on</item>
+        <item name="android:switchTextOff">@string/v7_preference_off</item>
+    </style>
+
+    <style name="WorkboxPreference.SwitchPreference">
+        <item name="android:widgetLayout">@layout/workbox_preference_widget_switch_debug</item>
+        <item name="android:switchTextOn">@string/v7_preference_on</item>
+        <item name="android:switchTextOff">@string/v7_preference_off</item>
+    </style>
+
+    <style name="WorkboxPreference.DialogPreference">
+        <item name="android:positiveButtonText">@android:string/ok</item>
+        <item name="android:negativeButtonText">@android:string/cancel</item>
+    </style>
+
+    <style name="WorkboxPreference.DialogPreference.EditTextPreference">
+        <item name="android:dialogLayout">@layout/preference_dialog_edittext</item>
+    </style>
+
+    <style name="WorkboxPreferenceFragmentList">
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+    </style>
+
+    <style name="WorkboxSearchViewToolbar" parent="WorkboxToolbarTheme">
+        <!--修改SearchView激活时颜色-->
+        <item name="colorControlNormal">@android:color/white</item>
+        <!--修改SearchView的光标颜色-->
+        <item name="colorAccent">@color/workbox_color_accent</item>
+    </style>
+
+    <style name="WorkboxCustomDialog" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowFrame">@null</item>               <!-- 设置边框 -->
+        <item name="android:windowIsTranslucent">false</item>        <!-- 设置半透明 -->
+        <item name="android:windowCloseOnTouchOutside">false</item> <!-- 设置点击区域外不关闭 -->
+        <item name="colorPrimary">@color/workbox_color_primary</item>
+        <item name="colorPrimaryDark">@color/workbox_color_primary_dark</item>
+        <item name="colorAccent">@color/workbox_color_accent</item>
+    </style>
+
+    <style name="WorkboxTransparent" parent="WorkboxToolbarThemeBase">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+</resources>

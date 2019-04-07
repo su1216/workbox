@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/group_layout"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:clickable="true"
+              android:focusable="true"
+              android:gravity="center_vertical"
+              android:orientation="horizontal"
+              android:background="@drawable/workbox_item_selector">
+    <ImageView
+        android:id="@+id/arrow"
+        android:layout_width="16dip"
+        android:layout_height="16dip"
+        android:layout_marginStart="13dip"
+        android:src="@drawable/workbox_expandable_arrow_selector"
+        android:scaleType="fitXY" />
+
+    <TextView
+        android:id="@+id/filename"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="14dip"
+        android:paddingStart="8dip"
+        android:paddingEnd="8dip"
+        android:paddingTop="14dip"
+        android:textColor="@color/workbox_first_text"
+        android:textSize="12sp"
+        tools:text="filename" />
+</LinearLayout>

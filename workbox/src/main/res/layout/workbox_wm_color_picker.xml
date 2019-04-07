@@ -1,0 +1,4 @@
+<com.su.workbox.ui.ui.ScreenColorPickerView  xmlns:android="http://schemas.android.com/apk/res/android"
+                                             android:id="@+id/picker_view"
+                                             android:layout_width="wrap_content"
+                                             android:layout_height="wrap_content" />

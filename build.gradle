@@ -1,0 +1,54 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    repositories {
+        //https://developer.android.com/topic/libraries/support-library/setup.html
+        //https://maven.google.com 会 301 跳转到 https://dl.google.com/dl/android/maven2/
+        jcenter()
+        maven { url 'https://dl.google.com/dl/android/maven2/' }
+        maven{ url uri('repo') }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.3.2'
+        classpath 'com.novoda:bintray-release:0.9'
+    }
+}
+
+allprojects {
+    repositories {
+        //https://developer.android.com/topic/libraries/support-library/setup.html
+        //https://maven.google.com 会 301 跳转到 https://dl.google.com/dl/android/maven2/
+        maven { url "https://dl.google.com/dl/android/maven2/" }
+        jcenter()
+        maven { url "https://jitpack.io" }
+        google()
+        maven{ url uri('../repo') }
+    }
+//    tasks.withType(Javadoc) {
+//        options.addStringOption('Xdoclint:none', '-quiet')
+//        options.addStringOption('encoding', 'UTF-8')
+//    }
+}
+
+subprojects {
+    tasks.withType(Javadoc).all { enabled = false }
+}
+
+ext {
+    sourceCompatibilityVersion = JavaVersion.VERSION_1_8
+    targetCompatibilityVersion = JavaVersion.VERSION_1_8
+    compileSdkVersion = 28
+    targetSdkVersion = 28
+    minSdkVersion = 17
+    buildToolsVersion = '28.0.3'
+    supportVersion = '28.0.0'
+    archVersion = '1.1.1'
+    fastjson = '1.1.70.android'
+    okhttp = '3.12.0'
+
+    userOrg = 'su1216'
+    repoName = 'maven'
+    desc = 'debug and mock for android'
+    licences = ['Apache-2.0']
+    groupId = 'com.su' // 组名
+    version = '0.8.3' // 版本号
+}

@@ -1,0 +1,24 @@
+apply plugin: 'java-library'
+apply plugin: 'com.novoda.bintray-release'
+
+dependencies {
+    api project(path: ':annotations')
+    api 'com.google.auto.service:auto-service:1.0-rc4'
+    api 'com.alibaba:fastjson:' + rootProject.ext.fastjson
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+publish {
+    artifactId = 'workbox.compiler'
+    uploadName = 'workbox.compiler'
+    bintrayUser = properties.getProperty("bintray.user")
+    bintrayKey = properties.getProperty("bintray.apikey")
+    dryRun = false
+
+    userOrg = 'su1216'
+    repoName = 'maven'
+    desc = 'debug and mock for android'
+    groupId = 'com.su' // 组名
+    publishVersion = '0.8.3' // 版本号
+}

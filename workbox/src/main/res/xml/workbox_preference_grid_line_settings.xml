@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <android.support.v7.preference.EditTextPreference
+        android:key="grid_line_size"
+        android:defaultValue="4"
+        android:title="间距大小"/>
+    <android.support.v7.preference.ListPreference
+        android:key="grid_line_unit"
+        android:title="间距单位"
+        android:dialogTitle="间距单位"
+        android:defaultValue="0"
+        android:entries="@array/workbox_unit_name"
+        android:entryValues="@array/workbox_unit_values"/>
+    <android.support.v7.preference.Preference
+        android:key="grid_line_color"
+        android:title="网格颜色"/>
+    <android.support.v7.preference.CheckBoxPreference
+        android:defaultValue="false"
+        android:key="grid_line_status_bar"
+        android:thumb="@drawable/workbox_switch_button"
+        android:title="状态栏"
+        android:track="@drawable/workbox_switch_track_selector"/>
+</android.support.v7.preference.PreferenceScreen>

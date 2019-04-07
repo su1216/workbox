@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title="格式化"
+        android:onClick="format"
+        android:icon="@drawable/workbox_menu_format"
+        android:id="@+id/format"
+        app:showAsAction="always"/>
+    <item
+        android:title="重置"
+        android:onClick="reset"
+        android:icon="@drawable/workbox_menu_reset"
+        android:id="@+id/reset"
+        app:showAsAction="always"/>
+</menu>

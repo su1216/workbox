@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_vertical"
+              android:orientation="horizontal"
+              android:background="@drawable/workbox_item_selector">
+    <ImageView
+        android:id="@+id/arrow"
+        android:layout_width="16dip"
+        android:layout_height="16dip"
+        android:layout_marginStart="13dip"
+        android:src="@drawable/workbox_expandable_arrow_selector"
+        android:scaleType="fitXY"
+        android:visibility="gone" />
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:textColor="@color/workbox_second_text"
+        android:textSize="14sp"
+        tools:text="filename" />
+    <ImageView
+        android:id="@+id/action"
+        android:layout_width="24dip"
+        android:layout_height="24dip"
+        android:layout_marginStart="4dip"
+        android:layout_marginEnd="4dip"
+        android:layout_marginTop="4dip"
+        android:layout_marginBottom="4dip"
+        android:padding="0dip"
+        android:src="@drawable/workbox_icon_button_add"
+        android:scaleType="fitXY" />
+</LinearLayout>

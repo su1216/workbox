@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.su.workbox.widget.AllowChildInterceptTouchEventDrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.mock.MockDetailActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <include layout="@layout/workbox_toolbar" />
+        </android.support.design.widget.AppBarLayout>
+        <ExpandableListView
+            android:id="@+id/expandable_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:dividerHeight="1px"
+            android:groupIndicator="@null" />
+        <Button
+            android:id="@+id/run"
+            style="@style/WorkboxMajorButton"
+            android:layout_width="match_parent"
+            android:layout_height="38dip"
+            android:text="执行" />
+    </LinearLayout>
+    <!--侧拉抽屉-->
+    <LinearLayout
+        android:id="@+id/right"
+        android:layout_width="280dip"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:orientation="vertical">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+            <HorizontalScrollView
+                android:id="@+id/horizontal_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:fillViewport="true">
+                <TextView
+                    android:id="@+id/result"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="13dip"
+                    android:textColor="@color/workbox_third_text"
+                    android:textIsSelectable="true"
+                    android:textSize="12sp"
+                    tools:text="这里显示结果" />
+            </HorizontalScrollView>
+        </ScrollView>
+    </LinearLayout>
+</com.su.workbox.widget.AllowChildInterceptTouchEventDrawerLayout>

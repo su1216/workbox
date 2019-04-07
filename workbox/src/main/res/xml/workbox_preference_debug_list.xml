@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <android.support.v7.preference.SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="debug_entry"
+        android:summary="Launcher添加debug入口，状态变化延迟15秒左右"
+        android:thumb="@drawable/workbox_switch_button"
+        android:title="Launcher入口"
+        android:track="@drawable/workbox_switch_track_selector" />
+    <android.support.v7.preference.PreferenceCategory
+        android:title="App">
+        <android.support.v7.preference.Preference
+            android:key="app_info"
+            android:title="应用信息" />
+        <android.support.v7.preference.Preference
+            android:key="app_component_info"
+            android:title="组件信息"
+            android:summary="应用组件信息以及模拟启动组件传参，manifest文件查看"/>
+        <android.support.v7.preference.Preference
+            android:key="data_export"
+            android:title="数据导出"
+            android:summary="可将当前安装的应用以及应用的私有数据导出"/>
+        <android.support.v7.preference.Preference
+            android:title="权限列表"
+            android:summary="应用所需权限与用户授权情况"
+            android:key="permission"/>
+        <android.support.v7.preference.Preference
+            android:title="Feature列表"
+            android:summary="app所必须的feature列表"
+            android:key="feature"/>
+        <android.support.v7.preference.Preference
+            android:title="SharedPreference"
+            android:summary="查看与修改SharedPreference"
+            android:key="shared_preference"/>
+        <android.support.v7.preference.Preference
+            android:title="Sqlite数据库信息"
+            android:summary="查看应用中数据库以及表结构相关信息"
+            android:key="database"/>
+        <android.support.v7.preference.Preference
+            android:key="system_notification"
+            android:title="通知设置"
+            android:summary="系统的通知设置情况" />
+    </android.support.v7.preference.PreferenceCategory>
+    <android.support.v7.preference.PreferenceCategory
+        android:title="System">
+        <android.support.v7.preference.Preference
+            android:dialogTitle="可用代理列表"
+            android:key="system_proxy"
+            android:title="系统代理">
+            <intent android:action="android.settings.WIFI_SETTINGS" />
+        </android.support.v7.preference.Preference>
+        <android.support.v7.preference.Preference
+            android:key="software_info"
+            android:selectable="false"
+            android:title="软件信息"
+            android:enabled="false" />
+        <android.support.v7.preference.Preference
+            android:key="hardware_info"
+            android:selectable="false"
+            android:title="硬件信息"
+            android:enabled="false" />
+        <android.support.v7.preference.Preference
+            android:key="more_phone_info"
+            android:title="更多信息"
+            android:summary="分辨率，存储，网络，cpu等信息" />
+    </android.support.v7.preference.PreferenceCategory>
+    <android.support.v7.preference.PreferenceCategory
+        android:title="Server"
+        android:key="server">
+        <com.su.workbox.widget.preference.SwitchPreference
+            android:key="data_usage"
+            android:title="流量监控" />
+        <android.support.v7.preference.Preference
+            android:key="hosts"
+            android:title="接口域名列表" />
+        <android.support.v7.preference.Preference
+            android:key="web_view_hosts"
+            android:title="WebView域名列表" />
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="debug_downtime"
+            android:summary="模拟停机维护状态"
+            android:thumb="@drawable/workbox_switch_button"
+            android:title="停机维护"
+            android:track="@drawable/workbox_switch_track_selector" />
+        <android.support.v7.preference.ListPreference
+            android:key="mock_policy"
+            android:title="数据模拟策略"
+            android:dialogTitle="模拟数据策略"
+            android:defaultValue="none"
+            android:summary="无"
+            android:entries="@array/workbox_mock_names"
+            android:entryValues="@array/workbox_mock_values"/>
+        <android.support.v7.preference.Preference
+            android:key="import_mock_data"
+            android:title="导入mock数据"
+            android:summary="从mock文件夹下导入.json文件中的数据"/>
+        <android.support.v7.preference.Preference
+            android:key="mock_data_list"
+            android:title="数据模拟接口列表" />
+        <android.support.v7.preference.Preference
+            android:key="web_view_debug"
+            android:summary="展示WebView加载的url、header、cookie等"
+            android:title="WebView调试" />
+    </android.support.v7.preference.PreferenceCategory>
+    <android.support.v7.preference.PreferenceCategory
+        android:title="Js">
+        <android.support.v7.preference.Preference
+            android:key="js_interface"
+            android:summary="展示通过注解JavascriptInterface暴露给WebView的接口以及接口调试"
+            android:title="@JavascriptInterface接口调试" />
+        <android.support.v7.preference.Preference
+            android:key="js_rhino"
+            android:summary="利用rhino在app内执行java代码"
+            android:title="本地js调用调试" />
+    </android.support.v7.preference.PreferenceCategory>
+    <android.support.v7.preference.PreferenceCategory
+        android:title="UI">
+        <com.su.workbox.widget.preference.SwitchPreference
+            android:key="color_picker"
+            android:summary="每次使用前，需要用户您授权屏幕截取"
+            android:title="屏幕拾色" />
+        <android.support.v7.preference.Preference
+            android:key="measure"
+            android:title="测距设置" />
+        <com.su.workbox.widget.preference.SwitchPreference
+            android:key="grid_line"
+            android:title="网格线" />
+    </android.support.v7.preference.PreferenceCategory>
+</android.support.v7.preference.PreferenceScreen>

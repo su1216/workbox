@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="workbox_name">workbox</string>
+    <string name="workbox_set_permission">设置权限</string>
+    <string name="workbox_confirm">确定</string>
+    <string name="workbox_settings">设置</string>
+    <string name="workbox_known">知道了</string>
+    <string name="workbox_close">关闭</string>
+    <string name="workbox_share">分享</string>
+    <string name="workbox_save_failed">保存失败</string>
+    <string name="workbox_spec">说明</string>
+    <string name="workbox_modify">修改</string>
+    <string name="workbox_delete">删除</string>
+    <string name="workbox_quit">退出</string>
+    <string name="workbox_back">返回</string>
+    <string name="workbox_add">添加</string>
+    <string name="workbox_commit">提交</string>
+    <string name="workbox_loading">加载中</string>
+    <string name="workbox_save">保存</string>
+    <string name="workbox_edit">编辑</string>
+    <string name="workbox_cancel">取消</string>
+</resources>

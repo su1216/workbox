@@ -1,0 +1,26 @@
+apply plugin: 'java'
+apply plugin: 'com.novoda.bintray-release'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+jar {
+    baseName 'workbox-annotations-' + rootProject.ext.version
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+publish {
+    artifactId = 'workbox.annotations'
+    uploadName = 'workbox.annotations'
+    bintrayUser = properties.getProperty("bintray.user")
+    bintrayKey = properties.getProperty("bintray.apikey")
+    dryRun = false
+
+    userOrg = 'su1216'
+    repoName = 'maven'
+    desc = 'debug and mock for android'
+    groupId = 'com.su' // 组名
+    publishVersion = '0.8.3' // 版本号
+}

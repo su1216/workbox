@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/clean_up"
+        android:icon="@drawable/workbox_menu_clean_up"
+        android:onClick="cleanUp"
+        android:title="清除缓存"
+        android:visible="false"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/share"
+        android:icon="@drawable/workbox_menu_share"
+        android:onClick="share"
+        android:title="分享"
+        android:visible="false"
+        app:showAsAction="always"/>
+</menu>

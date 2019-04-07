@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/item_layout"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_vertical"
+              android:orientation="vertical"
+              android:paddingStart="13dip"
+              android:paddingTop="9dip"
+              android:paddingEnd="13dip"
+              android:paddingBottom="9dip">
+    <TextView
+        android:id="@+id/desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dip"
+        android:breakStrategy="simple"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="12sp"
+        tools:targetApi="m"
+        tools:text="这里是描述"/>
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:breakStrategy="simple"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="12sp"
+        tools:targetApi="m"
+        tools:text="com.********"/>
+</LinearLayout>
