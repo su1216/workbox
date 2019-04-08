@@ -13,7 +13,6 @@ import android.content.pm.PackageManager;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -260,13 +259,10 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             initMockPolicy(newValue.toString());
             return true;
         } else if (TextUtils.equals(key, "grid_line")) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (!Settings.canDrawOverlays(mActivity)) {
-                    mGridLinePreference.setChecked(false);
-                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-                    startActivity(intent);
-                    return false;
-                }
+            if (!AppHelper.hasSystemWindowPermission(mActivity)) {
+                AppHelper.gotoManageOverlayPermission(mActivity);
+                mGridLinePreference.setChecked(false);
+                return false;
             }
             mGridLineView.toggle();
             return true;
@@ -274,6 +270,12 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             DataUsageInterceptor.setRecording((boolean) newValue);
             return true;
         } else if (TextUtils.equals(key, "color_picker")) {
+            if (!AppHelper.hasSystemWindowPermission(mActivity)) {
+                AppHelper.gotoManageOverlayPermission(mActivity);
+                mColorPickerPreference.setChecked(false);
+                return false;
+            }
+
             Boolean state = (Boolean) newValue;
             if (state == null || !state) {
                 ScreenColorViewManager.getInstance().performDestroy();

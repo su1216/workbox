@@ -2,6 +2,7 @@ package com.su.workbox;
 
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
+import android.app.AppOpsManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -14,6 +15,7 @@ import android.content.pm.FeatureInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -36,6 +38,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
@@ -128,6 +131,52 @@ public final class AppHelper {
     public static boolean hasPermission(@NonNull Context context, @NonNull String permission) {
         int permissionCheck = ContextCompat.checkSelfPermission(context, permission);
         return permissionCheck == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static boolean hasSystemWindowPermission(@NonNull Context context) {
+        int version = Build.VERSION.SDK_INT;
+        if (version >= Build.VERSION_CODES.M) {
+            return Settings.canDrawOverlays(context);
+        } else if (version >= Build.VERSION_CODES.KITKAT) {
+            return getAppOps(context);
+        } else {
+            return true;
+        }
+    }
+
+    private static boolean getAppOps(@NonNull Context context) {
+        try {
+            Object object = context.getSystemService(Context.APP_OPS_SERVICE);
+            if (object == null) {
+                return false;
+            }
+            Class<?> localClass = object.getClass();
+            Class[] arrayOfClass = new Class[3];
+            arrayOfClass[0] = int.class;
+            arrayOfClass[1] = int.class;
+            arrayOfClass[2] = String.class;
+            Method method = localClass.getMethod("checkOp", arrayOfClass);
+            if (method == null) {
+                return false;
+            }
+            Object[] arrayOfObject1 = new Object[3];
+            arrayOfObject1[0] = 24;
+            arrayOfObject1[1] = Binder.getCallingUid();
+            arrayOfObject1[2] = context.getPackageName();
+            int m = (Integer) method.invoke(object, arrayOfObject1);
+            return m == AppOpsManager.MODE_ALLOWED;
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            Log.w(TAG, e);
+        }
+        return false;
+    }
+
+    public static void gotoManageOverlayPermission(@NonNull Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+            intent.setData(Uri.parse("package:" + context.getPackageName()));
+            context.startActivity(intent);
+        }
     }
 
     @SuppressWarnings("unchecked")
