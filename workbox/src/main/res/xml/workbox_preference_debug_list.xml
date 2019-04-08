@@ -66,17 +66,10 @@
             android:summary="分辨率，存储，网络，cpu等信息" />
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory
-        android:title="Server"
-        android:key="server">
+        android:title="Network">
         <com.su.workbox.widget.preference.SwitchPreference
             android:key="data_usage"
             android:title="流量监控" />
-        <android.support.v7.preference.Preference
-            android:key="hosts"
-            android:title="接口域名列表" />
-        <android.support.v7.preference.Preference
-            android:key="web_view_hosts"
-            android:title="WebView域名列表" />
         <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="debug_downtime"
@@ -100,20 +93,11 @@
             android:key="mock_data_list"
             android:title="数据模拟接口列表" />
         <android.support.v7.preference.Preference
-            android:key="web_view_debug"
-            android:summary="展示WebView加载的url、header、cookie等"
-            android:title="WebView调试" />
-    </android.support.v7.preference.PreferenceCategory>
-    <android.support.v7.preference.PreferenceCategory
-        android:title="Js">
+            android:key="hosts"
+            android:title="接口域名列表" />
         <android.support.v7.preference.Preference
-            android:key="js_interface"
-            android:summary="展示通过注解JavascriptInterface暴露给WebView的接口以及接口调试"
-            android:title="@JavascriptInterface接口调试" />
-        <android.support.v7.preference.Preference
-            android:key="js_rhino"
-            android:summary="利用rhino在app内执行java代码"
-            android:title="本地js调用调试" />
+            android:key="web_view_hosts"
+            android:title="WebView域名列表" />
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory
         android:title="UI">
@@ -127,5 +111,20 @@
         <com.su.workbox.widget.preference.SwitchPreference
             android:key="grid_line"
             android:title="网格线" />
+    </android.support.v7.preference.PreferenceCategory>
+    <android.support.v7.preference.PreferenceCategory
+        android:title="Others">
+        <android.support.v7.preference.Preference
+            android:key="web_view_debug"
+            android:summary="展示WebView加载的url、header、cookie等"
+            android:title="WebView调试" />
+        <android.support.v7.preference.Preference
+            android:key="js_interface"
+            android:summary="展示通过注解JavascriptInterface暴露给WebView的接口以及接口调试"
+            android:title="@JavascriptInterface接口调试" />
+        <android.support.v7.preference.Preference
+            android:key="js_rhino"
+            android:summary="利用rhino在app内执行java代码"
+            android:title="本地js调用调试" />
     </android.support.v7.preference.PreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>

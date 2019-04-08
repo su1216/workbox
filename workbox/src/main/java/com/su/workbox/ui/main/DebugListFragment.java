@@ -138,19 +138,23 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         findPreference("more_phone_info").setOnPreferenceClickListener(this);
         mHostsPreference = findPreference("hosts");
         mWebViewHostsPreference = findPreference("web_view_hosts");
-        initDataUsagePreference();
-        initMockPreferences();
+        initNetworkPreferences();
+        initUiPreference();
+
         findPreference("web_view_debug").setOnPreferenceClickListener(this);
         findPreference("js_interface").setOnPreferenceClickListener(this);
         Preference preference = findPreference("js_rhino");
         preference.setVisible(ReflectUtil.isUseRhino());
         preference.setOnPreferenceClickListener(this);
-
-        initUiPreference();
     }
 
-    private void initMockPreferences() {
+    private void initNetworkPreferences() {
         boolean okHttp3 = ReflectUtil.isUseOkHttp3();
+        SwitchPreferenceCompat dataUsagePreference = (SwitchPreferenceCompat) findPreference("data_usage");
+        dataUsagePreference.setOnPreferenceClickListener(this);
+        dataUsagePreference.setOnPreferenceChangeListener(this);
+        dataUsagePreference.setVisible(okHttp3);
+
         findPreference("debug_downtime").setVisible(okHttp3);
         mMockPolicyPreference = (ListPreference) findPreference(SpHelper.COLUMN_MOCK_POLICY);
         mMockPolicyPreference.setVisible(okHttp3);
@@ -215,12 +219,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 DIALOG_FRAGMENT.dismissAllowingStateLoss();
             }
         }.start();
-    }
-
-    private void initDataUsagePreference() {
-        SwitchPreferenceCompat dataUsagePreference = (SwitchPreferenceCompat) findPreference("data_usage");
-        dataUsagePreference.setOnPreferenceClickListener(this);
-        dataUsagePreference.setOnPreferenceChangeListener(this);
     }
 
     private void initHostPreference(@NonNull Preference preference, String currentHost, int hostType) {
