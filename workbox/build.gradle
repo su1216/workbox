@@ -56,18 +56,14 @@ dependencies {
     annotationProcessor 'android.arch.persistence.room:compiler:' + archVersion
 }
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
 publish {
     artifactId = 'workbox'
     uploadName = 'workbox'
-    bintrayUser = properties.getProperty("bintray.user")
-    bintrayKey = properties.getProperty("bintray.apikey")
     dryRun = false
 
-    userOrg = 'su1216'
-    repoName = 'maven'
-    desc = 'debug and mock for android'
-    groupId = 'com.su' // 组名
-    publishVersion = '0.8.3' // 版本号
+    userOrg = rootProject.ext.userOrg
+    repoName = rootProject.ext.repoName
+    desc = rootProject.ext.desc
+    groupId = rootProject.ext.groupId
+    publishVersion = rootProject.ext.version
 }

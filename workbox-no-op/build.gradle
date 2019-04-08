@@ -38,18 +38,14 @@ dependencies {
     api 'com.android.support:support-annotations:' + rootProject.ext.supportVersion
 }
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
 publish {
     artifactId = 'workbox-no-op'
     uploadName = 'workbox-no-op'
-    bintrayUser = properties.getProperty("bintray.user")
-    bintrayKey = properties.getProperty("bintray.apikey")
     dryRun = false
 
-    userOrg = 'su1216'
-    repoName = 'maven'
-    desc = 'debug and mock for android'
-    groupId = 'com.su' // 组名
-    publishVersion = '0.8.3' // 版本号
+    userOrg = rootProject.ext.userOrg
+    repoName = rootProject.ext.repoName
+    desc = rootProject.ext.desc
+    groupId = rootProject.ext.groupId
+    publishVersion = rootProject.ext.version
 }
