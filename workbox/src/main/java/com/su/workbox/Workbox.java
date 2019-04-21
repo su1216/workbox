@@ -22,6 +22,7 @@ import com.su.workbox.ui.app.ComponentListActivity;
 import com.su.workbox.ui.app.DataExportActivity;
 import com.su.workbox.ui.app.DatabaseListActivity;
 import com.su.workbox.ui.app.PermissionListActivity;
+import com.su.workbox.ui.app.record.ActivityLifecycleListener;
 import com.su.workbox.ui.main.FloatEntry;
 import com.su.workbox.ui.main.WorkboxMainActivity;
 import com.su.workbox.ui.mock.MockGroupHostActivity;
@@ -47,6 +48,7 @@ public class Workbox {
         long now = System.currentTimeMillis();
         SpHelper.initSharedPreferences(app);
         GeneralInfoHelper.init(app);
+        app.registerActivityLifecycleCallbacks(new ActivityLifecycleListener());
         // events will be dispatched with a delay after a last activity passed through them.
         // This delay is long enough to guarantee that ProcessLifecycleOwner won't send any events if activities are destroyed and recreated due to a configuration change
         ProcessLifecycleOwner.get().getLifecycle().addObserver(new AppLifecycleListener());

@@ -34,6 +34,10 @@
             android:summary="查看与修改SharedPreference"
             android:key="shared_preference"/>
         <android.support.v7.preference.Preference
+            android:title="Activity历史纪录"
+            android:summary="不包含workbox相关activity记录"
+            android:key="activity_history"/>
+        <android.support.v7.preference.Preference
             android:title="Sqlite数据库信息"
             android:summary="查看应用中数据库以及表结构相关信息"
             android:key="database"/>

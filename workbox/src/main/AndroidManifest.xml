@@ -101,6 +101,12 @@
             android:exported="false"
             android:theme="@style/WorkboxListTheme"
             android:screenOrientation="portrait"/>
+        <!-- Activity历史记录 -->
+        <activity
+            android:name=".ui.app.record.ActivityRecordListActivity"
+            android:exported="false"
+            android:theme="@style/WorkboxSearchViewToolbar"
+            android:screenOrientation="portrait"/>
         <!-- Database列表 -->
         <activity
             android:name=".ui.app.DatabaseListActivity"

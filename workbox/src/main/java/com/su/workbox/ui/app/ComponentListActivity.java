@@ -159,7 +159,7 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
 
         for (ComponentInfo componentInfo : list) {
             String className = componentInfo.name;
-            if (className.startsWith("com.su.workbox")) {
+            if (className.startsWith(GeneralInfoHelper.LIB_PACKAGE_NAME)) {
                 continue;
             }
             boolean find = false;

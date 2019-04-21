@@ -47,6 +47,7 @@ import com.su.workbox.ui.app.FeatureListActivity;
 import com.su.workbox.ui.app.PermissionListActivity;
 import com.su.workbox.ui.app.SharedPreferenceDetailActivity;
 import com.su.workbox.ui.app.SharedPreferenceListActivity;
+import com.su.workbox.ui.app.record.ActivityRecordListActivity;
 import com.su.workbox.ui.mock.MockGroupHostActivity;
 import com.su.workbox.ui.mock.MockUtil;
 import com.su.workbox.ui.ui.GridLineSettingActivity;
@@ -131,6 +132,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         featurePreference.setVisible(!AppHelper.getRequiredFeatures(mActivity).isEmpty());
         mSharedPreferencePreference = findPreference("shared_preference");
         mSharedPreferencePreference.setOnPreferenceClickListener(this);
+        findPreference("activity_history").setOnPreferenceClickListener(this);
         Preference databasePreference = findPreference("database");
         databasePreference.setOnPreferenceClickListener(this);
         databasePreference.setVisible(AppHelper.getDatabasesCount(mActivity) > 0);
@@ -462,6 +464,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 } else {
                     startActivity(new Intent(mActivity, SharedPreferenceListActivity.class));
                 }
+                return true;
+            case "activity_history":
+                startActivity(new Intent(mActivity, ActivityRecordListActivity.class));
                 return true;
             case "database":
                 startActivity(new Intent(mActivity, DatabaseListActivity.class));

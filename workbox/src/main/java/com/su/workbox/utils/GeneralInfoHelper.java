@@ -35,6 +35,7 @@ public class GeneralInfoHelper {
 
     private static final String TAG = GeneralInfoHelper.class.getSimpleName();
 
+    public static final String LIB_PACKAGE_NAME = "com.su.workbox";
     //application context
     private static Context sContext;
     private static String sAndroidId;
