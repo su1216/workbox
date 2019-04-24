@@ -9,6 +9,12 @@
         android:title="Launcher入口"
         android:track="@drawable/workbox_switch_track_selector" />
     <android.support.v7.preference.PreferenceCategory
+        android:title="Log">
+        <android.support.v7.preference.Preference
+            android:key="crash_log"
+            android:title="崩溃日志" />
+    </android.support.v7.preference.PreferenceCategory>
+    <android.support.v7.preference.PreferenceCategory
         android:title="App">
         <android.support.v7.preference.Preference
             android:key="app_info"

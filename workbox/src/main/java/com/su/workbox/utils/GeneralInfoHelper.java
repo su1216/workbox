@@ -311,41 +311,45 @@ public class GeneralInfoHelper {
 
     @NonNull
     public static String infoToString() {
-        return "GeneralInfoHelper{" +
-                "libName=" + sLibName +
-                ", libVersion=" + sLibVersion +
-                ", debuggable=" + sDebuggable +
-                ", processId=" + sProcessId +
-                ", processName=" + sProcessName +
-                ", versionName=" + sVersionName +
-                ", versionCode=" + sVersionCode +
-                ", packageName=" + sPackageName +
-                ", appName=" + sAppName +
-                ", deviceId=" + sAndroidId +
-                ", screenWidth=" + sScreenWidth +
-                ", screenHeight=" + sScreenHeight +
-                ", statusBarHeight=" + sStatusBarHeight +
-                ", actionBarHeight=" + sActionBarHeight +
-                ", navigationBarHeight=" + sNavigationBarHeight +
-                ", aspectRatio=" + sAspectRatio +
-                ", availableWidth=" + sAvailableWidth +
-                ", availableHeight=" + sAvailableHeight +
-                ", applicationLabel=" + sApplicationLabel +
-                ", uid=" + sUid +
-                ", applicationClassName=" + sApplicationClassName +
-                ", installTime=" + sInstallTime +
-                ", updateTime=" + sUpdateTime +
-                ", sourceDir=" + sSourceDir +
-                ", sSplitSourceDirs=" + Arrays.toString(sSplitSourceDirs) +
-                ", nativeLibraryDir=" + sNativeLibraryDir +
-                ", dataDir=" + sDataDir +
-                ", deviceProtectedDataDir=" + sDeviceProtectedDataDir +
-                ", launchTime=" + sLaunchTime +
-                ", targetSdkVersion=" + sTargetSdkVersion +
-                ", minSdkVersion=" + sMinSdkVersion +
-                ", compileSdkVersion=" + sCompileSdkVersion +
-                ", scaledTouchSlop=" + sScaledTouchSlop +
-                ", scaledEdgeSlop=" + sScaledEdgeSlop +
+        return "GeneralInfoHelper{" + '\n' +
+                infoString() + '\n' +
                 '}';
+    }
+
+    public static String infoString() {
+        return "libName=" + sLibName + '\n' +
+                ", libVersion=" + sLibVersion + '\n' +
+                ", debuggable=" + sDebuggable + '\n' +
+                ", versionName=" + sVersionName + '\n' +
+                ", versionCode=" + sVersionCode + '\n' +
+                ", processId=" + sProcessId + '\n' +
+                ", processName=" + sProcessName + '\n' +
+                ", packageName=" + sPackageName + '\n' +
+                ", appName=" + sAppName + '\n' +
+                ", deviceId=" + sAndroidId + '\n' +
+                ", screenWidth=" + sScreenWidth + '\n' +
+                ", screenHeight=" + sScreenHeight + '\n' +
+                ", aspectRatio=" + sAspectRatio + '\n' +
+                ", statusBarHeight=" + sStatusBarHeight + '\n' +
+                ", actionBarHeight=" + sActionBarHeight + '\n' +
+                ", navigationBarHeight=" + sNavigationBarHeight + '\n' +
+                ", availableWidth=" + sAvailableWidth + '\n' +
+                ", availableHeight=" + sAvailableHeight + '\n' +
+                ", applicationLabel=" + sApplicationLabel + '\n' +
+                ", uid=" + sUid + '\n' +
+                ", applicationClassName=" + sApplicationClassName + '\n' +
+                ", sourceDir=" + sSourceDir + '\n' +
+                ", sSplitSourceDirs=" + Arrays.toString(sSplitSourceDirs) + '\n' +
+                ", nativeLibraryDir=" + sNativeLibraryDir + '\n' +
+                ", dataDir=" + sDataDir + '\n' +
+                ", deviceProtectedDataDir=" + sDeviceProtectedDataDir + '\n' +
+                ", installTime=" + sInstallTime + '\n' +
+                ", updateTime=" + sUpdateTime + '\n' +
+                ", launchTime=" + sLaunchTime + '\n' +
+                ", targetSdkVersion=" + sTargetSdkVersion + '\n' +
+                ", minSdkVersion=" + sMinSdkVersion + '\n' +
+                ", compileSdkVersion=" + sCompileSdkVersion + '\n' +
+                ", scaledTouchSlop=" + sScaledTouchSlop + '\n' +
+                ", scaledEdgeSlop=" + sScaledEdgeSlop;
     }
 }
