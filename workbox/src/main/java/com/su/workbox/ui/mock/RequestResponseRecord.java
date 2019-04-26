@@ -1,17 +1,23 @@
-package com.su.workbox.database.table;
+package com.su.workbox.ui.mock;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.su.workbox.component.annotation.Searchable;
 
-@Entity(tableName = "data_usage")
-public final class DataUsageRecord implements Parcelable {
+@Entity(tableName = "request_response")
+public final class RequestResponseRecord implements Parcelable, Cloneable {
+
+    public static final String TYPE_REQUEST_HEADERS = "RequestHeaders";
+    public static final String TYPE_REQUEST_QUERY = "RequestQuery";
+    public static final String TYPE_REQUEST_BODY = "RequestBody";
+    public static final String TYPE_RESPONSE_HEADERS = "ResponseHeaders";
+    public static final String TYPE_RESPONSE_BODY = "ResponseBody";
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
@@ -19,6 +25,14 @@ public final class DataUsageRecord implements Parcelable {
     @Searchable
     @ColumnInfo(name = "url")
     private String url;
+    @ColumnInfo(name = "host")
+    private String host;
+    @ColumnInfo(name = "path")
+    private String path;
+    @ColumnInfo(name = "pages")
+    private String pages;
+    @ColumnInfo(name = "description")
+    private String description;
     @ColumnInfo(name = "contentType")
     private String contentType;
     @ColumnInfo(name = "method")
@@ -31,14 +45,10 @@ public final class DataUsageRecord implements Parcelable {
     private String responseHeaders;
     @ColumnInfo(name = "responseBody")
     private String responseBody;
-    @ColumnInfo(name = "requestBinary")
-    private boolean requestBinary;
-    @ColumnInfo(name = "responseBinary")
-    private boolean responseBinary;
+    @ColumnInfo(name = "binary")
+    private boolean binary;
     @ColumnInfo(name = "requestTime")
     private long requestTime = 0;
-    @ColumnInfo(name = "urlLength")
-    private long urlLength = 0;
     @ColumnInfo(name = "requestLength")
     private long requestLength = 0;
     @ColumnInfo(name = "requestHeaderLength")
@@ -61,22 +71,28 @@ public final class DataUsageRecord implements Parcelable {
     private long duration = 0;
     @ColumnInfo(name = "code")
     private int code = 0;
+    @ColumnInfo(name = "auto")
+    private boolean auto;
+    @ColumnInfo(name = "inUse")
+    private boolean inUse;
 
-    public DataUsageRecord() {}
+    public RequestResponseRecord() {}
 
-    protected DataUsageRecord(Parcel in) {
+    protected RequestResponseRecord(Parcel in) {
         id = in.readLong();
         url = in.readString();
+        host = in.readString();
+        path = in.readString();
+        pages = in.readString();
+        description = in.readString();
         contentType = in.readString();
         method = in.readString();
         requestHeaders = in.readString();
         requestBody = in.readString();
         responseHeaders = in.readString();
         responseBody = in.readString();
-        requestBinary = in.readByte() != 0;
-        responseBinary = in.readByte() != 0;
+        binary = in.readByte() != 0;
         requestTime = in.readLong();
-        urlLength = in.readLong();
         requestLength = in.readLong();
         requestHeaderLength = in.readLong();
         requestBodyLength = in.readLong();
@@ -88,22 +104,26 @@ public final class DataUsageRecord implements Parcelable {
         hasResponseBody = in.readByte() != 0;
         duration = in.readLong();
         code = in.readInt();
+        auto = in.readByte() != 0;
+        inUse = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
         dest.writeString(url);
+        dest.writeString(host);
+        dest.writeString(path);
+        dest.writeString(pages);
+        dest.writeString(description);
         dest.writeString(contentType);
         dest.writeString(method);
         dest.writeString(requestHeaders);
         dest.writeString(requestBody);
         dest.writeString(responseHeaders);
         dest.writeString(responseBody);
-        dest.writeByte((byte) (requestBinary ? 1 : 0));
-        dest.writeByte((byte) (responseBinary ? 1 : 0));
+        dest.writeByte((byte) (binary ? 1 : 0));
         dest.writeLong(requestTime);
-        dest.writeLong(urlLength);
         dest.writeLong(requestLength);
         dest.writeLong(requestHeaderLength);
         dest.writeLong(requestBodyLength);
@@ -115,6 +135,8 @@ public final class DataUsageRecord implements Parcelable {
         dest.writeByte((byte) (hasResponseBody ? 1 : 0));
         dest.writeLong(duration);
         dest.writeInt(code);
+        dest.writeByte((byte) (auto ? 1 : 0));
+        dest.writeByte((byte) (inUse ? 1 : 0));
     }
 
     @Override
@@ -122,15 +144,15 @@ public final class DataUsageRecord implements Parcelable {
         return 0;
     }
 
-    public static final Creator<DataUsageRecord> CREATOR = new Creator<DataUsageRecord>() {
+    public static final Creator<RequestResponseRecord> CREATOR = new Creator<RequestResponseRecord>() {
         @Override
-        public DataUsageRecord createFromParcel(Parcel in) {
-            return new DataUsageRecord(in);
+        public RequestResponseRecord createFromParcel(Parcel in) {
+            return new RequestResponseRecord(in);
         }
 
         @Override
-        public DataUsageRecord[] newArray(int size) {
-            return new DataUsageRecord[size];
+        public RequestResponseRecord[] newArray(int size) {
+            return new RequestResponseRecord[size];
         }
     };
 
@@ -200,20 +222,12 @@ public final class DataUsageRecord implements Parcelable {
         this.hasResponseBody = !TextUtils.isEmpty(responseBody);
     }
 
-    public boolean isRequestBinary() {
-        return requestBinary;
+    public boolean isBinary() {
+        return binary;
     }
 
-    public void setRequestBinary(boolean requestBinary) {
-        this.requestBinary = requestBinary;
-    }
-
-    public boolean isResponseBinary() {
-        return responseBinary;
-    }
-
-    public void setResponseBinary(boolean responseBinary) {
-        this.responseBinary = responseBinary;
+    public void setBinary(boolean binary) {
+        this.binary = binary;
     }
 
     public long getRequestTime() {
@@ -222,14 +236,6 @@ public final class DataUsageRecord implements Parcelable {
 
     public void setRequestTime(long requestTime) {
         this.requestTime = requestTime;
-    }
-
-    public long getUrlLength() {
-        return urlLength;
-    }
-
-    public void setUrlLength(long urlLength) {
-        this.urlLength = urlLength;
     }
 
     public long getRequestLength() {
@@ -320,117 +326,113 @@ public final class DataUsageRecord implements Parcelable {
         this.code = code;
     }
 
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getPages() {
+        return pages;
+    }
+
+    public void setPages(String pages) {
+        this.pages = pages;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean isAuto() {
+        return auto;
+    }
+
+    public void setAuto(boolean auto) {
+        this.auto = auto;
+    }
+
+    public boolean isInUse() {
+        return inUse;
+    }
+
+    public void setInUse(boolean inUse) {
+        this.inUse = inUse;
+    }
+
     public static class Summary {
+        @ColumnInfo(name = "host")
+        private String host;
         @ColumnInfo(name = "total")
         private int count;
-        @ColumnInfo(name = "totalRequestLength")
-        private long totalRequestLength;
-        @ColumnInfo(name = "totalResponseLength")
-        private long totalResponseLength;
+
+        public String getHost() {
+            return host;
+        }
+
+        public void setHost(String host) {
+            this.host = host;
+        }
 
         public int getCount() {
             return count;
-        }
-
-        public long getTotalRequestLength() {
-            return totalRequestLength;
-        }
-
-        public long getTotalResponseLength() {
-            return totalResponseLength;
         }
 
         public void setCount(int count) {
             this.count = count;
         }
 
-        public void setTotalRequestLength(long totalRequestLength) {
-            this.totalRequestLength = totalRequestLength;
-        }
-
-        public void setTotalResponseLength(long totalResponseLength) {
-            this.totalResponseLength = totalResponseLength;
-        }
-
-        @NonNull
         @Override
         public String toString() {
             return "Summary{" +
-                    "count=" + count +
-                    ", totalRequestLength=" + totalRequestLength +
-                    ", totalResponseLength=" + totalResponseLength +
-                    '}';
-        }
-    }
-
-    public static class Group {
-        @ColumnInfo(name = "url")
-        private String url;
-        @ColumnInfo(name = "total")
-        private int total;
-        @ColumnInfo(name = "groupRequestLength")
-        private long groupRequestLength;
-        @ColumnInfo(name = "groupResponseLength")
-        private long groupResponseLength;
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public int getTotal() {
-            return total;
-        }
-
-        public void setTotal(int total) {
-            this.total = total;
-        }
-
-        public long getGroupRequestLength() {
-            return groupRequestLength;
-        }
-
-        public void setGroupRequestLength(long groupRequestLength) {
-            this.groupRequestLength = groupRequestLength;
-        }
-
-        public long getGroupResponseLength() {
-            return groupResponseLength;
-        }
-
-        public void setGroupResponseLength(long groupResponseLength) {
-            this.groupResponseLength = groupResponseLength;
-        }
-
-        @Override
-        public String toString() {
-            return "Group{" +
-                    "url='" + url + '\'' +
-                    ", total=" + total +
-                    ", groupRequestLength=" + groupRequestLength +
-                    ", groupResponseLength=" + groupResponseLength +
+                    "host='" + host + '\'' +
+                    ", count=" + count +
                     '}';
         }
     }
 
     @Override
+    public RequestResponseRecord clone() {
+        RequestResponseRecord o = null;
+        try {
+            o = (RequestResponseRecord) super.clone();
+        } catch (CloneNotSupportedException e) {
+            Log.w("CLONE", e);
+        }
+        return o;
+    }
+
+    @Override
     public String toString() {
-        return "DataUsageRecord{" +
+        return "RequestResponseRecord{" +
                 "id=" + id +
                 ", url='" + url + '\'' +
+                ", host='" + host + '\'' +
+                ", path='" + path + '\'' +
+                ", pages='" + pages + '\'' +
+                ", description='" + description + '\'' +
                 ", contentType='" + contentType + '\'' +
                 ", method='" + method + '\'' +
                 ", requestHeaders='" + requestHeaders + '\'' +
                 ", requestBody='" + requestBody + '\'' +
                 ", responseHeaders='" + responseHeaders + '\'' +
                 ", responseBody='" + responseBody + '\'' +
-                ", requestBinary=" + requestBinary +
-                ", responseBinary=" + responseBinary +
+                ", binary=" + binary +
                 ", requestTime=" + requestTime +
-                ", urlLength=" + urlLength +
                 ", requestLength=" + requestLength +
                 ", requestHeaderLength=" + requestHeaderLength +
                 ", requestBodyLength=" + requestBodyLength +
@@ -442,6 +444,8 @@ public final class DataUsageRecord implements Parcelable {
                 ", hasResponseBody=" + hasResponseBody +
                 ", duration=" + duration +
                 ", code=" + code +
+                ", auto=" + auto +
+                ", inUse=" + inUse +
                 '}';
     }
 }

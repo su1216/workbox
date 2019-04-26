@@ -16,7 +16,7 @@
             android:title="崩溃日志" />
         <android.support.v7.preference.Preference
             android:key="app_log"
-            android:summary="请及时清理日志"
+            android:summary="查看当前app日志，请及时清理日志"
             android:title="应用日志" />
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory

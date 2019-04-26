@@ -31,7 +31,6 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.su.workbox.R;
-import com.su.workbox.database.table.RequestResponseRecord;
 import com.su.workbox.net.Method;
 import com.su.workbox.net.RequestHelper;
 import com.su.workbox.net.SimpleCallback;

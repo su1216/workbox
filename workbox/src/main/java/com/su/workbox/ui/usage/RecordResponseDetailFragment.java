@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
-import com.su.workbox.database.table.DataUsageRecord;
 import com.su.workbox.utils.ThreadUtil;
 
 import java.util.Date;

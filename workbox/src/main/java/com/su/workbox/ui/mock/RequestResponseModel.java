@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.su.workbox.database.HttpDataDatabase;
-import com.su.workbox.database.table.RequestResponseRecord;
 
 import java.util.List;
 

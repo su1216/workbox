@@ -1,4 +1,4 @@
-package com.su.workbox;
+package com.su.workbox.ui;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -24,9 +24,12 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import com.su.workbox.AppHelper;
+import com.su.workbox.BuildConfig;
+import com.su.workbox.R;
+import com.su.workbox.Workbox;
 import com.su.workbox.entity.NoteWebViewEntity;
 import com.su.workbox.entity.SimpleParameter;
-import com.su.workbox.ui.BaseAppCompatActivity;
 
 import java.util.HashMap;
 import java.util.List;

@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.su.workbox.database.HttpDataDatabase;
-import com.su.workbox.database.table.DataUsageRecord;
+import com.su.workbox.ui.usage.DataUsageRecord;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.SpHelper;
 

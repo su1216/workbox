@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.su.workbox.R;
-import com.su.workbox.database.table.RequestResponseRecord;
 import com.su.workbox.ui.BaseAppCompatActivity;
 import com.su.workbox.utils.CancelableObserver;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;

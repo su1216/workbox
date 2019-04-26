@@ -9,7 +9,7 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.su.workbox.AppHelper;
-import com.su.workbox.database.table.RequestResponseRecord;
+import com.su.workbox.ui.mock.RequestResponseRecord;
 import com.su.workbox.ui.mock.MockUtil;
 import com.su.workbox.ui.mock.RequestResponseRecordDao;
 import com.su.workbox.utils.GeneralInfoHelper;

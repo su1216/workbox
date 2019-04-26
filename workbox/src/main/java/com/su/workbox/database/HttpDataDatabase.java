@@ -9,8 +9,8 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.su.workbox.database.table.DataUsageRecord;
-import com.su.workbox.database.table.RequestResponseRecord;
+import com.su.workbox.ui.usage.DataUsageRecord;
+import com.su.workbox.ui.mock.RequestResponseRecord;
 import com.su.workbox.ui.app.record.ActivityRecord;
 import com.su.workbox.ui.app.record.ActivityRecordDao;
 import com.su.workbox.ui.log.crash.CrashLogRecord;

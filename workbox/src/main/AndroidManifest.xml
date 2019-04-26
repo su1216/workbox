@@ -194,7 +194,7 @@
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <!-- WebView -->
         <activity
-            android:name=".WebViewActivity"
+            android:name=".ui.WebViewActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"

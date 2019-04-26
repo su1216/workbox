@@ -17,7 +17,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.database.HttpDataDatabase;
-import com.su.workbox.database.table.RequestResponseRecord;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;
 

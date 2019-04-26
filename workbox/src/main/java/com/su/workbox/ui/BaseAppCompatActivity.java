@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 
 import com.su.workbox.R;
-import com.su.workbox.WebViewActivity;
 
 /**
  * Created by su on 18-1-2.

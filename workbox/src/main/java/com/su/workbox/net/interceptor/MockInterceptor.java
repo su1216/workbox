@@ -11,7 +11,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.database.HttpDataDatabase;
-import com.su.workbox.database.table.RequestResponseRecord;
+import com.su.workbox.ui.mock.RequestResponseRecord;
 import com.su.workbox.ui.mock.MockUtil;
 import com.su.workbox.ui.mock.RequestResponseRecordSource;
 import com.su.workbox.utils.GeneralInfoHelper;

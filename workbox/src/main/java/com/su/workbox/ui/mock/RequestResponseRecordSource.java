@@ -2,7 +2,6 @@ package com.su.workbox.ui.mock;
 
 import android.support.annotation.NonNull;
 
-import com.su.workbox.database.table.RequestResponseRecord;
 import com.su.workbox.utils.AppExecutors;
 
 public class RequestResponseRecordSource {

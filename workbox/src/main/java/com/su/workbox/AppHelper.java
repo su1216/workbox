@@ -30,6 +30,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.su.workbox.entity.NoteWebViewEntity;
+import com.su.workbox.ui.WebViewActivity;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.ThreadUtil;

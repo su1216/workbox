@@ -9,7 +9,6 @@ import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
 
 import com.su.workbox.database.HttpDataDatabase;
-import com.su.workbox.database.table.DataUsageRecord;
 
 import java.util.List;
 
