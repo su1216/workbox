@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          android:id="@+id/log"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingStart="13dip"
+          android:paddingTop="4dip"
+          android:paddingEnd="13dip"
+          android:paddingBottom="4dip"
+          android:textColor="@color/workbox_first_text"
+          android:textSize="14sp"
+          tools:text="shared preference file"/>

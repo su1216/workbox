@@ -41,6 +41,12 @@
             android:name=".ui.log.crash.CrashDetailActivity"
             android:exported="false"
             android:theme="@style/WorkboxListTheme"/>
+        <!--常规日志列表-->
+        <activity
+            android:name=".ui.log.common.CommonLogActivity"
+            android:exported="false"
+            android:theme="@style/WorkboxSearchViewToolbar"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <!--App信息列表-->
         <activity
             android:name=".ui.app.AppInfoListActivity"

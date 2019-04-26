@@ -48,6 +48,7 @@ import com.su.workbox.ui.app.PermissionListActivity;
 import com.su.workbox.ui.app.SharedPreferenceDetailActivity;
 import com.su.workbox.ui.app.SharedPreferenceListActivity;
 import com.su.workbox.ui.app.record.ActivityRecordListActivity;
+import com.su.workbox.ui.log.common.CommonLogActivity;
 import com.su.workbox.ui.log.crash.CrashLogActivity;
 import com.su.workbox.ui.mock.MockGroupHostActivity;
 import com.su.workbox.ui.mock.MockUtil;
@@ -102,6 +103,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         addPreferencesFromResource(R.xml.workbox_preference_debug_list);
         mActivity = getActivity();
         findPreference("crash_log").setOnPreferenceClickListener(this);
+        findPreference("app_log").setOnPreferenceClickListener(this);
         mProxyPreference = findPreference("system_proxy");
         SwitchPreferenceCompat entryPreference = (SwitchPreferenceCompat) findPreference("debug_entry");
         mEntryClassName = Workbox.class.getPackage().getName() + ".ui.DebugEntryActivity";
@@ -438,6 +440,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         switch (key) {
             case "crash_log":
                 startActivity(new Intent(mActivity, CrashLogActivity.class));
+                return true;
+            case "app_log":
+                startActivity(new Intent(mActivity, CommonLogActivity.class));
                 return true;
             case "hosts":
                 Intent hostIntent = new Intent(mActivity, HostsActivity.class);

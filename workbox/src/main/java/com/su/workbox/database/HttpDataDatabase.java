@@ -13,14 +13,12 @@ import com.su.workbox.database.table.DataUsageRecord;
 import com.su.workbox.database.table.RequestResponseRecord;
 import com.su.workbox.ui.app.record.ActivityRecord;
 import com.su.workbox.ui.app.record.ActivityRecordDao;
-import com.su.workbox.ui.log.common.LogRecord;
-import com.su.workbox.ui.log.common.LogRecordDao;
 import com.su.workbox.ui.log.crash.CrashLogRecord;
 import com.su.workbox.ui.log.crash.CrashLogRecordDao;
 import com.su.workbox.ui.mock.RequestResponseRecordDao;
 import com.su.workbox.ui.usage.DataUsageRecordDao;
 
-@Database(entities = {DataUsageRecord.class, RequestResponseRecord.class, ActivityRecord.class, LogRecord.class, CrashLogRecord.class}, version = 4)
+@Database(entities = {DataUsageRecord.class, RequestResponseRecord.class, ActivityRecord.class, CrashLogRecord.class}, version = 4)
 public abstract class HttpDataDatabase extends RoomDatabase {
 
     public static final String DATABASE_NAME = "workbox.db";
@@ -30,7 +28,6 @@ public abstract class HttpDataDatabase extends RoomDatabase {
     public abstract DataUsageRecordDao dataUsageRecordDao();
     public abstract RequestResponseRecordDao requestResponseRecordDao();
     public abstract ActivityRecordDao activityRecordDao();
-    public abstract LogRecordDao logRecordDao();
     public abstract CrashLogRecordDao crashLogRecordDao();
 
     private static final Object LOCK = new Object();

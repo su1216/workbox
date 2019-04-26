@@ -18,4 +18,11 @@
     <color name="workbox_swipe_color_2">#6BB3F1</color>
     <color name="workbox_swipe_color_3">#53A0E3</color>
     <color name="workbox_swipe_color_4">#4894D7</color>
+    <color name="workbox_white_60">#99FFFFFF</color>
+    <color name="workbox_logcat_v">#000000</color>
+    <color name="workbox_logcat_d">#008F00</color>
+    <color name="workbox_logcat_i">#1874CD</color>
+    <color name="workbox_logcat_w">#FFA500</color>
+    <color name="workbox_logcat_e">#FF0000</color>
+    <color name="workbox_logcat_f">#9F0000</color>
 </resources>
