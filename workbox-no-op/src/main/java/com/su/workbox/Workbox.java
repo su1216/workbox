@@ -43,6 +43,10 @@ public class Workbox {
         return null;
     }
 
+    public static Thread.UncaughtExceptionHandler newLogUncaughtExceptionHandler(boolean killProcess) {
+        return null;
+    }
+
     @Nullable
     public static Intent getWorkboxMainIntent() {
         return null;

@@ -18,10 +18,10 @@ Android 4.4+ (API level 19+)
 ## Workbox
 
 ```groovy
-debugApi 'com.su:workbox.annotations:0.8.3'
-debugAnnotationProcessor 'com.su:workbox.compiler:0.8.3'
-debugImplementation 'com.su:workbox:0.8.3'
-releaseImplementation 'com.su:workbox-no-op:0.8.3'
+debugApi 'com.su:workbox.annotations:0.8.5'
+debugAnnotationProcessor 'com.su:workbox.compiler:0.8.5'
+debugImplementation 'com.su:workbox:0.8.5'
+releaseImplementation 'com.su:workbox-no-op:0.8.5'
 
 ```
 
@@ -47,6 +47,23 @@ private static void initWorkbox(Application application) {
     Workbox.init(application, "您的WorkboxSupplier类名");
 }
 ```
+
+收集崩溃日志
+
+需要将CrashLogHandler设置为DefaultUncaughtExceptionHandler
+
+```java
+if (BuildConfig.DEBUG) {
+    Thread.setDefaultUncaughtExceptionHandler(Workbox.newLogUncaughtExceptionHandler(true));
+}
+```
+
+或者，在您的UncaughtExceptionHandler中调用CrashLogHandler其`uncaughtException`方法
+
+根据需要设置是否杀死进程
+
+
+
 
 模拟activity传参跳转时，可以对activity进行如下类似配置
 

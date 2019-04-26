@@ -23,6 +23,7 @@ import com.su.workbox.ui.app.DataExportActivity;
 import com.su.workbox.ui.app.DatabaseListActivity;
 import com.su.workbox.ui.app.PermissionListActivity;
 import com.su.workbox.ui.app.record.ActivityLifecycleListener;
+import com.su.workbox.ui.log.crash.CrashLogHandler;
 import com.su.workbox.ui.main.FloatEntry;
 import com.su.workbox.ui.main.WorkboxMainActivity;
 import com.su.workbox.ui.mock.MockGroupHostActivity;
@@ -90,6 +91,10 @@ public class Workbox {
     @NonNull
     public static String getWebViewHost() {
         return SpHelper.getWorkboxSharedPreferences().getString(SpHelper.COLUMN_WEB_VIEW_HOST, "");
+    }
+
+    public static Thread.UncaughtExceptionHandler newLogUncaughtExceptionHandler(boolean killProcess) {
+        return new CrashLogHandler(killProcess);
     }
 
     public static Intent getWorkboxMainIntent() {

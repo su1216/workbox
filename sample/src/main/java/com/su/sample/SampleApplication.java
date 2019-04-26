@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.su.workbox.Workbox;
-import com.su.workbox.ui.log.crash.CrashLogHandler;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +23,9 @@ public class SampleApplication extends Application {
         super.onCreate();
         sContext = this;
         initWorkbox(this);
-        Thread.setDefaultUncaughtExceptionHandler(new CrashLogHandler(true));
+        if (BuildConfig.DEBUG) {
+            Thread.setDefaultUncaughtExceptionHandler(Workbox.newLogUncaughtExceptionHandler(true));
+        }
         initSharedPreference();
     }
 
