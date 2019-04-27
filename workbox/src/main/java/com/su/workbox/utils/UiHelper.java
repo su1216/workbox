@@ -1,6 +1,7 @@
 package com.su.workbox.utils;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -33,13 +34,11 @@ public final class UiHelper {
 
     private UiHelper() {}
 
-    public static AlertDialog showTip(Context context, String tip) {
-        if (TextUtils.isEmpty(tip)) {
-            return null;
-        }
+    public static AlertDialog showConfirm(Context context, String tip, DialogInterface.OnClickListener listener) {
         return new AlertDialog.Builder(context)
                 .setMessage(tip)
-                .setPositiveButton(R.string.workbox_known, null)
+                .setPositiveButton(R.string.workbox_confirm, listener)
+                .setNegativeButton(R.string.workbox_cancel, null)
                 .show();
     }
 

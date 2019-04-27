@@ -4,6 +4,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
@@ -351,6 +353,29 @@ public final class IOUtil {
 
     private static void processFile(@NonNull File file, @NonNull FileProcessor fileProcessor) {
         fileProcessor.process(file);
+    }
+
+    public static void deleteAllCache() {
+        Context context = GeneralInfoHelper.getContext();
+        // /data/user/0/packageName
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            deleteFiles(context.getDataDir());
+        } else {
+            deleteFiles(context.getFilesDir().getParentFile());
+        }
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)
+                && context.getExternalCacheDir() != null) {
+            deleteFiles(context.getExternalCacheDir());
+        }
+        // /storage/emulated/0/Android/obb/packageName
+        deleteFiles(context.getObbDir());
+        // /storage/emulated/0/Android/media/packageName
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            File[] files = context.getExternalMediaDirs();
+            for (File file : files) {
+                deleteFiles(file);
+            }
+        }
     }
 
     @FunctionalInterface

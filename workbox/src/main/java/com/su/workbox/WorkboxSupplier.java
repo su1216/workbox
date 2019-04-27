@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
+import java.io.File;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,6 +68,14 @@ public abstract class WorkboxSupplier {
      * */
     @NonNull
     public List<List<String>> getRequestBodyExcludeKeys() {
+        return new ArrayList<>();
+    }
+
+    /**
+     * 自定义的缓存目录，当执行清除缓存时，下列目录中内容都会被递归清除
+     * */
+    @Nullable
+    public List<File> getAllCustomCacheDirs() {
         return new ArrayList<>();
     }
 

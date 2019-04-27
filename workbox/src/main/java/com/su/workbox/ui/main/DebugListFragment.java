@@ -57,11 +57,14 @@ import com.su.workbox.ui.ui.GridLineView;
 import com.su.workbox.ui.ui.RulerSettingActivity;
 import com.su.workbox.ui.ui.ScreenColorViewManager;
 import com.su.workbox.ui.usage.RecordListActivity;
+import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
+import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.NetworkUtil;
 import com.su.workbox.utils.ReflectUtil;
 import com.su.workbox.utils.SpHelper;
 import com.su.workbox.utils.SystemInfoHelper;
+import com.su.workbox.utils.UiHelper;
 import com.su.workbox.widget.SimpleBlockedDialogFragment;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 
@@ -81,6 +84,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     private static final int REQUEST_HOST = 1;
     private static final int REQUEST_WEB_VIEW_HOST = 2;
     private static final int REQUEST_MEDIA_PROJECTION = 3;
+    private AppExecutors mAppExecutors = AppExecutors.getInstance();
     private Preference mProxyPreference;
     private Preference mSharedPreferencePreference;
     private Preference mNotificationPreference;
@@ -111,6 +115,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         entryPreference.setOnPreferenceChangeListener(this);
         mNotificationPreference = findPreference("system_notification");
         mNotificationPreference.setOnPreferenceClickListener(this);
+        findPreference("clean_data").setOnPreferenceClickListener(this);
         Preference appInfoPreference = findPreference("app_info");
         appInfoPreference.setOnPreferenceClickListener(this);
         appInfoPreference.setSummary("debuggable: " + GeneralInfoHelper.isDebuggable() + "    "
@@ -413,6 +418,22 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         }
     }
 
+    private void showCleanCacheDialog() {
+        UiHelper.showConfirm(mActivity, "清除缓存后，部分功能需要重启应用才可使用，确定要清除应用缓存数据？", (dialog, which) -> mAppExecutors.diskIO().execute(() -> {
+            IOUtil.deleteAllCache();
+            WorkboxSupplier supplier = WorkboxSupplier.getInstance();
+            List<File> files = supplier.getAllCustomCacheDirs();
+            if (files == null || files.isEmpty()) {
+                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "缓存清除完毕", Toast.LENGTH_SHORT).show());
+                return;
+            }
+            for (File file : files) {
+                IOUtil.deleteFiles(file);
+            }
+            mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "缓存清除完毕", Toast.LENGTH_SHORT).show());
+        }));
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if ((requestCode == REQUEST_HOST || requestCode == REQUEST_WEB_VIEW_HOST) && resultCode == Activity.RESULT_OK) {
@@ -456,6 +477,13 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 return true;
             case "system_notification":
                 AppHelper.goNotificationSettings(mActivity);
+                return true;
+            case "clean_data":
+                if (!AppHelper.hasPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    Toast.makeText(mActivity, "没有外存写权限", Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                showCleanCacheDialog();
                 return true;
             case "permission":
                 PermissionListActivity.startActivity(mActivity);
