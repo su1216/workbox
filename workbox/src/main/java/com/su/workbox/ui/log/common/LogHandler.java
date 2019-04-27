@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 public class LogHandler extends Handler {
 
     public static final String TAG = LogHandler.class.getSimpleName();
-    private static final Pattern PATTERN_TAG = Pattern.compile("^(\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s+(\\d+)\\s+(\\d+)\\s+(\\w)\\s+([^\\s]+?(?=: )).*");
+    private static final Pattern PATTERN_TAG = Pattern.compile("^(\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s+(\\d+)\\s+(\\d+)\\s+(\\w)\\s+([^\\s:]+).*");
     private static final int MSG_START = 0;
     private static final int MSG_STOP = 1;
 

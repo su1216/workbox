@@ -51,6 +51,7 @@ public class CommonLogActivity extends BaseAppCompatActivity implements LogManag
         setContentView(R.layout.workbox_activity_common_log);
         mAdapter = new LogAdapter(mLogList);
         mRecyclerView = findViewById(R.id.recycler_view);
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, mAdapter));
         PreferenceItemDecoration decoration = new PreferenceItemDecoration(this, 0, 0);
         mRecyclerView.addItemDecoration(decoration);
         mRecyclerView.setAdapter(mAdapter);
