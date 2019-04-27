@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -179,7 +180,7 @@ public final class IOUtil {
             fis = new FileInputStream(file);
             data = new byte[(int) file.length()];
             fis.read(data);
-            content = new String(data, "UTF-8");
+            content = new String(data, StandardCharsets.UTF_8);
         } catch (IOException e) {
             Log.w(TAG, "filepath: " + file.getAbsolutePath(), e);
         } finally {
@@ -195,7 +196,7 @@ public final class IOUtil {
         StringBuilder buf = new StringBuilder();
         AssetManager manager = context.getAssets();
         try {
-            reader = new BufferedReader(new InputStreamReader(manager.open(filepath), "UTF-8"));
+            reader = new BufferedReader(new InputStreamReader(manager.open(filepath), StandardCharsets.UTF_8));
             while ((str = reader.readLine()) != null) {
                 buf.append(str);
             }
@@ -212,7 +213,7 @@ public final class IOUtil {
     public static void writeFile(String filepath, String content) {
         Writer writer = null;
         try {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filepath), "utf-8"));
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filepath), StandardCharsets.UTF_8));
             writer.write(content);
         } catch (IOException e) {
             Log.w(TAG, "content: " + content, e);

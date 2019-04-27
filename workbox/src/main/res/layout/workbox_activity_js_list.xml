@@ -17,6 +17,8 @@
         android:cacheColorHint="@android:color/transparent"
         android:drawSelectorOnTop="false"
         android:fastScrollEnabled="false"
+        android:orientation="vertical"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
     <LinearLayout
         android:id="@+id/bottomSheet"

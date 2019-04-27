@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,8 +23,8 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.su.workbox.AppHelper;
-import com.su.workbox.Workbox;
 import com.su.workbox.R;
+import com.su.workbox.Workbox;
 import com.su.workbox.entity.JsFunction;
 import com.su.workbox.entity.NoteJsFunction;
 import com.su.workbox.utils.IOUtil;
@@ -78,12 +77,9 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
         }
         mRecyclerView = findViewById(R.id.recycler_view);
         mAdapter = new FileAdapter(this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
         PreferenceItemDecoration decoration = new PreferenceItemDecoration(this, 0, 0);
         mRecyclerView.addItemDecoration(decoration);
-        mRecyclerView.setAdapter(mAdapter);
 
         View bottomSheet = findViewById(R.id.bottomSheet);
         mDeleteMenuView = findViewById(R.id.delete);

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -17,9 +16,9 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.su.workbox.R;
 import com.su.workbox.Workbox;
 import com.su.workbox.WorkboxSupplier;
-import com.su.workbox.R;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.SpHelper;
 import com.su.workbox.utils.UiHelper;
@@ -82,10 +81,6 @@ public class HostsActivity extends BaseAppCompatActivity implements RecyclerItem
         lp.height = Math.min(used + (int) (itemHeight * 1.5) /*对话框阴影留出部分空间*/, height);
         getWindow().setAttributes(lp);
 
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
         mInputView = findViewById(R.id.input);
         mInputView.setSelection(mInputView.getText().length());
         findViewById(R.id.confirm).setOnClickListener(this);

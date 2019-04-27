@@ -20,9 +20,9 @@ import android.widget.TextView;
 
 import com.su.workbox.R;
 import com.su.workbox.ui.BaseAppCompatActivity;
-import com.su.workbox.widget.preference.EditTextPreferenceDialogFragmentCompat;
 import com.su.workbox.utils.SpHelper;
 import com.su.workbox.utils.UiHelper;
+import com.su.workbox.widget.preference.EditTextPreferenceDialogFragmentCompat;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 
 public class GridLineSettingActivity extends BaseAppCompatActivity implements PreferenceFragmentCompat.OnPreferenceDisplayDialogCallback {
@@ -105,7 +105,7 @@ public class GridLineSettingActivity extends BaseAppCompatActivity implements Pr
                 mLineSizePreference.setText((String) newValue);
             } else if (TextUtils.equals(key, SpHelper.COLUMN_GRID_LINE_UNIT)) {
                 String value = (String) newValue;
-                Integer index = Integer.parseInt(value);
+                int index = Integer.parseInt(value);
                 mLineUnitPreference.setSummary(mLineUnitPreference.getEntries()[index]);
                 mLineUnitPreference.setValue(value);
             }

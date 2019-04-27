@@ -28,6 +28,7 @@ import com.su.workbox.widget.recycler.RecyclerItemClickListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -72,7 +73,7 @@ public class WebViewListActivity extends BaseAppCompatActivity implements Recycl
         StringBuilder buf = new StringBuilder();
         AssetManager manager = getAssets();
         try {
-            reader = new BufferedReader(new InputStreamReader(manager.open("generated/webView.json"), "UTF-8"));
+            reader = new BufferedReader(new InputStreamReader(manager.open("generated/webView.json"), StandardCharsets.UTF_8));
             while ((str = reader.readLine()) != null) {
                 buf.append(str);
             }
