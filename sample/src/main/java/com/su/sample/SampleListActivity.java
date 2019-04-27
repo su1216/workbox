@@ -20,6 +20,7 @@ public class SampleListActivity extends BaseAppCompatActivity implements View.On
         findViewById(R.id.activity_test).setOnClickListener(this);
         findViewById(R.id.network_test).setOnClickListener(this);
         findViewById(R.id.web_view_test).setOnClickListener(this);
+        findViewById(R.id.crash_test).setOnClickListener(this);
     }
 
     @Override
@@ -65,6 +66,8 @@ public class SampleListActivity extends BaseAppCompatActivity implements View.On
                 intent.putExtra(ObjectParameterActivity.EXTRA_KEY_PARAMETER_OBJECTS, new ObjectParameter[]{p1, p2});
                 startActivity(intent);
                 break;
+            case R.id.crash_test:
+                throw new NullPointerException("crash test...");
             default:
                 break;
         }

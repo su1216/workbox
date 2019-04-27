@@ -57,5 +57,25 @@
                 android:textColor="#333333"
                 android:text="WebView Host切换测试"/>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dip"
+            android:orientation="vertical"
+            android:id="@+id/crash_test">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#333333"
+                android:text="添加崩溃日志"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="12sp"
+                android:textColor="#777777"
+                android:text="此功能会导致demo崩溃"/>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
