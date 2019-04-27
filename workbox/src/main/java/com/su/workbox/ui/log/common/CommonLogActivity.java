@@ -109,6 +109,10 @@ public class CommonLogActivity extends BaseAppCompatActivity implements LogManag
 
     @Override
     public boolean onQueryTextChange(String s) {
+        if (TextUtils.isEmpty(s)) {
+            mQuery = s;
+            query(false);
+        }
         return false;
     }
 
