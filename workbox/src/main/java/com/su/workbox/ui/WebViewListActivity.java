@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
-import com.su.workbox.Workbox;
+import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.entity.NoteWebViewEntity;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;
@@ -96,7 +96,7 @@ public class WebViewListActivity extends BaseAppCompatActivity implements Recycl
     @Override
     public void onItemClick(View view, int position) {
         NoteWebViewEntity noteWebView = mFilterNotes.get(position);
-        if (noteWebView.isNeedLogin() && !Workbox.isLogin()) {
+        if (noteWebView.isNeedLogin() && !WorkboxSupplier.getInstance().isLogin()) {
             Toast.makeText(GeneralInfoHelper.getContext(), "登录可访问此页面", Toast.LENGTH_LONG).show();
         } else {
             AppHelper.startWebView(this, noteWebView);

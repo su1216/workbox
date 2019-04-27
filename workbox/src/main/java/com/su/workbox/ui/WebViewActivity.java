@@ -27,7 +27,7 @@ import android.widget.Toast;
 import com.su.workbox.AppHelper;
 import com.su.workbox.BuildConfig;
 import com.su.workbox.R;
-import com.su.workbox.Workbox;
+import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.entity.NoteWebViewEntity;
 import com.su.workbox.entity.SimpleParameter;
 
@@ -106,7 +106,7 @@ public class WebViewActivity extends BaseAppCompatActivity implements SwipeRefre
         mLoadingErrorLayout.setOnClickListener(this);
 
         initWebViewSettings();
-        Map<String, Object> jsObjectMap = Workbox.jsObjectList(this);
+        Map<String, Object> jsObjectMap = WorkboxSupplier.getInstance().jsObjectList(this);
         for (Map.Entry<String, Object> entry : jsObjectMap.entrySet()) {
             mWebView.addJavascriptInterface(entry.getValue(), entry.getKey());
         }
@@ -216,7 +216,7 @@ public class WebViewActivity extends BaseAppCompatActivity implements SwipeRefre
         String host = uri.getHost();
         String cookie = null;
         if (host != null) {
-            cookie = Workbox.toCookies(host);
+            cookie = WorkboxSupplier.getInstance().toCookies(host);
         }
         cookieManager.setCookie(url, cookie);
         if (BuildConfig.DEBUG) {
@@ -226,7 +226,7 @@ public class WebViewActivity extends BaseAppCompatActivity implements SwipeRefre
     }
 
     private void postUrl() {
-        mWebView.postUrl(mUrl, Workbox.toPostData(mEntity.getPostContent()));
+        mWebView.postUrl(mUrl, WorkboxSupplier.getInstance().toPostData(mEntity.getPostContent()));
     }
 
     private void getUrl() {
@@ -298,7 +298,7 @@ public class WebViewActivity extends BaseAppCompatActivity implements SwipeRefre
         String host = uri.getHost();
         String cookie = null;
         if (host != null) {
-            cookie = Workbox.toCookies(host);
+            cookie = WorkboxSupplier.getInstance().toCookies(host);
         }
         if (!TextUtils.isEmpty(cookie)) {
             toast += "\ncookie: " + cookie;

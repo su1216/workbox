@@ -17,6 +17,7 @@ import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.Workbox;
 import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.ManifestParser;
@@ -67,116 +68,99 @@ public class DataExportActivity extends BaseAppCompatActivity {
         private String mDataDirPath;
         private FilenameFilter mDbFilenameFilter = (dir, name) -> name.endsWith(".db");
         private FilenameFilter mSpFilenameFilter = (dir, name) -> name.endsWith(".xml");
+        private AppExecutors mAppExecutors = AppExecutors.getInstance();
 
         private void exportApkFile() {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             DIALOG_FRAGMENT.show(ft, "导出中...");
-            new Thread() {
-                @Override
-                public void run() {
-                    File dir = sExportedApkFile.getParentFile();
-                    if (!dir.exists()) {
-                        dir.mkdirs();
-                    }
-                    IOUtil.copyFile(new File(GeneralInfoHelper.getSourceDir()), sExportedApkFile);
-                    mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将apk导出到" + sExportedApkFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
-                    DIALOG_FRAGMENT.dismissAllowingStateLoss();
+            mAppExecutors.diskIO().execute(() -> {
+                File dir = sExportedApkFile.getParentFile();
+                if (!dir.exists()) {
+                    dir.mkdirs();
                 }
-            }.start();
+                IOUtil.copyFile(new File(GeneralInfoHelper.getSourceDir()), sExportedApkFile);
+                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将apk导出到" + sExportedApkFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
+                DIALOG_FRAGMENT.dismissAllowingStateLoss();
+            });
         }
 
         private void exportSoFile() {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             DIALOG_FRAGMENT.show(ft, "导出中...");
-            new Thread() {
-                @Override
-                public void run() {
-                    File nativeLibraryDir = new File(GeneralInfoHelper.getNativeLibraryDir());
-                    if (!sExportedSoDirFile.exists()) {
-                        sExportedSoDirFile.mkdirs();
-                    }
-                    File[] sos = nativeLibraryDir.listFiles();
-                    for (File so : sos) {
-                        IOUtil.copyFile(so, new File(sExportedSoDirFile, so.getName()));
-                    }
-                    mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将so导出到" + sExportedSoDirFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
-                    DIALOG_FRAGMENT.dismissAllowingStateLoss();
+            mAppExecutors.diskIO().execute(() -> {
+                File nativeLibraryDir = new File(GeneralInfoHelper.getNativeLibraryDir());
+                if (!sExportedSoDirFile.exists()) {
+                    sExportedSoDirFile.mkdirs();
                 }
-            }.start();
+                File[] sos = nativeLibraryDir.listFiles();
+                for (File so : sos) {
+                    IOUtil.copyFile(so, new File(sExportedSoDirFile, so.getName()));
+                }
+                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将so导出到" + sExportedSoDirFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
+                DIALOG_FRAGMENT.dismissAllowingStateLoss();
+            });
         }
 
         private void exportManifestFile() {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             DIALOG_FRAGMENT.show(ft, "导出中...");
-            new Thread() {
-                @Override
-                public void run() {
-                    File dir = sExportedManifestFile.getParentFile();
-                    if (!dir.exists()) {
-                        dir.mkdirs();
-                    }
-                    ManifestParser parser = new ManifestParser(mActivity);
-                    IOUtil.writeFile(sExportedManifestFile.getAbsolutePath(), parser.getManifest());
-                    mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将apk导出到" + sExportedManifestFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
-                    DIALOG_FRAGMENT.dismissAllowingStateLoss();
+            mAppExecutors.diskIO().execute(() -> {
+                File dir = sExportedManifestFile.getParentFile();
+                if (!dir.exists()) {
+                    dir.mkdirs();
                 }
-            }.start();
+                ManifestParser parser = new ManifestParser(mActivity);
+                IOUtil.writeFile(sExportedManifestFile.getAbsolutePath(), parser.getManifest());
+                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将apk导出到" + sExportedManifestFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
+                DIALOG_FRAGMENT.dismissAllowingStateLoss();
+            });
         }
 
         private void exportDatabaseFile() {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             DIALOG_FRAGMENT.show(ft, "导出中...");
-            new Thread() {
-                @Override
-                public void run() {
-                    File databasesDir = new File(mDataDirPath, "databases");
-                    if (!sExportedDatabaseDirFile.exists()) {
-                        sExportedDatabaseDirFile.mkdirs();
-                    }
-                    File[] databases = databasesDir.listFiles(mDbFilenameFilter);
-                    for (File database : databases) {
-                        IOUtil.copyFile(database, new File(sExportedDatabaseDirFile, database.getName()));
-                    }
-                    mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将数据库文件导出到" + sExportedDatabaseDirFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
-                    DIALOG_FRAGMENT.dismissAllowingStateLoss();
+            mAppExecutors.diskIO().execute(() -> {
+                File databasesDir = new File(mDataDirPath, "databases");
+                if (!sExportedDatabaseDirFile.exists()) {
+                    sExportedDatabaseDirFile.mkdirs();
                 }
-            }.start();
+                File[] databases = databasesDir.listFiles(mDbFilenameFilter);
+                for (File database : databases) {
+                    IOUtil.copyFile(database, new File(sExportedDatabaseDirFile, database.getName()));
+                }
+                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将数据库文件导出到" + sExportedDatabaseDirFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
+                DIALOG_FRAGMENT.dismissAllowingStateLoss();
+            });
         }
 
         private void exportSharedPreferenceFile() {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             DIALOG_FRAGMENT.show(ft, "导出中...");
-            new Thread() {
-                @Override
-                public void run() {
-                    File databasesDir = new File(mDataDirPath, "databases");
-                    if (!sExportedSharedPreferenceDirFile.exists()) {
-                        sExportedSharedPreferenceDirFile.mkdirs();
-                    }
-                    File[] sharedPreferences = databasesDir.listFiles(mSpFilenameFilter);
-                    for (File sharedPreference : sharedPreferences) {
-                        IOUtil.copyFile(sharedPreference, new File(sExportedSharedPreferenceDirFile, sharedPreference.getName()));
-                    }
-                    mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将SharedPreference文件导出到" + sExportedSharedPreferenceDirFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
-                    DIALOG_FRAGMENT.dismissAllowingStateLoss();
+            mAppExecutors.diskIO().execute(() -> {
+                File databasesDir = new File(mDataDirPath, "databases");
+                if (!sExportedSharedPreferenceDirFile.exists()) {
+                    sExportedSharedPreferenceDirFile.mkdirs();
                 }
-            }.start();
+                File[] sharedPreferences = databasesDir.listFiles(mSpFilenameFilter);
+                for (File sharedPreference : sharedPreferences) {
+                    IOUtil.copyFile(sharedPreference, new File(sExportedSharedPreferenceDirFile, sharedPreference.getName()));
+                }
+                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将SharedPreference文件导出到" + sExportedSharedPreferenceDirFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
+                DIALOG_FRAGMENT.dismissAllowingStateLoss();
+            });
         }
 
         private void exportPrivateDirFile() {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             DIALOG_FRAGMENT.show(ft, "导出中...");
-            new Thread() {
-                @Override
-                public void run() {
-                    if (!sExportedSharedPrivateDirFile.exists()) {
-                        sExportedSharedPrivateDirFile.mkdirs();
-                    }
-                    IOUtil.copyDirectory(new File(mDataDirPath), sExportedSharedPrivateDirFile);
-                    mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将应用私有文件导出到" + sExportedSharedPrivateDirFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
-                    DIALOG_FRAGMENT.dismissAllowingStateLoss();
+            mAppExecutors.diskIO().execute(() -> {
+                if (!sExportedSharedPrivateDirFile.exists()) {
+                    sExportedSharedPrivateDirFile.mkdirs();
                 }
-            }.start();
+                IOUtil.copyDirectory(new File(mDataDirPath), sExportedSharedPrivateDirFile);
+                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将应用私有文件导出到" + sExportedSharedPrivateDirFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
+                DIALOG_FRAGMENT.dismissAllowingStateLoss();
+            });
         }
 
         @Override

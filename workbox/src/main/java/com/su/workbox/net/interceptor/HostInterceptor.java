@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.su.workbox.Workbox;
-import com.su.workbox.WorkboxSupplier;
 
 import java.io.IOException;
 
@@ -29,7 +28,7 @@ public class HostInterceptor implements Interceptor {
         }
 
         String url = request.url().toString();
-        String newUrl = WorkboxSupplier.getInstance().urlMapping(url, host);
+        String newUrl = Workbox.urlMapping(url, host);
         Request newRequest = request.newBuilder().url(newUrl).build();
         return chain.proceed(newRequest);
     }

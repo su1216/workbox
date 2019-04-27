@@ -25,7 +25,7 @@ public abstract class WorkboxSupplier {
     private static final String TAG = WorkboxSupplier.class.getSimpleName();
     private static WorkboxSupplier sSupplier;
 
-    protected boolean isLogin() {
+    public boolean isLogin() {
         return false;
     }
 
@@ -83,7 +83,7 @@ public abstract class WorkboxSupplier {
      * 将一个url通过改变域名或者通过改变ip与端口的方式映射到另一个url
      * */
     @NonNull
-    public String urlMapping(@NonNull String url, @NonNull String newHost) {
+    String urlMapping(@NonNull String url, @NonNull String newHost) {
         String newUrl = url;
         Pattern pattern = Pattern.compile("^(https?://)([^/]+)(.*)");
         Matcher matcher = pattern.matcher(url);

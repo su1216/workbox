@@ -1,13 +1,11 @@
 package com.su.workbox;
 
-import android.app.Activity;
 import android.app.Application;
 import android.arch.lifecycle.ProcessLifecycleOwner;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -24,7 +22,6 @@ import com.su.workbox.ui.app.DatabaseListActivity;
 import com.su.workbox.ui.app.PermissionListActivity;
 import com.su.workbox.ui.app.record.ActivityLifecycleListener;
 import com.su.workbox.ui.log.crash.CrashLogHandler;
-import com.su.workbox.ui.main.FloatEntry;
 import com.su.workbox.ui.main.WorkboxMainActivity;
 import com.su.workbox.ui.mock.MockGroupHostActivity;
 import com.su.workbox.ui.ui.RulerActivity;
@@ -32,7 +29,6 @@ import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.SpHelper;
 
 import java.io.File;
-import java.util.Map;
 
 /**
  * Created by su on 18-1-2.
@@ -137,27 +133,8 @@ public class Workbox {
         RulerActivity.startActivity(context);
     }
 
-    @Nullable
-    public static byte[] toPostData(@Nullable String content) {
-        return WorkboxSupplier.getInstance().toPostData(content);
-    }
-
-    @Nullable
-    public static String toCookies(@NonNull String host) {
-        return WorkboxSupplier.getInstance().toCookies(host);
-    }
-
-    @NonNull
-    public static Map<String, Object> jsObjectList(Activity activity) {
-        return WorkboxSupplier.getInstance().jsObjectList(activity);
-    }
-
     @NonNull
     public static String urlMapping(@NonNull String url, @NonNull String newHost) {
         return WorkboxSupplier.getInstance().urlMapping(url, newHost);
-    }
-
-    public static boolean isLogin() {
-        return WorkboxSupplier.getInstance().isLogin();
     }
 }

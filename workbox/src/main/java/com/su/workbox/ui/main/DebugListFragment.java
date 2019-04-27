@@ -221,14 +221,11 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         }
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         DIALOG_FRAGMENT.show(ft, "收集中...");
-        new Thread() {
-            @Override
-            public void run() {
-                MockUtil.process(mActivity);
-                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "收集完成", Toast.LENGTH_LONG).show());
-                DIALOG_FRAGMENT.dismissAllowingStateLoss();
-            }
-        }.start();
+        mAppExecutors.diskIO().execute(() -> {
+            MockUtil.process(mActivity);
+            mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "收集完成", Toast.LENGTH_LONG).show());
+            DIALOG_FRAGMENT.dismissAllowingStateLoss();
+        });
     }
 
     private void initHostPreference(@NonNull Preference preference, String currentHost, int hostType) {
