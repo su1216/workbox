@@ -24,7 +24,6 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
@@ -39,6 +38,7 @@ import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.SearchableHelper;
 import com.su.workbox.widget.AllowChildInterceptTouchEventDrawerLayout;
 import com.su.workbox.widget.SimpleBlockedDialogFragment;
+import com.su.workbox.widget.ToastBuilder;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -513,7 +513,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
     //单一元素，比如body、response等直接调用updateValue即可
     private void addKey(int groupPosition, @NonNull String type, @NonNull String key, Item item) {
         if (TextUtils.isEmpty(key)) {
-            Toast.makeText(this, "key不可为空", Toast.LENGTH_SHORT).show();
+            new ToastBuilder("key不可为空").show();
             return;
         }
 
@@ -665,7 +665,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
             if (rowsUpdated > 0) {
                 finish();
             } else {
-                Toast.makeText(this, "删除失败", Toast.LENGTH_LONG).show();
+                new ToastBuilder("删除失败").show();
             }
         });
     }

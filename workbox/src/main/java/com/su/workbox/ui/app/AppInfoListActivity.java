@@ -17,7 +17,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
@@ -26,6 +25,7 @@ import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.SystemInfoHelper;
 import com.su.workbox.utils.ThreadUtil;
 import com.su.workbox.utils.UiHelper;
+import com.su.workbox.widget.ToastBuilder;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -141,7 +141,7 @@ public class AppInfoListActivity extends BaseAppCompatActivity implements Expand
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
         Pair<String, String> pair = mDataList.get(groupPosition).get(childPosition);
         AppHelper.copyToClipboard(this, pair.first, pair.second);
-        Toast.makeText(this, "已将" + pair.first + "复制到粘贴板中", Toast.LENGTH_SHORT).show();
+        new ToastBuilder("已将" + pair.first + "复制到粘贴板中").show();
         return true;
     }
 

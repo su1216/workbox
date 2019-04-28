@@ -10,10 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.su.workbox.R;
 import com.su.workbox.utils.GeneralInfoHelper;
+import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.TouchProxy;
 
 public class FloatEntry implements View.OnTouchListener, View.OnClickListener {
@@ -95,7 +95,7 @@ public class FloatEntry implements View.OnTouchListener, View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Toast.makeText(v.getContext(), "onClick", Toast.LENGTH_SHORT).show();
+        new ToastBuilder("onClick").show();
     }
 
     @Override

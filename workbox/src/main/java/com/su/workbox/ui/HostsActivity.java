@@ -8,13 +8,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Pair;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.su.workbox.R;
 import com.su.workbox.Workbox;
@@ -22,6 +20,7 @@ import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.SpHelper;
 import com.su.workbox.utils.UiHelper;
+import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 import com.su.workbox.widget.recycler.RecyclerItemClickListener;
@@ -121,9 +120,7 @@ public class HostsActivity extends BaseAppCompatActivity implements RecyclerItem
     public void onClick(View v) {
         String input = mInputView.getText().toString().trim();
         if (!mIpPattern.matcher(input).find() || !mDomainPattern.matcher(input).find()) {
-            Toast toast = Toast.makeText(this, "输入不合法", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
+            new ToastBuilder("输入不合法").show();
             return;
         }
 

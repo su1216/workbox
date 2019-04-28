@@ -30,6 +30,7 @@ import com.su.workbox.R;
 import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.entity.NoteWebViewEntity;
 import com.su.workbox.entity.SimpleParameter;
+import com.su.workbox.widget.ToastBuilder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -98,7 +99,7 @@ public class WebViewActivity extends BaseAppCompatActivity implements SwipeRefre
         if (!verifyUrl(mUrl)) {
             String toast = "跳转链接错误！";
             toast += mUrl;
-            Toast.makeText(this, toast, Toast.LENGTH_LONG).show();
+            new ToastBuilder(toast).setDuration(Toast.LENGTH_LONG).show();
             finish();
         }
 
@@ -153,7 +154,7 @@ public class WebViewActivity extends BaseAppCompatActivity implements SwipeRefre
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (!verifyUrl(url)) {
                     Log.w(TAG, "url错误: " + url);
-                    Toast.makeText(WebViewActivity.this, "url错误: " + url, Toast.LENGTH_LONG).show();
+                    new ToastBuilder("url错误: " + url).setDuration(Toast.LENGTH_LONG).show();
                     return true;
                 }
                 mUrl = url;
@@ -173,7 +174,7 @@ public class WebViewActivity extends BaseAppCompatActivity implements SwipeRefre
 
             @TargetApi(Build.VERSION_CODES.LOLLIPOP)
             private void toastHttpError(WebResourceRequest request, WebResourceResponse errorResponse) {
-                Toast.makeText(WebViewActivity.this, "HTTP error: " + errorResponse.getStatusCode() + "\n url: " + request.getUrl(), Toast.LENGTH_LONG).show();
+                new ToastBuilder("HTTP error: " + errorResponse.getStatusCode() + "\n url: " + request.getUrl()).setDuration(Toast.LENGTH_LONG).show();
             }
         });
 
@@ -303,7 +304,7 @@ public class WebViewActivity extends BaseAppCompatActivity implements SwipeRefre
         if (!TextUtils.isEmpty(cookie)) {
             toast += "\ncookie: " + cookie;
         }
-        Toast.makeText(this, toast, Toast.LENGTH_LONG).show();
+        new ToastBuilder(toast).setDuration(Toast.LENGTH_LONG).show();
     }
 
     private boolean verifyUrl(String url) {
@@ -323,7 +324,7 @@ public class WebViewActivity extends BaseAppCompatActivity implements SwipeRefre
         mWebView.clearCache(true);
         deleteDatabase("webview.db");
         deleteDatabase("webviewCache.db");
-        Toast.makeText(this, "webview缓存已清除", Toast.LENGTH_LONG).show();
+        new ToastBuilder("webview缓存已清除").show();
     }
 
     public void onBackPressed() {

@@ -16,12 +16,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.su.workbox.R;
 import com.su.workbox.ui.BaseAppCompatActivity;
 import com.su.workbox.utils.SpHelper;
+import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 import com.su.workbox.widget.recycler.RecyclerItemClickListener;
@@ -153,7 +153,7 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
                 .setPositiveButton(R.string.workbox_confirm, (dialog, which) -> {
                     String key = inputView.getText().toString();
                     if (TextUtils.isEmpty(key)) {
-                        Toast.makeText(SharedPreferenceDetailActivity.this, "key不可以为空", Toast.LENGTH_SHORT).show();
+                        new ToastBuilder("key不可以为空").show();
                         keyDialog(item);
                         return;
                     }
@@ -181,7 +181,7 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
     @Override
     public void onItemClick(View view, int position) {
         if (TextUtils.equals(SpHelper.NAME, mSharedPreferenceName)) {
-            Toast.makeText(this, "禁止修改workbox自身的shared preference文件", Toast.LENGTH_LONG).show();
+            new ToastBuilder("禁止修改workbox自身的shared preference文件").show();
             return;
         }
         Item item = mAdapter.getData().get(position);

@@ -30,6 +30,7 @@ import com.su.workbox.entity.JsFunction;
 import com.su.workbox.entity.NoteJsFunction;
 import com.su.workbox.entity.Parameter;
 import com.su.workbox.utils.IOUtil;
+import com.su.workbox.widget.ToastBuilder;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
@@ -88,7 +89,7 @@ public class ExecJsActivity extends BaseAppCompatActivity implements View.OnClic
             }
         }
         if (TextUtils.isEmpty(mScript)) {
-            Toast.makeText(this, "请检查文件: " + mFilepath, Toast.LENGTH_LONG).show();
+            new ToastBuilder("请检查文件: " + mFilepath).setDuration(Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -106,7 +107,7 @@ public class ExecJsActivity extends BaseAppCompatActivity implements View.OnClic
         List<String> realParams = mFunction.getParameters();
         int paramsSize = realParams.size();
         if (mNoteJsFunction == null && !realParams.isEmpty()) {
-            Toast.makeText(this, "assets/generated/js.json缺少此函数相关信息", Toast.LENGTH_LONG).show();
+            new ToastBuilder("assets/generated/js.json缺少此函数相关信息").setDuration(Toast.LENGTH_LONG).show();
         }
         if (mNoteJsFunction == null) {
             mNoteJsFunction = new NoteJsFunction();
@@ -237,7 +238,7 @@ public class ExecJsActivity extends BaseAppCompatActivity implements View.OnClic
         String origin = currentParameterView.getText().toString();
         String formatParameter = prettyFormat(origin);
         if (formatParameter == null) {
-            Toast.makeText(this, "参数不是json,或者json格式错误", Toast.LENGTH_LONG).show();
+            new ToastBuilder("参数不是json,或者json格式错误").show();
         } else {
             currentParameterView.setText(formatParameter);
         }

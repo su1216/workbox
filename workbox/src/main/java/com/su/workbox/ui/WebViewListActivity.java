@@ -18,9 +18,9 @@ import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.entity.NoteWebViewEntity;
-import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.SearchableHelper;
+import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 import com.su.workbox.widget.recycler.RecyclerItemClickListener;
@@ -79,7 +79,7 @@ public class WebViewListActivity extends BaseAppCompatActivity implements Recycl
             }
             str = buf.toString();
         } catch (IOException e) {
-            Toast.makeText(GeneralInfoHelper.getContext(), "请检查文件assets/generated/webView.json", Toast.LENGTH_LONG).show();
+            new ToastBuilder("请检查文件assets/generated/webView.json").setDuration(Toast.LENGTH_LONG).show();
             Log.w(TAG, e);
         } finally {
             IOUtil.close(reader);
@@ -97,7 +97,7 @@ public class WebViewListActivity extends BaseAppCompatActivity implements Recycl
     public void onItemClick(View view, int position) {
         NoteWebViewEntity noteWebView = mFilterNotes.get(position);
         if (noteWebView.isNeedLogin() && !WorkboxSupplier.getInstance().isLogin()) {
-            Toast.makeText(GeneralInfoHelper.getContext(), "登录可访问此页面", Toast.LENGTH_LONG).show();
+            new ToastBuilder("登录可访问此页面").show();
         } else {
             AppHelper.startWebView(this, noteWebView);
         }

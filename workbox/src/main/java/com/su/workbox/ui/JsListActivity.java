@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.su.workbox.AppHelper;
@@ -28,6 +27,7 @@ import com.su.workbox.Workbox;
 import com.su.workbox.entity.JsFunction;
 import com.su.workbox.entity.NoteJsFunction;
 import com.su.workbox.utils.IOUtil;
+import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 
@@ -142,7 +142,7 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
                     sourceString = "";
                 }
                 if (TextUtils.isEmpty(sourceString)) {
-                    Toast.makeText(this, "请检查文件: " + filepath, Toast.LENGTH_LONG).show();
+                    new ToastBuilder("请检查文件: " + filepath).show();
                 } else {
                     excludeJsFiles(files, new File(filepath));
                     parseJs(sourceString, url);
@@ -464,9 +464,9 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
                             mGroupList.remove(groupPosition);
                             mFunctionsList.remove(groupPosition);
                             mAdapter.notifyDataSetChanged();
-                            Toast.makeText(JsListActivity.this, file.getName() + "删除成功", Toast.LENGTH_SHORT).show();
+                            new ToastBuilder(file.getName() + "删除成功").show();
                         } else {
-                            Toast.makeText(JsListActivity.this, file.getName() + "删除失败", Toast.LENGTH_SHORT).show();
+                            new ToastBuilder(file.getName() + "删除失败").show();
                         }
                     }
                 })

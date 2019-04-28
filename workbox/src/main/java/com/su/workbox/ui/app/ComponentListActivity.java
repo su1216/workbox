@@ -27,6 +27,7 @@ import com.su.workbox.ui.BaseAppCompatActivity;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.SearchableHelper;
+import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.RecyclerItemClickListener;
 
@@ -104,7 +105,7 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
             mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
             filter("");
         } catch (PackageManager.NameNotFoundException e) {
-            Toast.makeText(this, "包名错误： " + e.getMessage(), Toast.LENGTH_LONG).show();
+            new ToastBuilder("包名错误： " + e.getMessage()).setDuration(Toast.LENGTH_LONG).show();
             finish();
         }
     }
@@ -121,7 +122,7 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
             }
             str = buf.toString();
         } catch (IOException e) {
-            Toast.makeText(GeneralInfoHelper.getContext(), "请检查文件assets/generated/components.json", Toast.LENGTH_LONG).show();
+            new ToastBuilder("请检查文件assets/generated/components.json").setDuration(Toast.LENGTH_LONG).show();
             Log.w(TAG, e);
         } finally {
             IOUtil.close(reader);

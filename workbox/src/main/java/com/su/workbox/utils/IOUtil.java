@@ -11,6 +11,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.su.workbox.widget.ToastBuilder;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -204,7 +206,7 @@ public final class IOUtil {
             }
             str = buf.toString();
         } catch (IOException e) {
-            Toast.makeText(GeneralInfoHelper.getContext(), "请检查文件assets/" + filepath, Toast.LENGTH_LONG).show();
+            new ToastBuilder("请检查文件assets/" + filepath).setDuration(Toast.LENGTH_LONG).show();
             Log.w(TAG, e);
         } finally {
             close(reader);

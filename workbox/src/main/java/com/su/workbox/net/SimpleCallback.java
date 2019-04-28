@@ -4,8 +4,8 @@ import android.view.Gravity;
 import android.widget.Toast;
 
 import com.su.workbox.BuildConfig;
-import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.NetworkUtil;
+import com.su.workbox.widget.ToastBuilder;
 
 import java.io.IOException;
 
@@ -15,11 +15,11 @@ import java.io.IOException;
 
 public class SimpleCallback<T> implements Callback<T> {
 
-    private static Toast sFailureToast = Toast.makeText(GeneralInfoHelper.getContext(), "请求失败,请检查网络设置", Toast.LENGTH_LONG);
-    private static Toast sErrorToast = Toast.makeText(GeneralInfoHelper.getContext(), "请求失败,请重试", Toast.LENGTH_LONG);
-    private static Toast sCanceledToast = Toast.makeText(GeneralInfoHelper.getContext(), "请求已取消", Toast.LENGTH_LONG);
-    private static Toast sParseErrorToast = Toast.makeText(GeneralInfoHelper.getContext(), "", Toast.LENGTH_LONG);
-    private Toast mErrorMessageToast = Toast.makeText(GeneralInfoHelper.getContext(), "", Toast.LENGTH_LONG);
+    private static Toast sFailureToast = new ToastBuilder("请求失败,请检查网络设置").create();
+    private static Toast sErrorToast = new ToastBuilder("请求失败,请重试").create();
+    private static Toast sCanceledToast = new ToastBuilder("请求已取消").create();
+    private static Toast sParseErrorToast = new ToastBuilder("").create();
+    private Toast mErrorMessageToast = new ToastBuilder("").create();
     private String mErrorMessage = "";
 
     @Override
@@ -41,7 +41,7 @@ public class SimpleCallback<T> implements Callback<T> {
     @Override
     public final void onError(NetResponse<T> response) {
         if (BuildConfig.DEBUG) {
-            Toast toast = Toast.makeText(GeneralInfoHelper.getContext(), response.getUrl() + "\n" + response.getMessage(), Toast.LENGTH_LONG);
+            Toast toast = new ToastBuilder(response.getUrl() + "\n" + response.getMessage()).create();
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         } else {

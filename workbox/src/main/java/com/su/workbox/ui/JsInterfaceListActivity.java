@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -23,9 +22,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.WorkboxSupplier;
-import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.SearchableHelper;
+import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 
@@ -114,7 +113,7 @@ public class JsInterfaceListActivity extends BaseAppCompatActivity implements Se
             String classname = filename.replaceFirst("JsCallAndroid-", "").replaceFirst("\\.json", "");
             String injectName = getInjectObjNameByClassname(classname);
             if (TextUtils.isEmpty(injectName)) {
-                Toast.makeText(this, "Supplier中未提供对象测试此类中的方法: " + classname, Toast.LENGTH_LONG).show();
+                new ToastBuilder("Supplier中未提供对象测试此类中的方法: " + classname).show();
                 continue;
             }
 
@@ -133,7 +132,7 @@ public class JsInterfaceListActivity extends BaseAppCompatActivity implements Se
             }
             str = buf.toString();
         } catch (IOException e) {
-            Toast.makeText(GeneralInfoHelper.getContext(), "请检查文件" + " generated/" + filename, Toast.LENGTH_LONG).show();
+            new ToastBuilder("请检查文件" + " generated/" + filename).show();
         } finally {
             IOUtil.close(reader);
         }

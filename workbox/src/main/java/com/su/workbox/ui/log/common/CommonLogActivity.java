@@ -14,13 +14,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.ui.BaseAppCompatActivity;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.SearchableHelper;
+import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 import com.su.workbox.widget.recycler.RecyclerItemClickListener;
@@ -248,7 +248,7 @@ public class CommonLogActivity extends BaseAppCompatActivity implements LogManag
         public void onItemClick(View view, int position) {
             LogRecord logRecord = getData().get(position);
             AppHelper.copyToClipboard(GeneralInfoHelper.getContext(), "log", logRecord.getFull());
-            Toast.makeText(GeneralInfoHelper.getContext(), "log已复制到粘贴板", Toast.LENGTH_SHORT).show();
+            new ToastBuilder("log已复制到粘贴板").show();
         }
 
         private int getLogColor(LogRecord logRecord) {

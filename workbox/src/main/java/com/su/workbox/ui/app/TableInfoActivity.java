@@ -19,6 +19,7 @@ import com.su.workbox.R;
 import com.su.workbox.database.DbInfoProvider;
 import com.su.workbox.entity.database.TableColumn;
 import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 
@@ -70,7 +71,7 @@ public class TableInfoActivity extends BaseAppCompatActivity {
         sqlView.setText(mTableSql);
         header.setOnClickListener(v -> {
             AppHelper.copyToClipboard(this, "sql", mTableSql);
-            Toast.makeText(this, "已将" + mTableName + "创建语句复制到粘贴板中", Toast.LENGTH_LONG).show();
+            new ToastBuilder("已将" + mTableName + "创建语句复制到粘贴板中").setDuration(Toast.LENGTH_LONG).show();
         });
         return header;
     }

@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
@@ -19,6 +18,7 @@ import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.database.HttpDataDatabase;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;
+import com.su.workbox.widget.ToastBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -181,7 +181,7 @@ public class MockUtil {
                 entity.setDescription(description);
             }
         } catch (SQLiteConstraintException e) {
-            Toast.makeText(context, "已存在同样条件的request", Toast.LENGTH_LONG).show();
+            new ToastBuilder("已存在同样条件的request").show();
             Log.w(TAG, e);
         }
         return rowsUpdated;
@@ -202,7 +202,7 @@ public class MockUtil {
                 entity.setInUse(true);
             }
         } catch (SQLiteConstraintException e) {
-            Toast.makeText(context, "已存在同样条件的request", Toast.LENGTH_LONG).show();
+            new ToastBuilder("已存在同样条件的request").show();
             Log.w(TAG, e);
         }
         return rowsUpdated;
@@ -244,7 +244,7 @@ public class MockUtil {
                 entity.setInUse(true);
             }
         } catch (SQLiteConstraintException e) {
-            Toast.makeText(context, "已存在同样条件的request", Toast.LENGTH_LONG).show();
+            new ToastBuilder("已存在同样条件的request").show();
             Log.w(TAG, e);
         }
         return rowsUpdated;
@@ -265,7 +265,7 @@ public class MockUtil {
                 entity.setInUse(true);
             }
         } catch (SQLiteConstraintException e) {
-            Toast.makeText(context, "已存在同样条件的request", Toast.LENGTH_LONG).show();
+            new ToastBuilder("已存在同样条件的request").show();
             Log.w(TAG, e);
         }
         return rowsUpdated;
@@ -286,7 +286,7 @@ public class MockUtil {
                 entity.setInUse(true);
             }
         } catch (SQLiteConstraintException e) {
-            Toast.makeText(context, "已存在同样条件的request", Toast.LENGTH_LONG).show();
+            new ToastBuilder("已存在同样条件的request").show();
             Log.w(TAG, e);
         }
         return rowsUpdated;
@@ -329,7 +329,7 @@ public class MockUtil {
                 entity.setInUse(true);
             }
         } catch (SQLiteConstraintException e) {
-            Toast.makeText(context, "已存在同样条件的request", Toast.LENGTH_LONG).show();
+            new ToastBuilder("已存在同样条件的request").show();
             Log.w(TAG, e);
         }
         return rowsUpdated;
@@ -388,7 +388,7 @@ public class MockUtil {
                 entity.setInUse(true);
             }
         } catch (SQLiteConstraintException e) {
-            Toast.makeText(context, "已存在同样条件的request", Toast.LENGTH_LONG).show();
+            new ToastBuilder("已存在同样条件的request").show();
             Log.w(TAG, e);
         }
         return rowsUpdated;
@@ -448,7 +448,7 @@ public class MockUtil {
                 entity.setInUse(true);
             }
         } catch (SQLiteConstraintException e) {
-            Toast.makeText(context, "已存在同样条件的request", Toast.LENGTH_LONG).show();
+            new ToastBuilder("已存在同样条件的request").show();
             Log.w(TAG, e);
         }
         return rowsUpdated;
@@ -487,7 +487,7 @@ public class MockUtil {
             entity.setResponseHeaders(newHeaders);
             entity.setInUse(true);
         } else {
-            Toast.makeText(context, "更新失败请重试", Toast.LENGTH_LONG).show();
+            new ToastBuilder("更新失败请重试").show();
         }
         return rowsUpdated;
     }
@@ -503,7 +503,7 @@ public class MockUtil {
             entity.setResponseBody(responseBody);
             entity.setInUse(true);
         } else {
-            Toast.makeText(context, "更新失败请重试", Toast.LENGTH_LONG).show();
+            new ToastBuilder("更新失败请重试").show();
         }
         return rowsUpdated;
     }

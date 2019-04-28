@@ -4,12 +4,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.su.workbox.utils.GeneralInfoHelper;
+import com.su.workbox.widget.ToastBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -146,7 +146,7 @@ class OkHttpRequest<T> extends NetRequest<T> {
             if (file != null && file.exists() && file.isFile()) {
                 builder.addFormDataPart(multipartFile.getName(), multipartFile.getFileName(), RequestBody.create(MediaType.parse(multipartFile.getMimeType()), file));
             } else {
-                Toast.makeText(GeneralInfoHelper.getContext(), "文件选择错误： " + multipartFile, Toast.LENGTH_LONG).show();
+                new ToastBuilder("文件选择错误： " + multipartFile).show();
             }
         }
         return builder.build();
@@ -198,7 +198,7 @@ class OkHttpRequest<T> extends NetRequest<T> {
 
     private void showRequestErrorToast() {
         String content = "请求错误: " + mUrl + "\n请求方式: " + mMethod + "\nheader: " + mHeaderMap;
-        Toast.makeText(GeneralInfoHelper.getContext(), content, Toast.LENGTH_LONG).show();
+        new ToastBuilder(content).show();
     }
 
     @Override

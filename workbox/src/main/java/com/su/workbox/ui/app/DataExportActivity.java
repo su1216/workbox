@@ -23,6 +23,7 @@ import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.ManifestParser;
 import com.su.workbox.utils.SpHelper;
 import com.su.workbox.widget.SimpleBlockedDialogFragment;
+import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 
 import java.io.File;
@@ -79,7 +80,7 @@ public class DataExportActivity extends BaseAppCompatActivity {
                     dir.mkdirs();
                 }
                 IOUtil.copyFile(new File(GeneralInfoHelper.getSourceDir()), sExportedApkFile);
-                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将apk导出到" + sExportedApkFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
+                mActivity.runOnUiThread(() -> new ToastBuilder("已将apk导出到" + sExportedApkFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
                 DIALOG_FRAGMENT.dismissAllowingStateLoss();
             });
         }
@@ -96,7 +97,7 @@ public class DataExportActivity extends BaseAppCompatActivity {
                 for (File so : sos) {
                     IOUtil.copyFile(so, new File(sExportedSoDirFile, so.getName()));
                 }
-                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将so导出到" + sExportedSoDirFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
+                mActivity.runOnUiThread(() -> new ToastBuilder("已将so导出到" + sExportedSoDirFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
                 DIALOG_FRAGMENT.dismissAllowingStateLoss();
             });
         }
@@ -111,7 +112,7 @@ public class DataExportActivity extends BaseAppCompatActivity {
                 }
                 ManifestParser parser = new ManifestParser(mActivity);
                 IOUtil.writeFile(sExportedManifestFile.getAbsolutePath(), parser.getManifest());
-                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将apk导出到" + sExportedManifestFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
+                mActivity.runOnUiThread(() -> new ToastBuilder("已将apk导出到" + sExportedManifestFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
                 DIALOG_FRAGMENT.dismissAllowingStateLoss();
             });
         }
@@ -128,7 +129,7 @@ public class DataExportActivity extends BaseAppCompatActivity {
                 for (File database : databases) {
                     IOUtil.copyFile(database, new File(sExportedDatabaseDirFile, database.getName()));
                 }
-                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将数据库文件导出到" + sExportedDatabaseDirFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
+                mActivity.runOnUiThread(() -> new ToastBuilder("已将数据库文件导出到" + sExportedDatabaseDirFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
                 DIALOG_FRAGMENT.dismissAllowingStateLoss();
             });
         }
@@ -145,7 +146,7 @@ public class DataExportActivity extends BaseAppCompatActivity {
                 for (File sharedPreference : sharedPreferences) {
                     IOUtil.copyFile(sharedPreference, new File(sExportedSharedPreferenceDirFile, sharedPreference.getName()));
                 }
-                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将SharedPreference文件导出到" + sExportedSharedPreferenceDirFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
+                mActivity.runOnUiThread(() -> new ToastBuilder("已将SharedPreference文件导出到" + sExportedSharedPreferenceDirFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
                 DIALOG_FRAGMENT.dismissAllowingStateLoss();
             });
         }
@@ -158,7 +159,7 @@ public class DataExportActivity extends BaseAppCompatActivity {
                     sExportedSharedPrivateDirFile.mkdirs();
                 }
                 IOUtil.copyDirectory(new File(mDataDirPath), sExportedSharedPrivateDirFile);
-                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将应用私有文件导出到" + sExportedSharedPrivateDirFile.getAbsolutePath(), Toast.LENGTH_LONG).show());
+                mActivity.runOnUiThread(() -> new ToastBuilder("已将应用私有文件导出到" + sExportedSharedPrivateDirFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
                 DIALOG_FRAGMENT.dismissAllowingStateLoss();
             });
         }
@@ -227,7 +228,7 @@ public class DataExportActivity extends BaseAppCompatActivity {
         @Override
         public boolean onPreferenceClick(Preference preference) {
             if (!AppHelper.hasPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                Toast.makeText(mActivity, "没有外存写入权限", Toast.LENGTH_LONG).show();
+                mActivity.runOnUiThread(() -> new ToastBuilder("没有外存写入权限").show());
                 PermissionListActivity.startActivity(mActivity);
                 return true;
             }

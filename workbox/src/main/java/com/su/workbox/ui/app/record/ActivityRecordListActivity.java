@@ -11,13 +11,12 @@ import android.support.v7.widget.SearchView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.su.workbox.R;
 import com.su.workbox.ui.BaseAppCompatActivity;
-import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.SearchableHelper;
 import com.su.workbox.utils.ThreadUtil;
+import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 import com.su.workbox.widget.recycler.RecyclerItemClickListener;
@@ -122,7 +121,7 @@ public class ActivityRecordListActivity extends BaseAppCompatActivity implements
         @Override
         public void onItemClick(View view, int position) {
             ActivityRecord record = getData().get(position);
-            Toast.makeText(GeneralInfoHelper.getContext(), record.getName(), Toast.LENGTH_SHORT).show();
+            new ToastBuilder(record.getName()).show();
         }
     }
 

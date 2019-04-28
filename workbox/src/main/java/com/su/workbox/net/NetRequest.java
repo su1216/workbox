@@ -2,12 +2,12 @@ package com.su.workbox.net;
 
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.su.workbox.BuildConfig;
 import com.su.workbox.utils.GeneralInfoHelper;
+import com.su.workbox.widget.ToastBuilder;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -105,9 +105,9 @@ public abstract class NetRequest<T> {
         for (final Map.Entry<String, Object> entry : params.entrySet()) {
             if (entry.getValue() == null) {
                 if (BuildConfig.DEBUG) {
-                    sHandler.post(() -> Toast.makeText(GeneralInfoHelper.getContext(), entry.getKey() + " is null", Toast.LENGTH_SHORT).show());
+                    sHandler.post(() -> new ToastBuilder(entry.getKey() + " is null").show());
                 } else {
-                    sHandler.post(() -> Toast.makeText(GeneralInfoHelper.getContext(), "请求参数不合法", Toast.LENGTH_SHORT).show());
+                    sHandler.post(() -> new ToastBuilder("请求参数不合法").show());
                 }
             }
         }

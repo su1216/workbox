@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -36,6 +35,7 @@ import com.su.workbox.entity.NoteComponentEntity;
 import com.su.workbox.entity.Parameter;
 import com.su.workbox.utils.ReflectUtil;
 import com.su.workbox.widget.SimpleTextWatcher;
+import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 
 import java.io.Serializable;
@@ -99,7 +99,7 @@ public class ComponentExtrasFragment extends Fragment {
             } else {
                 String formatParameter = jsonPrettyFormat(parameterValue);
                 if (formatParameter == null) {
-                    Toast.makeText(mActivity, parameter.getParameterName() + "值不是json,或者json格式错误", Toast.LENGTH_LONG).show();
+                    new ToastBuilder(parameter.getParameterName() + "值不是json,或者json格式错误").show();
                     ok = false;
                 } else {
                     parameter.setParameter(formatParameter);
@@ -141,7 +141,7 @@ public class ComponentExtrasFragment extends Fragment {
         for (Parameter parameter : parameters) {
             String parameterValue = parameter.getParameter();
             if (parameter.isParameterRequired() && TextUtils.isEmpty(parameterValue)) {
-                Toast.makeText(mActivity, parameter.getParameterName() + " 是必填参数", Toast.LENGTH_LONG).show();
+                new ToastBuilder(parameter.getParameterName() + " 是必填参数").show();
                 return false;
             }
         }
@@ -161,7 +161,7 @@ public class ComponentExtrasFragment extends Fragment {
                 try {
                     makeParameter(intent, clazz, parameter);
                 } catch (RuntimeException e) {
-                    Toast.makeText(mActivity, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    new ToastBuilder(e.getMessage()).show();
                 }
             }
         }
@@ -328,7 +328,7 @@ public class ComponentExtrasFragment extends Fragment {
                             objects[i] = ReflectUtil.newInstance(componentType);
                             if (i == 0) {
                                 AppHelper.copyToClipboard(mContext, componentType.getCanonicalName(), objectToString(objects[i]));
-                                Toast.makeText(mContext, "已将单个" + componentType.getCanonicalName() + "实体复制到粘贴板中", Toast.LENGTH_LONG).show();
+                                new ToastBuilder("已将单个" + componentType.getCanonicalName() + "实体复制到粘贴板中").show();
                             }
                         }
                     }

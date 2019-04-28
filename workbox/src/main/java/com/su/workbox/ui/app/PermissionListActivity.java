@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.su.workbox.R;
 import com.su.workbox.entity.PermissionInfoWrapper;
 import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.RecyclerItemClickListener;
 
@@ -101,7 +102,7 @@ public class PermissionListActivity extends BaseAppCompatActivity implements Rec
                 }
             }
         } catch (PackageManager.NameNotFoundException e) {
-            Toast.makeText(this, "包名错误： " + e.getMessage(), Toast.LENGTH_LONG).show();
+            new ToastBuilder("包名错误： " + e.getMessage()).setDuration(Toast.LENGTH_LONG).show();
             finish();
             return;
         }

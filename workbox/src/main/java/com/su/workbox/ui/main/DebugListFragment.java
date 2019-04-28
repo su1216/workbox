@@ -27,7 +27,6 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Pair;
 import android.view.View;
-import android.widget.Toast;
 
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
@@ -66,6 +65,7 @@ import com.su.workbox.utils.SpHelper;
 import com.su.workbox.utils.SystemInfoHelper;
 import com.su.workbox.utils.UiHelper;
 import com.su.workbox.widget.SimpleBlockedDialogFragment;
+import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 
 import java.io.File;
@@ -213,17 +213,17 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         if (!AppHelper.hasPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)) {
             File mockCacheDir = mActivity.getExternalFilesDir("mock");
             if (mockCacheDir == null) {
-                Toast.makeText(mActivity, "没有外存读取权限", Toast.LENGTH_LONG).show();
+                new ToastBuilder("没有外存读取权限！").show();
                 PermissionListActivity.startActivity(mActivity);
                 return;
             }
-            Toast.makeText(mActivity, "没有外存读取权限只能处理" + mockCacheDir.getAbsolutePath() + "下的json文件", Toast.LENGTH_LONG).show();
+            new ToastBuilder("没有外存读取权限只能处理" + mockCacheDir.getAbsolutePath() + "下的json文件").show();
         }
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         DIALOG_FRAGMENT.show(ft, "收集中...");
         mAppExecutors.diskIO().execute(() -> {
             MockUtil.process(mActivity);
-            mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "收集完成", Toast.LENGTH_LONG).show());
+            mActivity.runOnUiThread(() -> new ToastBuilder("收集完成！").show());
             DIALOG_FRAGMENT.dismissAllowingStateLoss();
         });
     }
@@ -421,13 +421,13 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             WorkboxSupplier supplier = WorkboxSupplier.getInstance();
             List<File> files = supplier.getAllCustomCacheDirs();
             if (files == null || files.isEmpty()) {
-                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "缓存清除完毕", Toast.LENGTH_SHORT).show());
+                mActivity.runOnUiThread(() -> new ToastBuilder("缓存清除完毕！").show());
                 return;
             }
             for (File file : files) {
                 IOUtil.deleteFiles(file);
             }
-            mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "缓存清除完毕", Toast.LENGTH_SHORT).show());
+            mActivity.runOnUiThread(() -> new ToastBuilder("缓存清除完毕！").show());
         }));
     }
 
@@ -477,7 +477,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 return true;
             case "clean_data":
                 if (!AppHelper.hasPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    Toast.makeText(mActivity, "没有外存写权限", Toast.LENGTH_LONG).show();
+                    new ToastBuilder("没有外存写权限").show();
                     return true;
                 }
                 showCleanCacheDialog();
@@ -536,7 +536,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             case "js_rhino":
                 if (!AppHelper.hasPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
                         || !AppHelper.hasPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    Toast.makeText(mActivity, "没有外存读写权限", Toast.LENGTH_LONG).show();
+                    new ToastBuilder("没有外存读写权限").show();
                     PermissionListActivity.startActivity(mActivity);
                     return true;
                 }

@@ -27,13 +27,13 @@ import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import com.su.workbox.entity.NoteWebViewEntity;
 import com.su.workbox.ui.WebViewActivity;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.ThreadUtil;
+import com.su.workbox.widget.ToastBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -226,7 +226,7 @@ public final class AppHelper {
             try {
                 context.startActivity(intent);
             } catch (ActivityNotFoundException e) {
-                Toast.makeText(context, "路径错误,跳转失败!", Toast.LENGTH_SHORT).show();
+                new ToastBuilder("路径错误,跳转失败!").show();
                 Log.d(TAG, "intent: " + intent, e);
             }
         }
