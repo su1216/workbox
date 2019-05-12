@@ -1,5 +1,6 @@
 package com.su.workbox;
 
+import android.app.Activity;
 import android.app.Application;
 import android.arch.lifecycle.ProcessLifecycleOwner;
 import android.content.Context;
@@ -38,6 +39,7 @@ public class Workbox {
 
     private static final String TAG = Workbox.class.getSimpleName();
     private static File sWorkboxSdcardDir = new File(Environment.getExternalStorageDirectory(), "workbox");
+    private static ActivityLifecycleListener sActivityLifecycleListener;
 
     private Workbox() {}
 
@@ -45,10 +47,11 @@ public class Workbox {
         long now = System.currentTimeMillis();
         SpHelper.initSharedPreferences(app);
         GeneralInfoHelper.init(app);
-        app.registerActivityLifecycleCallbacks(new ActivityLifecycleListener());
+        sActivityLifecycleListener = new ActivityLifecycleListener();
+        app.registerActivityLifecycleCallbacks(sActivityLifecycleListener);
         // events will be dispatched with a delay after a last activity passed through them.
         // This delay is long enough to guarantee that ProcessLifecycleOwner won't send any events if activities are destroyed and recreated due to a configuration change
-        ProcessLifecycleOwner.get().getLifecycle().addObserver(new AppLifecycleListener());
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(AppLifecycleListener.getInstance());
         if (TextUtils.isEmpty(className)) {
             throw new IllegalArgumentException("requestSupplier must not be null.");
         }
@@ -57,6 +60,10 @@ public class Workbox {
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "elapse: " + (System.currentTimeMillis() - now));
         }
+    }
+
+    public static Activity getTopActivity() {
+        return sActivityLifecycleListener.getTopActivity();
     }
 
     public static Object getMockInterceptor() {

@@ -20,6 +20,8 @@ public class SpHelper {
     public static final String COLUMN_MOCK_POLICY = "mock_policy";
     public static final String COLUMN_HOST = "host";
     public static final String COLUMN_WEB_VIEW_HOST = "web_view_host";
+    public static final String COLUMN_CURRENT_TASK = "current_task";
+    public static final String COLUMN_CURRENT_COMPONENT = "current_component";
     public static final String COLUMN_GRID_LINE_SIZE = "grid_line_size";
     public static final String COLUMN_GRID_LINE_UNIT = "grid_line_unit";
     public static final String COLUMN_GRID_LINE_COLOR_STRING = "grid_line_color";

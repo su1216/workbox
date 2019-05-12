@@ -26,4 +26,5 @@
     <color name="workbox_logcat_e">#FF0000</color>
     <color name="workbox_logcat_f">#9F0000</color>
     <color name="workbox_black_30">#6C000000</color>
+    <color name="workbox_black_50">#80000000</color>
 </resources>

@@ -47,6 +47,8 @@ import com.su.workbox.ui.app.PermissionListActivity;
 import com.su.workbox.ui.app.SharedPreferenceDetailActivity;
 import com.su.workbox.ui.app.SharedPreferenceListActivity;
 import com.su.workbox.ui.app.record.ActivityRecordListActivity;
+import com.su.workbox.ui.app.record.CurrentActivitySettingActivity;
+import com.su.workbox.ui.app.record.CurrentActivityView;
 import com.su.workbox.ui.log.common.CommonLogActivity;
 import com.su.workbox.ui.log.crash.CrashLogActivity;
 import com.su.workbox.ui.mock.MockGroupHostActivity;
@@ -85,6 +87,8 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     private static final int REQUEST_WEB_VIEW_HOST = 2;
     private static final int REQUEST_MEDIA_PROJECTION = 3;
     private AppExecutors mAppExecutors = AppExecutors.getInstance();
+    private CurrentActivityView mCurrentActivityView;
+    private SwitchPreferenceCompat mCurrentActivityPreference;
     private Preference mProxyPreference;
     private Preference mSharedPreferencePreference;
     private Preference mNotificationPreference;
@@ -141,6 +145,11 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         featurePreference.setVisible(!AppHelper.getRequiredFeatures(mActivity).isEmpty());
         mSharedPreferencePreference = findPreference("shared_preference");
         mSharedPreferencePreference.setOnPreferenceClickListener(this);
+        mCurrentActivityView = CurrentActivityView.getInstance();
+        mCurrentActivityPreference = (SwitchPreferenceCompat) findPreference("current_activity");
+        mCurrentActivityPreference.setChecked(mCurrentActivityView.isShowing());
+        mCurrentActivityPreference.setOnPreferenceClickListener(this);
+        mCurrentActivityPreference.setOnPreferenceChangeListener(this);
         findPreference("activity_history").setOnPreferenceClickListener(this);
         Preference databasePreference = findPreference("database");
         databasePreference.setOnPreferenceClickListener(this);
@@ -262,6 +271,17 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         if (TextUtils.equals(key, "debug_entry")) {
             boolean enable = (boolean) newValue;
             enableEntry(mActivity, mEntryClassName, enable);
+            return true;
+        } else if (TextUtils.equals(key, "current_activity")) {
+            if (!AppHelper.hasSystemWindowPermission(mActivity)) {
+                AppHelper.gotoManageOverlayPermission(mActivity);
+                mCurrentActivityPreference.setChecked(false);
+                return false;
+            }
+            mCurrentActivityView.toggle();
+            if (mCurrentActivityView.isShowing()) {
+                mCurrentActivityView.updateTopActivity(Workbox.getTopActivity());
+            }
             return true;
         } else if (TextUtils.equals(key, SpHelper.COLUMN_MOCK_POLICY)) {
             initMockPolicy(newValue.toString());
@@ -501,6 +521,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 } else {
                     startActivity(new Intent(mActivity, SharedPreferenceListActivity.class));
                 }
+                return true;
+            case "current_activity":
+                startActivity(new Intent(mActivity, CurrentActivitySettingActivity.class));
                 return true;
             case "activity_history":
                 startActivity(new Intent(mActivity, ActivityRecordListActivity.class));

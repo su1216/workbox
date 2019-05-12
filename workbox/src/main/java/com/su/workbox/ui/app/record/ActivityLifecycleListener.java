@@ -13,9 +13,11 @@ public class ActivityLifecycleListener implements Application.ActivityLifecycleC
     private Activity mTopActivity;
     private AppExecutors mAppExecutors = AppExecutors.getInstance();
     private ActivityRecordDao mActivityRecordDao;
+    private CurrentActivityView mCurrentActivityView;
 
     public ActivityLifecycleListener() {
         mActivityRecordDao = HttpDataDatabase.getInstance(GeneralInfoHelper.getContext()).activityRecordDao();
+        mCurrentActivityView = CurrentActivityView.getInstance();
     }
 
     private void save(Activity activity, String event) {
@@ -51,6 +53,9 @@ public class ActivityLifecycleListener implements Application.ActivityLifecycleC
     public void onActivityResumed(Activity activity) {
         save(activity, "resumed");
         mTopActivity = activity;
+        if (mCurrentActivityView.isShowing()) {
+            mCurrentActivityView.updateTopActivity(activity);
+        }
     }
 
     @Override
@@ -73,6 +78,7 @@ public class ActivityLifecycleListener implements Application.ActivityLifecycleC
         save(activity, "destroyed");
         if (mTopActivity == activity) {
             mTopActivity = null;
+            mCurrentActivityView.updateTopActivity(null);
         }
     }
 

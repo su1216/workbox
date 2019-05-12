@@ -117,6 +117,12 @@
             android:exported="false"
             android:theme="@style/WorkboxListTheme"
             android:screenOrientation="portrait"/>
+        <!-- 当前Activity信息展示设置 -->
+        <activity
+            android:name=".ui.app.record.CurrentActivitySettingActivity"
+            android:exported="false"
+            android:theme="@style/WorkboxListTheme"
+            android:screenOrientation="portrait"/>
         <!-- Activity历史记录 -->
         <activity
             android:name=".ui.app.record.ActivityRecordListActivity"
