@@ -1,6 +1,5 @@
 package com.su.workbox.ui.app;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -8,14 +7,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.PermissionInfo;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -27,7 +23,7 @@ import android.widget.Toast;
 
 import com.su.workbox.R;
 import com.su.workbox.entity.PermissionInfoWrapper;
-import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.ui.PermissionRequiredActivity;
 import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.RecyclerItemClickListener;
@@ -40,13 +36,13 @@ import java.util.List;
  * Created by su on 17-5-27.
  * 权限列表
  */
-public class PermissionListActivity extends BaseAppCompatActivity implements RecyclerItemClickListener.OnItemClickListener {
+public class PermissionListActivity extends PermissionRequiredActivity implements RecyclerItemClickListener.OnItemClickListener {
     private static final String TAG = PermissionListActivity.class.getSimpleName();
     /**
      * from {@link android.content.pm.PermissionInfo}.
      */
     public static final int FLAG_REMOVED = 1 << 1;
-    public static final int REQ_CODE = 1;
+    public static final int REQUEST_CODE = 1;
 
     private String mPackageName;
     private PackageManager mPm;
@@ -144,37 +140,11 @@ public class PermissionListActivity extends BaseAppCompatActivity implements Rec
         if (wrapper.isHasPermission()) {
             return;
         }
-        permissionRequest(wrapper.name);
+        permissionRequest(wrapper.name, REQUEST_CODE);
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
-    private void permissionRequest(String permission) {
-        if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-            makeHintDialog(permission).show();
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{permission}, REQ_CODE);
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        boolean granted = true;
-        for (int grantResult : grantResults) {
-            granted = granted && grantResult == PackageManager.PERMISSION_GRANTED;
-            if (!granted) {
-                break;
-            }
-        }
-        if (!granted) {
-            makeHintDialog(permissions[0]);
-        }
-    }
-
-    public AlertDialog makeHintDialog(String permission) {
+    public AlertDialog makeHintDialog(String permission, int requestCode) {
         PermissionInfoWrapper wrapper = findPermissionInfoWrapperByPermission(permission);
         return new AlertDialog.Builder(this)
                 .setTitle("权限申请")

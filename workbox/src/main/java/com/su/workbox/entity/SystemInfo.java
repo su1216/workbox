@@ -1,22 +1,26 @@
 package com.su.workbox.entity;
 
-import android.support.annotation.NonNull;
-
 /**
  * Created by mahao on 17-5-31.
  */
 
 public class SystemInfo {
 
+    private String key;
     private String title;
     private String desc;
 
-    public String getTitle() {
-        return title;
+    public SystemInfo(String key, String title) {
+        this.key = key;
+        this.title = title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public String getKey() {
+        return key;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public String getDesc() {
@@ -27,12 +31,12 @@ public class SystemInfo {
         this.desc = desc;
     }
 
-    @NonNull
     @Override
     public String toString() {
         return "SystemInfo{" +
                 "title='" + title + '\'' +
                 ", desc='" + desc + '\'' +
+                ", key='" + key + '\'' +
                 '}';
     }
 }
