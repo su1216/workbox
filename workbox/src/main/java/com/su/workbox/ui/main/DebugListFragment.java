@@ -279,6 +279,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             return true;
         } else if (TextUtils.equals(key, "color_picker")) {
             if (!AppHelper.hasSystemWindowPermission(mActivity)) {
+                new ToastBuilder("请授予悬浮窗权限").show();
                 AppHelper.gotoManageOverlayPermission(mActivity);
                 mColorPickerPreference.setChecked(false);
                 return false;
@@ -286,6 +287,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
 
             Boolean state = (Boolean) newValue;
             if (state == null || !state) {
+                mColorPickerPreference.setChecked(false);
                 ScreenColorViewManager.getInstance().performDestroy();
                 return true;
             }
@@ -543,6 +545,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 startActivity(new Intent(mActivity, JsListActivity.class));
                 return true;
             case "color_picker":
+                onPreferenceChange(mColorPickerPreference, !mColorPickerPreference.isChecked());
                 return true;
             case "grid_line":
                 startActivity(new Intent(mActivity, GridLineSettingActivity.class));
