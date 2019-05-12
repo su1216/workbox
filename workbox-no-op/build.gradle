@@ -23,7 +23,7 @@ android {
 
     libraryVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = new File("workbox-no-opp-${rootProject.ext.version}.aar")
+            outputFileName = new File("workbox-no-op-${rootProject.ext.version}.aar")
         }
     }
     compileOptions {
