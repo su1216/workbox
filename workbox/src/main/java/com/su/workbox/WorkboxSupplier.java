@@ -3,7 +3,6 @@ package com.su.workbox;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
@@ -20,8 +19,7 @@ import java.util.regex.Pattern;
 /**
  * Created by su on 18-1-2.
  */
-@RestrictTo(RestrictTo.Scope.LIBRARY)
-public abstract class WorkboxSupplier {
+public class WorkboxSupplier {
     private static final String TAG = WorkboxSupplier.class.getSimpleName();
     private static WorkboxSupplier sSupplier;
 
