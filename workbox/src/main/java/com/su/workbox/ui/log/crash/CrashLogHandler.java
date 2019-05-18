@@ -8,10 +8,12 @@ import com.su.workbox.utils.GeneralInfoHelper;
 
 public class CrashLogHandler implements Thread.UncaughtExceptionHandler {
 
+    private final Thread.UncaughtExceptionHandler mDefaultExceptionHandler;
     private final CrashLogRecordSource mCrashLogRecordSource;
     private boolean mKillProcess;
 
     public CrashLogHandler(boolean killProcess) {
+        mDefaultExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         HttpDataDatabase database = HttpDataDatabase.getInstance(GeneralInfoHelper.getContext());
         mCrashLogRecordSource = CrashLogRecordSource.getInstance(database.crashLogRecordDao());
         mKillProcess = killProcess;
@@ -29,6 +31,9 @@ public class CrashLogHandler implements Thread.UncaughtExceptionHandler {
             record.setFirstLine(content.substring(0, index));
         }
         mCrashLogRecordSource.insertCrashLogRecords(record);
+        if (mDefaultExceptionHandler != null) {
+            mDefaultExceptionHandler.uncaughtException(t, e);
+        }
         if (mKillProcess) {
             try {
                 Thread.sleep(500);
@@ -37,5 +42,9 @@ public class CrashLogHandler implements Thread.UncaughtExceptionHandler {
             }
             Process.killProcess(Process.myPid());
         }
+    }
+
+    public void unregister() {
+        Thread.setDefaultUncaughtExceptionHandler(mDefaultExceptionHandler);
     }
 }
