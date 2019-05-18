@@ -26,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * Created by su on 17-2-8.
@@ -54,7 +55,6 @@ public class GeneralInfoHelper {
     private static String sProcessName = "";
     private static int sProcessId = -1;
     private static boolean sDebuggable;
-    private static long sLaunchTime;
 
     private static int sActionBarHeight;
     private static int sStatusBarHeight;
@@ -66,6 +66,7 @@ public class GeneralInfoHelper {
     private static String sApplicationClassName;
     private static long sInstallTime;
     private static long sUpdateTime;
+    private static long sLaunchTime;
     private static String sSourceDir;
     private static String[] sSplitSourceDirs;
     private static String sDeviceProtectedDataDir;
@@ -343,13 +344,17 @@ public class GeneralInfoHelper {
                 ", nativeLibraryDir=" + sNativeLibraryDir + '\n' +
                 ", dataDir=" + sDataDir + '\n' +
                 ", deviceProtectedDataDir=" + sDeviceProtectedDataDir + '\n' +
-                ", installTime=" + sInstallTime + '\n' +
-                ", updateTime=" + sUpdateTime + '\n' +
-                ", launchTime=" + sLaunchTime + '\n' +
+                ", installTime=" + formatDate(sInstallTime) + '\n' +
+                ", updateTime=" + formatDate(sUpdateTime) + '\n' +
+                ", launchTime=" + formatDate(sLaunchTime) + '\n' +
                 ", targetSdkVersion=" + sTargetSdkVersion + '\n' +
-                ", minSdkVersion=" + sMinSdkVersion + '\n' +
                 ", compileSdkVersion=" + sCompileSdkVersion + '\n' +
+                ", minSdkVersion=" + sMinSdkVersion + '\n' +
                 ", scaledTouchSlop=" + sScaledTouchSlop + '\n' +
                 ", scaledEdgeSlop=" + sScaledEdgeSlop;
+    }
+
+    private static String formatDate(long ms) {
+        return ThreadUtil.getSimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS").format(new Date(ms));
     }
 }
