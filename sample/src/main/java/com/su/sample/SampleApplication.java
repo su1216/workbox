@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.squareup.leakcanary.LeakCanary;
 import com.su.workbox.Workbox;
 
 import java.util.HashSet;
@@ -27,6 +28,16 @@ public class SampleApplication extends Application {
             Thread.setDefaultUncaughtExceptionHandler(Workbox.newLogUncaughtExceptionHandler(true));
         }
         initSharedPreference();
+        initLeakCanary();
+    }
+
+    private void initLeakCanary() {
+        if (LeakCanary.isInAnalyzerProcess(this)) {//1
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
     }
 
     private static void initWorkbox(Application application) {
