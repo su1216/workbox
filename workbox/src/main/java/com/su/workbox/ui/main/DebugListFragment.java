@@ -46,6 +46,7 @@ import com.su.workbox.ui.app.FeatureListActivity;
 import com.su.workbox.ui.app.PermissionListActivity;
 import com.su.workbox.ui.app.SharedPreferenceDetailActivity;
 import com.su.workbox.ui.app.SharedPreferenceListActivity;
+import com.su.workbox.ui.app.record.ActivityLifecycleListener;
 import com.su.workbox.ui.app.record.ActivityRecordListActivity;
 import com.su.workbox.ui.app.record.CurrentActivitySettingActivity;
 import com.su.workbox.ui.app.record.CurrentActivityView;
@@ -280,7 +281,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             }
             mCurrentActivityView.toggle();
             if (mCurrentActivityView.isShowing()) {
-                mCurrentActivityView.updateTopActivity(Workbox.getTopActivity());
+                mCurrentActivityView.updateTopActivity(ActivityLifecycleListener.getTopActivity());
             }
             return true;
         } else if (TextUtils.equals(key, SpHelper.COLUMN_MOCK_POLICY)) {

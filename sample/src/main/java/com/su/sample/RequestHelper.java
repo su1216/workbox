@@ -5,7 +5,6 @@ import com.su.workbox.Workbox;
 
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
 import okhttp3.internal.Util;
@@ -30,25 +29,13 @@ public class RequestHelper {
                 .connectTimeout(30L, TimeUnit.SECONDS)
                 .readTimeout(30L, TimeUnit.SECONDS)
                 .writeTimeout(30L, TimeUnit.SECONDS);
-        Object hostInterceptor = Workbox.getHostInterceptor();
-        if (hostInterceptor != null) {
-            builder.addInterceptor((Interceptor) hostInterceptor);
-        }
-        builder.addNetworkInterceptor(logging);
-        Object mockInterceptor = Workbox.getMockInterceptor();
-        if (mockInterceptor != null) {
-            builder.addInterceptor((Interceptor) mockInterceptor);
-        }
-        builder.addInterceptor(new ChuckInterceptor(SampleApplication.getContext()));
-        Object dataCollectorInterceptor = Workbox.getDataCollectorInterceptor();
-        if (dataCollectorInterceptor != null) {
-            builder.addInterceptor((Interceptor) dataCollectorInterceptor);
-        }
-
-        builder.addNetworkInterceptor(new HttpLoggingInterceptor());
-        Object dataUsageInterceptorInterceptor = Workbox.getDataUsageInterceptorInterceptor();
-        if (dataUsageInterceptorInterceptor != null) {
-            builder.addNetworkInterceptor((Interceptor) dataUsageInterceptorInterceptor);
+        if (BuildConfig.DEBUG) {
+            builder.addInterceptor(Workbox.getHostInterceptor());
+            builder.addNetworkInterceptor(logging);
+            builder.addInterceptor(Workbox.getMockInterceptor());
+            builder.addInterceptor(new ChuckInterceptor(SampleApplication.getContext()));
+            builder.addInterceptor(Workbox.getDataCollectorInterceptor());
+            builder.addInterceptor(Workbox.getDataUsageInterceptorInterceptor());
         }
         sClient = builder.build();
     }

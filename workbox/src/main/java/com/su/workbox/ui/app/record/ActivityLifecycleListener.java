@@ -10,6 +10,7 @@ import com.su.workbox.utils.GeneralInfoHelper;
 
 public class ActivityLifecycleListener implements Application.ActivityLifecycleCallbacks {
 
+    private static ActivityLifecycleListener sActivityLifecycleListener;
     private Activity mTopActivity;
     private AppExecutors mAppExecutors = AppExecutors.getInstance();
     private ActivityRecordDao mActivityRecordDao;
@@ -82,7 +83,15 @@ public class ActivityLifecycleListener implements Application.ActivityLifecycleC
         }
     }
 
-    public Activity getTopActivity() {
-        return mTopActivity;
+    public static Activity getTopActivity() {
+        return sActivityLifecycleListener.mTopActivity;
+    }
+
+    public static void setActivityLifecycleListener(ActivityLifecycleListener listener) {
+        if (sActivityLifecycleListener == null) {
+            sActivityLifecycleListener = listener;
+        } else {
+            throw new IllegalStateException("ActivityLifecycleListener has already initialized.");
+        }
     }
 }

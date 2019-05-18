@@ -1,6 +1,5 @@
 package com.su.workbox;
 
-import android.app.Activity;
 import android.app.Application;
 import android.arch.lifecycle.ProcessLifecycleOwner;
 import android.content.Context;
@@ -14,7 +13,6 @@ import com.su.workbox.net.interceptor.DataCollectorInterceptor;
 import com.su.workbox.net.interceptor.DataUsageInterceptor;
 import com.su.workbox.net.interceptor.HostInterceptor;
 import com.su.workbox.net.interceptor.MockInterceptor;
-import com.su.workbox.ui.HostsActivity;
 import com.su.workbox.ui.JsInterfaceListActivity;
 import com.su.workbox.ui.app.AppInfoListActivity;
 import com.su.workbox.ui.app.ComponentListActivity;
@@ -31,54 +29,59 @@ import com.su.workbox.utils.SpHelper;
 
 import java.io.File;
 
+import okhttp3.Interceptor;
+
 /**
  * Created by su on 18-1-2.
  */
-
 public class Workbox {
 
     private static final String TAG = Workbox.class.getSimpleName();
+    public static final String MODULE_DATA_EXPORT = "data_export";
+    public static final String MODULE_PERMISSIONS = "permissions";
+    public static final String MODULE_ACTIVITIES = "activities";
+    public static final String MODULE_MOCK_DATA = "mock_data";
+    public static final String MODULE_JS_INTERFACES = "js_interfaces";
+    public static final String MODULE_APP_INFO = "app_info";
+    public static final String MODULE_DATABASES = "databases";
+    public static final String MODULE_RULER = "ruler";
     private static File sWorkboxSdcardDir = new File(Environment.getExternalStorageDirectory(), "workbox");
-    private static ActivityLifecycleListener sActivityLifecycleListener;
 
     private Workbox() {}
 
     public static void init(Application app, @NonNull String className) {
-        long now = System.currentTimeMillis();
-        SpHelper.initSharedPreferences(app);
-        GeneralInfoHelper.init(app);
-        sActivityLifecycleListener = new ActivityLifecycleListener();
-        app.registerActivityLifecycleCallbacks(sActivityLifecycleListener);
-        // events will be dispatched with a delay after a last activity passed through them.
-        // This delay is long enough to guarantee that ProcessLifecycleOwner won't send any events if activities are destroyed and recreated due to a configuration change
-        ProcessLifecycleOwner.get().getLifecycle().addObserver(AppLifecycleListener.getInstance());
         if (TextUtils.isEmpty(className)) {
             throw new IllegalArgumentException("requestSupplier must not be null.");
         }
-//        FloatEntry.getInstance();
+
+        long now = System.currentTimeMillis();
+        SpHelper.initSharedPreferences(app);
+        GeneralInfoHelper.init(app);
         WorkboxSupplier.newInstance(className);
+        ActivityLifecycleListener lifecycleListener = new ActivityLifecycleListener();
+        ActivityLifecycleListener.setActivityLifecycleListener(lifecycleListener);
+        app.registerActivityLifecycleCallbacks(lifecycleListener);
+        // events will be dispatched with a delay after a last activity passed through them.
+        // This delay is long enough to guarantee that ProcessLifecycleOwner won't send any events if activities are destroyed and recreated due to a configuration change
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(AppLifecycleListener.getInstance());
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "elapse: " + (System.currentTimeMillis() - now));
         }
     }
 
-    public static Activity getTopActivity() {
-        return sActivityLifecycleListener.getTopActivity();
-    }
-
-    public static Object getMockInterceptor() {
+    public static Interceptor getMockInterceptor() {
         return new MockInterceptor();
     }
 
-    public static Object getDataCollectorInterceptor() {
+    public static Interceptor getDataCollectorInterceptor() {
         return new DataCollectorInterceptor();
     }
 
-    public static Object getDataUsageInterceptorInterceptor() {
+    public static Interceptor getDataUsageInterceptorInterceptor() {
         return new DataUsageInterceptor();
     }
 
-    public static Object getHostInterceptor() {
+    public static Interceptor getHostInterceptor() {
         return new HostInterceptor();
     }
 
@@ -104,40 +107,36 @@ public class Workbox {
         return new Intent(GeneralInfoHelper.getContext(), WorkboxMainActivity.class);
     }
 
-    public static void startDataExportActivity(@NonNull Context context) {
-        DataExportActivity.startActivity(context);
-    }
-
-    public static void startPermissionsActivity(@NonNull Context context) {
-        PermissionListActivity.startActivity(context);
-    }
-
-    public static void startActivitiesActivity(@NonNull Context context) {
-        ComponentListActivity.startActivity(context, "activity");
-    }
-
-    public static void startMockDataActivity(@NonNull Context context) {
-        MockGroupHostActivity.startActivity(context, "数据模拟接口列表");
-    }
-
-    public static void startJsInterfacesActivity(@NonNull Context context) {
-        JsInterfaceListActivity.startActivity(context);
-    }
-
-    public static void startAppInfoActivity(@NonNull Context context) {
-        AppInfoListActivity.startActivity(context);
-    }
-
-    public static void startDatabaseListActivity(@NonNull Context context) {
-        DatabaseListActivity.startActivity(context);
-    }
-
-    public static void startHostsActivity(@NonNull Context context, int type) {
-        HostsActivity.startActivity(context, type);
-    }
-
-    public static void startRulerActivity(@NonNull Context context) {
-        RulerActivity.startActivity(context);
+    public static void startActivity(@NonNull String module, @NonNull Context context) {
+        switch (module) {
+            case MODULE_DATA_EXPORT:
+                DataExportActivity.startActivity(context);
+                break;
+            case MODULE_PERMISSIONS:
+                PermissionListActivity.startActivity(context);
+                break;
+            case MODULE_ACTIVITIES:
+                ComponentListActivity.startActivity(context, "activity");
+                break;
+            case MODULE_MOCK_DATA:
+                MockGroupHostActivity.startActivity(context, "数据模拟接口列表");
+                break;
+            case MODULE_JS_INTERFACES:
+                JsInterfaceListActivity.startActivity(context);
+                break;
+            case MODULE_APP_INFO:
+                AppInfoListActivity.startActivity(context);
+                break;
+            case MODULE_DATABASES:
+                DatabaseListActivity.startActivity(context);
+                break;
+            case MODULE_RULER:
+                RulerActivity.startActivity(context);
+                break;
+            default:
+                context.startActivity(getWorkboxMainIntent());
+                break;
+        }
     }
 
     @NonNull
