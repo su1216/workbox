@@ -111,25 +111,13 @@ public List<List<String>> getRequestBodyExcludeKeys() {
 
 在使用域名切换时，可以覆盖`urlMapping`来实现自己的url映射策略
 
-使用`Server相关`的功能时，需要给OkHttp添加如下拦截器
+`Network`中，部分功能需要配合OkHttp一起使用，可以给OkHttp添加如下拦截器
 
 ```java
-Object hostInterceptor = Workbox.getHostInterceptor();
-if (hostInterceptor != null) {
-	builder.addInterceptor((Interceptor) hostInterceptor);
-}
-Object mockInterceptor = Workbox.getMockInterceptor();
-if (mockInterceptor != null) {
-	builder.addInterceptor((Interceptor) mockInterceptor);
-}
-Object dataCollectorInterceptor = Workbox.getDataCollectorInterceptor();
-if (dataCollectorInterceptor != null) {
-	builder.addInterceptor((Interceptor) dataCollectorInterceptor);
-}
-Object dataUsageInterceptor = Workbox.getDataUsageInterceptorInterceptor();
-if (dataUsageInterceptor != null) {
-	builder.addInterceptor((Interceptor) dataUsageInterceptor);
-}
+builder.addInterceptor(Workbox.getHostInterceptor());
+builder.addInterceptor(Workbox.getMockInterceptor());
+builder.addInterceptor(Workbox.getDataCollectorInterceptor());
+builder.addInterceptor(Workbox.getDataUsageInterceptorInterceptor());
 ```
 
 `HostInterceptor`用于域名切换
