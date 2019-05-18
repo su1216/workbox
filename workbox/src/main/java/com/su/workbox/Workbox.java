@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -49,21 +50,23 @@ public class Workbox {
 
     private Workbox() {}
 
-    public static void init(Application app, @NonNull String className) {
-        if (TextUtils.isEmpty(className)) {
-            throw new IllegalArgumentException("requestSupplier must not be null.");
-        }
+    public static void init(Application app) {
+        init(app, null);
+    }
 
+    public static void init(Application app, @Nullable String className) {
         long now = System.currentTimeMillis();
         SpHelper.initSharedPreferences(app);
         GeneralInfoHelper.init(app);
-        WorkboxSupplier.newInstance(className);
         ActivityLifecycleListener lifecycleListener = new ActivityLifecycleListener();
         ActivityLifecycleListener.setActivityLifecycleListener(lifecycleListener);
         app.registerActivityLifecycleCallbacks(lifecycleListener);
         // events will be dispatched with a delay after a last activity passed through them.
         // This delay is long enough to guarantee that ProcessLifecycleOwner won't send any events if activities are destroyed and recreated due to a configuration change
         ProcessLifecycleOwner.get().getLifecycle().addObserver(AppLifecycleListener.getInstance());
+        if (!TextUtils.isEmpty(className)) {
+            WorkboxSupplier.newInstance(className);
+        }
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "elapse: " + (System.currentTimeMillis() - now));
         }
