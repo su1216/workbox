@@ -44,9 +44,22 @@ defaultConfig {
 
 ```java
 private static void initWorkbox(Application application) {
+    Workbox.init(application);
+}
+```
+
+或者
+```java
+private static void initWorkbox(Application application, String className) {
     Workbox.init(application, "您的WorkboxSupplier类名");
 }
 ```
+
+用户若有自定义相关信息，需要继承`WorkboxSupplier`重写相关方法，并使用其初始化`Workbox`。
+
+
+
+
 
 收集崩溃日志
 
