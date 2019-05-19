@@ -38,6 +38,7 @@ public class GeneralInfoHelper {
 
     public static final String LIB_PACKAGE_NAME = "com.su.workbox";
     //application context
+    @SuppressLint("StaticFieldLeak")
     private static Context sContext;
     private static String sAndroidId;
     private static int sScreenWidth;

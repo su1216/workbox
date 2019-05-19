@@ -1,5 +1,6 @@
 package com.su.workbox.ui.app.record;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -31,6 +32,7 @@ import java.util.Observer;
 
 public class CurrentActivityView extends AppCompatTextView implements Observer {
 
+    @SuppressLint("StaticFieldLeak")
     private static CurrentActivityView sCurrentActivityView;
     private WindowManager.LayoutParams mLayoutParams;
     private WindowManager mWindowManager;

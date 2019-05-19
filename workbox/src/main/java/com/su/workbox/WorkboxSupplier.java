@@ -116,7 +116,7 @@ public class WorkboxSupplier {
     }
 
     @SuppressWarnings("unchecked")
-    public static void newInstance(@NonNull String className) {
+    static void newInstance(@NonNull String className) {
         try {
             Class<? extends WorkboxSupplier> clazz = (Class<? extends WorkboxSupplier>) Class.forName(className);
             if (!clazz.isInterface() && !Modifier.isAbstract(clazz.getModifiers())) {
@@ -131,7 +131,7 @@ public class WorkboxSupplier {
         throw new IllegalArgumentException("supplier must implements WorkboxSupplier!");
     }
 
-    public static void newDefaultInstance() {
+    static void newDefaultInstance() {
         sSupplier = new WorkboxSupplier();
     }
 

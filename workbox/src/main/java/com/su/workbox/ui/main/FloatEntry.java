@@ -1,5 +1,6 @@
 package com.su.workbox.ui.main;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.os.Build;
@@ -18,6 +19,7 @@ import com.su.workbox.widget.TouchProxy;
 
 public class FloatEntry implements View.OnTouchListener, View.OnClickListener {
 
+    @SuppressLint("StaticFieldLeak")
     private static FloatEntry sFloatEntry;
     private final TouchProxy mTouchProxy;
     private final WindowManager mWindowManager;

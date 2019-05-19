@@ -1,5 +1,6 @@
 package com.su.workbox.ui.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -25,11 +26,12 @@ import com.su.workbox.widget.TouchProxy;
 public class ScreenColorViewManager implements View.OnTouchListener {
 
     public static final String TAG = ScreenColorViewManager.class.getSimpleName();
-    public static final int PIX_INTERVAL = 16;
-    public static final int PICK_AREA_SIZE = PIX_INTERVAL * 2;
-    public static final int HALF_PICK_AREA_SIZE = PICK_AREA_SIZE / 2;
-    public static final int PICK_VIEW_SIZE = PICK_AREA_SIZE * PIX_INTERVAL;
-    public static final int HALF_PICK_VIEW_SIZE = PICK_VIEW_SIZE / 2;
+    static final int PIX_INTERVAL = 16;
+    static final int PICK_AREA_SIZE = PIX_INTERVAL * 2;
+    static final int HALF_PICK_AREA_SIZE = PICK_AREA_SIZE / 2;
+    static final int PICK_VIEW_SIZE = PICK_AREA_SIZE * PIX_INTERVAL;
+    static final int HALF_PICK_VIEW_SIZE = PICK_VIEW_SIZE / 2;
+    @SuppressLint("StaticFieldLeak")
     private static ScreenColorViewManager sController;
     private final TouchProxy mTouchProxy;
     private ViewGroup mRootView;

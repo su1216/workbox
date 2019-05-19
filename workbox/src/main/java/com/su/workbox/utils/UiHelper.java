@@ -10,7 +10,6 @@ import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;

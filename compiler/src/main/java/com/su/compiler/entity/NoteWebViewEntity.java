@@ -1,7 +1,6 @@
 package com.su.compiler.entity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by su on 18-11-14.

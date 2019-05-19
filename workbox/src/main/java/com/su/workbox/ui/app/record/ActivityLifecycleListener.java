@@ -1,5 +1,6 @@
 package com.su.workbox.ui.app.record;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import com.su.workbox.utils.GeneralInfoHelper;
 
 public class ActivityLifecycleListener implements Application.ActivityLifecycleCallbacks {
 
+    @SuppressLint("StaticFieldLeak")
     private static ActivityLifecycleListener sActivityLifecycleListener;
     private Activity mTopActivity;
     private AppExecutors mAppExecutors = AppExecutors.getInstance();
