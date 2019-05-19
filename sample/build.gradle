@@ -25,6 +25,22 @@ android {
     lintOptions {
         warning 'InvalidPackage'
     }
+
+    signingConfigs {
+        release {
+            storeFile file("workbox-sample.jks")
+            storePassword "workbox"
+            keyAlias "workbox"
+            keyPassword "workbox"
+        }
+
+        debug {
+            storeFile file("workbox-sample.jks")
+            storePassword "workbox"
+            keyAlias "workbox"
+            keyPassword "workbox"
+        }
+    }
 }
 
 dependencies {
