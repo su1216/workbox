@@ -69,7 +69,7 @@ public class PermissionListActivity extends PermissionRequiredActivity implement
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        setTitle("Permission列表");
+        setTitle("权限列表");
     }
 
     @Override

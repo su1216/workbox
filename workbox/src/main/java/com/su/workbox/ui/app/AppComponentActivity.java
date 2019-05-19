@@ -28,13 +28,13 @@ public class AppComponentActivity extends BaseAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.workbox_preference_activity_template);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment, new InfoListFragment(), "app_info").commit();
+                .replace(R.id.fragment, new InfoListFragment(), "component_info").commit();
     }
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        setTitle("App信息");
+        setTitle("组件信息");
     }
 
     public static class InfoListFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener {
