@@ -131,6 +131,10 @@ public class WorkboxSupplier {
         throw new IllegalArgumentException("supplier must implements WorkboxSupplier!");
     }
 
+    public static void newDefaultInstance() {
+        sSupplier = new WorkboxSupplier();
+    }
+
     public static WorkboxSupplier getInstance() {
         return sSupplier;
     }

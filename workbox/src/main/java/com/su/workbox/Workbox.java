@@ -64,7 +64,9 @@ public class Workbox {
         // events will be dispatched with a delay after a last activity passed through them.
         // This delay is long enough to guarantee that ProcessLifecycleOwner won't send any events if activities are destroyed and recreated due to a configuration change
         ProcessLifecycleOwner.get().getLifecycle().addObserver(AppLifecycleListener.getInstance());
-        if (!TextUtils.isEmpty(className)) {
+        if (TextUtils.isEmpty(className)) {
+            WorkboxSupplier.newDefaultInstance();
+        } else {
             WorkboxSupplier.newInstance(className);
         }
         if (BuildConfig.DEBUG) {
