@@ -137,6 +137,11 @@ public class ObjectParameterActivity extends BaseAppCompatActivity {
         public long getItemId(int position) {
             return position;
         }
+
+        @Override
+        public boolean isEnabled(int position) {
+            return false;
+        }
     }
 
     private static class ViewHolder {
