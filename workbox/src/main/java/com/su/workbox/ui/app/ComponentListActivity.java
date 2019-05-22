@@ -351,8 +351,12 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
                 descView.setVisibility(View.VISIBLE);
                 descView.setText(noteComponent.getDescription());
             }
-            ((TextView) holder.getView(R.id.name)).setText(displayName);
-            holder.getView(R.id.abbreviation).setVisibility(fullName ? View.GONE : View.VISIBLE);
+            TextView nameView = holder.getView(R.id.name);
+            if (fullName) {
+                nameView.setText(displayName);
+            } else {
+                nameView.setText("." + displayName);
+            }
             if (!info.exported && info.enabled) {
                 holder.getView(R.id.extra_layout).setVisibility(View.GONE);
             } else {
