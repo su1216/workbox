@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +18,8 @@ import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.UiHelper;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Created by su on 2019-4-28.
@@ -85,6 +88,16 @@ public class ToastBuilder {
         //https://cloud.tencent.com/developer/article/1034225
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N || Build.VERSION.SDK_INT == Build.VERSION_CODES.N_MR1) {
             HookToastUtil.hook(mToast);
+        }
+        //9.0+ 刘海屏适配
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            try {
+                Method getWindowParams = Toast.class.getMethod("getWindowParams");
+                WindowManager.LayoutParams toastLp = (WindowManager.LayoutParams) getWindowParams.invoke(mToast);
+                toastLp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                Log.w(TAG, e);
+            }
         }
         return mToast;
     }
