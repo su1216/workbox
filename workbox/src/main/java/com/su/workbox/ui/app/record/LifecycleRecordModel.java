@@ -11,22 +11,22 @@ import com.su.workbox.database.HttpDataDatabase;
 
 import java.util.List;
 
-public class ActivityRecordModel extends AndroidViewModel {
+public class LifecycleRecordModel extends AndroidViewModel {
 
-    private final ActivityRecordDao mRecordDao;
-    private MediatorLiveData<List<ActivityRecord>> mRecordList;
-    private LiveData<List<ActivityRecord>> mRecordListSource;
-    private Observer<List<ActivityRecord>> mOnRecordListChanged;
-    private ActivityRecordSource dataSource;
+    private final LifecycleRecordDao mRecordDao;
+    private MediatorLiveData<List<LifecycleRecord>> mRecordList;
+    private LiveData<List<LifecycleRecord>> mRecordListSource;
+    private Observer<List<LifecycleRecord>> mOnRecordListChanged;
+    private LifecycleRecordSource dataSource;
 
-    public ActivityRecordModel(@NonNull Application application) {
+    public LifecycleRecordModel(@NonNull Application application) {
         super(application);
         HttpDataDatabase database = HttpDataDatabase.getInstance(application);
-        dataSource = ActivityRecordSource.getInstance(database.activityRecordDao());
+        dataSource = LifecycleRecordSource.getInstance(database.activityRecordDao());
         mRecordDao = database.activityRecordDao();
         mRecordList = new MediatorLiveData<>();
         mRecordList.setValue(null);
-        mRecordListSource = mRecordDao.getActivityRecordsByTask("");
+        mRecordListSource = mRecordDao.getActivityRecordsByKeyword("");
         mOnRecordListChanged = productEntities -> {
             if (database.getDatabaseCreated().getValue() != null) {
                 mRecordList.postValue(productEntities);
@@ -35,15 +35,14 @@ public class ActivityRecordModel extends AndroidViewModel {
         mRecordList.addSource(mRecordListSource, mOnRecordListChanged);
     }
 
-    public MediatorLiveData<List<ActivityRecord>> getRecordList(String taskId) {
+    public MediatorLiveData<List<LifecycleRecord>> getRecordList(String keyword) {
         mRecordList.removeSource(mRecordListSource);
-        mRecordListSource = mRecordDao.getActivityRecordsByTask(taskId);
-//        mRecordListSource = mRecordDao.getAllActivityRecords();
+        mRecordListSource = mRecordDao.getActivityRecordsByKeyword(keyword);
         mRecordList.addSource(mRecordListSource, mOnRecordListChanged);
         return mRecordList;
     }
 
-    public void deleteAllActivityRecords() {
-        dataSource.deleteAllActivityRecords();
+    public void deleteAllHistoryRecords() {
+        dataSource.deleteAllHistoryRecords();
     }
 }

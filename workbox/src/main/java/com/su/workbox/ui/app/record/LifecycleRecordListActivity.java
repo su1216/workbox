@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -26,18 +27,18 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class ActivityRecordListActivity extends BaseAppCompatActivity implements SearchView.OnQueryTextListener {
+public class LifecycleRecordListActivity extends BaseAppCompatActivity implements SearchView.OnQueryTextListener {
 
-    public static final String TAG = ActivityRecordListActivity.class.getSimpleName();
+    public static final String TAG = LifecycleRecordListActivity.class.getSimpleName();
     private RecordAdapter mAdapter;
-    private ActivityRecordModel mModel;
+    private LifecycleRecordModel mModel;
     private SearchableHelper mSearchableHelper = new SearchableHelper();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.workbox_template_recycler_list);
-        mModel = ViewModelProviders.of(this).get(ActivityRecordModel.class);
+        mModel = ViewModelProviders.of(this).get(LifecycleRecordModel.class);
         mAdapter = new RecordAdapter(new ArrayList<>());
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         PreferenceItemDecoration decoration = new PreferenceItemDecoration(this, 0, 0);
@@ -50,18 +51,18 @@ public class ActivityRecordListActivity extends BaseAppCompatActivity implements
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        setTitle("Activity历史记录");
-        mSearchableHelper.initSearchToolbar(mToolbar, "请输入taskId", this);
+        setTitle("生命周期历史记录");
+        mSearchableHelper.initSearchToolbar(mToolbar, "请输入类名", this);
     }
 
     private void query(String taskId) {
         mSearchableHelper.clear();
-        MutableLiveData<List<ActivityRecord>> recordListData = mModel.getRecordList(taskId.trim());
-        recordListData.observe(this, activityRecords -> {
-            if (activityRecords == null || activityRecords.isEmpty()) {
+        MutableLiveData<List<LifecycleRecord>> recordListData = mModel.getRecordList(taskId.trim());
+        recordListData.observe(this, records -> {
+            if (records == null || records.isEmpty()) {
                 mAdapter.refresh(Collections.EMPTY_LIST);
             } else {
-                mAdapter.refresh(activityRecords);
+                mAdapter.refresh(records);
             }
         });
     }
@@ -86,12 +87,12 @@ public class ActivityRecordListActivity extends BaseAppCompatActivity implements
     }
 
     private void deleteAll() {
-        mModel.deleteAllActivityRecords();
+        mModel.deleteAllHistoryRecords();
     }
 
-    private class RecordAdapter extends BaseRecyclerAdapter<ActivityRecord> implements RecyclerItemClickListener.OnItemClickListener {
+    private class RecordAdapter extends BaseRecyclerAdapter<LifecycleRecord> implements RecyclerItemClickListener.OnItemClickListener {
 
-        private RecordAdapter(List<ActivityRecord> data) {
+        private RecordAdapter(List<LifecycleRecord> data) {
             super(data);
         }
 
@@ -107,7 +108,8 @@ public class ActivityRecordListActivity extends BaseAppCompatActivity implements
 
         @Override
         protected void bindData(@NonNull BaseViewHolder holder, int position, int itemType) {
-            ActivityRecord record = getData().get(position);
+            LifecycleRecord record = getData().get(position);
+            View fragmentLayout = holder.getView(R.id.fragment_layout);
             TextView simpleNameView = holder.getView(R.id.simple_name);
             TextView eventView = holder.getView(R.id.event);
             TextView timeView = holder.getView(R.id.time);
@@ -116,11 +118,26 @@ public class ActivityRecordListActivity extends BaseAppCompatActivity implements
             eventView.setText(record.getEvent());
             timeView.setText(ThreadUtil.getSimpleDateFormat("MM-dd HH:mm:ss SSS").format(new Date(record.getCreateTime())));
             taskIdView.setText("taskId: " + record.getTaskId());
+            if (record.getType() == LifecycleRecord.ACTIVITY) {
+                fragmentLayout.setVisibility(View.GONE);
+            } else {
+                TextView parentView = holder.getView(R.id.parent);
+                TextView tagView = holder.getView(R.id.tag);
+                String parentFragment = record.getParentFragment();
+                String tag = record.getFragmentTag();
+                if (TextUtils.isEmpty(parentFragment) && TextUtils.isEmpty(tag)) {
+                    fragmentLayout.setVisibility(View.GONE);
+                } else {
+                    fragmentLayout.setVisibility(View.VISIBLE);
+                    parentView.setText(parentFragment);
+                    tagView.setText(tag);
+                }
+            }
         }
 
         @Override
         public void onItemClick(View view, int position) {
-            ActivityRecord record = getData().get(position);
+            LifecycleRecord record = getData().get(position);
             new ToastBuilder(record.getName()).show();
         }
     }

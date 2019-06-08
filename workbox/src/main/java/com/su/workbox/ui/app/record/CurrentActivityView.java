@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.su.workbox.AppLifecycleListener;
+import com.su.workbox.ui.base.AppLifecycleListener;
 import com.su.workbox.R;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.SpHelper;

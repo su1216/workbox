@@ -9,16 +9,16 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.su.workbox.ui.app.record.LifecycleRecord;
+import com.su.workbox.ui.app.record.LifecycleRecordDao;
 import com.su.workbox.ui.usage.DataUsageRecord;
 import com.su.workbox.ui.mock.RequestResponseRecord;
-import com.su.workbox.ui.app.record.ActivityRecord;
-import com.su.workbox.ui.app.record.ActivityRecordDao;
 import com.su.workbox.ui.log.crash.CrashLogRecord;
 import com.su.workbox.ui.log.crash.CrashLogRecordDao;
 import com.su.workbox.ui.mock.RequestResponseRecordDao;
 import com.su.workbox.ui.usage.DataUsageRecordDao;
 
-@Database(entities = {DataUsageRecord.class, RequestResponseRecord.class, ActivityRecord.class, CrashLogRecord.class}, version = 4)
+@Database(entities = {DataUsageRecord.class, RequestResponseRecord.class, LifecycleRecord.class, CrashLogRecord.class}, version = 5)
 public abstract class HttpDataDatabase extends RoomDatabase {
 
     public static final String DATABASE_NAME = "workbox.db";
@@ -27,7 +27,7 @@ public abstract class HttpDataDatabase extends RoomDatabase {
 
     public abstract DataUsageRecordDao dataUsageRecordDao();
     public abstract RequestResponseRecordDao requestResponseRecordDao();
-    public abstract ActivityRecordDao activityRecordDao();
+    public abstract LifecycleRecordDao activityRecordDao();
     public abstract CrashLogRecordDao crashLogRecordDao();
 
     private static final Object LOCK = new Object();

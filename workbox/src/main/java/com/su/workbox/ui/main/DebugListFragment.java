@@ -46,10 +46,10 @@ import com.su.workbox.ui.app.FeatureListActivity;
 import com.su.workbox.ui.app.PermissionListActivity;
 import com.su.workbox.ui.app.SharedPreferenceDetailActivity;
 import com.su.workbox.ui.app.SharedPreferenceListActivity;
-import com.su.workbox.ui.app.record.ActivityLifecycleListener;
-import com.su.workbox.ui.app.record.ActivityRecordListActivity;
+import com.su.workbox.ui.base.ActivityLifecycleListener;
 import com.su.workbox.ui.app.record.CurrentActivitySettingActivity;
 import com.su.workbox.ui.app.record.CurrentActivityView;
+import com.su.workbox.ui.app.record.LifecycleRecordListActivity;
 import com.su.workbox.ui.log.common.CommonLogActivity;
 import com.su.workbox.ui.log.crash.CrashLogActivity;
 import com.su.workbox.ui.mock.MockGroupHostActivity;
@@ -151,7 +151,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         mCurrentActivityPreference.setChecked(mCurrentActivityView.isShowing());
         mCurrentActivityPreference.setOnPreferenceClickListener(this);
         mCurrentActivityPreference.setOnPreferenceChangeListener(this);
-        findPreference("activity_history").setOnPreferenceClickListener(this);
+        findPreference("lifecycle_history").setOnPreferenceClickListener(this);
         Preference databasePreference = findPreference("database");
         databasePreference.setOnPreferenceClickListener(this);
         databasePreference.setVisible(AppHelper.getDatabasesCount(mActivity) > 0);
@@ -526,8 +526,8 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             case "current_activity":
                 startActivity(new Intent(mActivity, CurrentActivitySettingActivity.class));
                 return true;
-            case "activity_history":
-                startActivity(new Intent(mActivity, ActivityRecordListActivity.class));
+            case "lifecycle_history":
+                startActivity(new Intent(mActivity, LifecycleRecordListActivity.class));
                 return true;
             case "database":
                 startActivity(new Intent(mActivity, DatabaseListActivity.class));

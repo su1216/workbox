@@ -3,13 +3,26 @@ package com.su.workbox.ui.app.record;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.IntDef;
 
-@Entity(tableName = "activity_history")
-public class ActivityRecord {
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@Entity(tableName = "lifecycle_history")
+public class LifecycleRecord {
+
+    @IntDef({ACTIVITY, FRAGMENT})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Type {}
+
+    public static final int ACTIVITY = 0;
+    public static final int FRAGMENT = 1;
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     private long id;
+    @ColumnInfo(name = "type")
+    private int type;
     @ColumnInfo(name = "taskId")
     private int taskId;
     @ColumnInfo(name = "simpleName")
@@ -20,6 +33,12 @@ public class ActivityRecord {
     private String event;
     @ColumnInfo(name = "createTime")
     private long createTime;
+    @ColumnInfo(name = "fragmentId")
+    private int fragmentId;
+    @ColumnInfo(name = "fragmentTag")
+    private String fragmentTag;
+    @ColumnInfo(name = "parentFragment")
+    private String parentFragment;
 
     public long getId() {
         return id;
@@ -27,6 +46,15 @@ public class ActivityRecord {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    @Type
+    public int getType() {
+        return type;
+    }
+
+    public void setType(@Type int type) {
+        this.type = type;
     }
 
     public int getTaskId() {
@@ -69,15 +97,43 @@ public class ActivityRecord {
         this.createTime = createTime;
     }
 
+    public int getFragmentId() {
+        return fragmentId;
+    }
+
+    public void setFragmentId(int fragmentId) {
+        this.fragmentId = fragmentId;
+    }
+
+    public String getFragmentTag() {
+        return fragmentTag;
+    }
+
+    public void setFragmentTag(String fragmentTag) {
+        this.fragmentTag = fragmentTag;
+    }
+
+    public String getParentFragment() {
+        return parentFragment;
+    }
+
+    public void setParentFragment(String parentFragment) {
+        this.parentFragment = parentFragment;
+    }
+
     @Override
     public String toString() {
-        return "ActivityRecord{" +
+        return "LifecycleRecord{" +
                 "id=" + id +
+                ", type=" + type +
                 ", taskId=" + taskId +
                 ", simpleName='" + simpleName + '\'' +
                 ", name='" + name + '\'' +
                 ", event='" + event + '\'' +
                 ", createTime=" + createTime +
+                ", fragmentId=" + fragmentId +
+                ", fragmentTag='" + fragmentTag + '\'' +
+                ", parentFragment='" + parentFragment + '\'' +
                 '}';
     }
 }

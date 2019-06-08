@@ -52,9 +52,9 @@
             android:title="当前Activity"
             android:track="@drawable/workbox_switch_track_selector" />
         <android.support.v7.preference.Preference
-            android:title="Activity历史纪录"
-            android:summary="不包含workbox相关activity记录"
-            android:key="activity_history"/>
+            android:title="生命周期历史纪录"
+            android:summary="不包含workbox相关activity/fragment记录"
+            android:key="lifecycle_history"/>
         <android.support.v7.preference.Preference
             android:title="Sqlite数据库信息"
             android:summary="查看应用中数据库以及表结构相关信息"

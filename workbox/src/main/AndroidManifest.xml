@@ -125,7 +125,7 @@
             android:screenOrientation="portrait"/>
         <!-- Activity历史记录 -->
         <activity
-            android:name=".ui.app.record.ActivityRecordListActivity"
+            android:name=".ui.app.record.LifecycleRecordListActivity"
             android:exported="false"
             android:theme="@style/WorkboxSearchViewToolbar"
             android:screenOrientation="portrait"/>

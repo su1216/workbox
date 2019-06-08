@@ -1,4 +1,4 @@
-package com.su.workbox.ui.app.record;
+package com.su.workbox.ui.base;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -6,6 +6,9 @@ import android.app.Application;
 import android.os.Bundle;
 
 import com.su.workbox.database.HttpDataDatabase;
+import com.su.workbox.ui.app.record.CurrentActivityView;
+import com.su.workbox.ui.app.record.LifecycleRecord;
+import com.su.workbox.ui.app.record.LifecycleRecordDao;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
 
@@ -15,11 +18,11 @@ public class ActivityLifecycleListener implements Application.ActivityLifecycleC
     private static ActivityLifecycleListener sActivityLifecycleListener;
     private Activity mTopActivity;
     private AppExecutors mAppExecutors = AppExecutors.getInstance();
-    private ActivityRecordDao mActivityRecordDao;
+    private LifecycleRecordDao mLifecycleRecordDao;
     private CurrentActivityView mCurrentActivityView;
 
     public ActivityLifecycleListener() {
-        mActivityRecordDao = HttpDataDatabase.getInstance(GeneralInfoHelper.getContext()).activityRecordDao();
+        mLifecycleRecordDao = HttpDataDatabase.getInstance(GeneralInfoHelper.getContext()).activityRecordDao();
         mCurrentActivityView = CurrentActivityView.getInstance();
     }
 
@@ -28,7 +31,8 @@ public class ActivityLifecycleListener implements Application.ActivityLifecycleC
         if (clazz.getName().startsWith(GeneralInfoHelper.LIB_PACKAGE_NAME)) {
             return;
         }
-        ActivityRecord record = new ActivityRecord();
+        LifecycleRecord record = new LifecycleRecord();
+        record.setType(LifecycleRecord.ACTIVITY);
         record.setCreateTime(System.currentTimeMillis());
         record.setName(clazz.getName());
         record.setSimpleName(clazz.getSimpleName());
@@ -37,9 +41,9 @@ public class ActivityLifecycleListener implements Application.ActivityLifecycleC
         insertActivityRecord(record);
     }
 
-    private void insertActivityRecord(ActivityRecord record) {
-        Runnable deleteRunnable = () -> mActivityRecordDao.insertActivityRecord(record);
-        mAppExecutors.diskIO().execute(deleteRunnable);
+    private void insertActivityRecord(LifecycleRecord record) {
+        Runnable runnable = () -> mLifecycleRecordDao.insertActivityRecord(record);
+        mAppExecutors.diskIO().execute(runnable);
     }
 
     @Override

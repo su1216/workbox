@@ -1,4 +1,4 @@
-package com.su.workbox;
+package com.su.workbox.ui.base;
 
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
