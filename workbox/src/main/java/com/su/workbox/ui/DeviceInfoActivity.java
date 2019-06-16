@@ -91,14 +91,14 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
     }
 
     private void initData() {
-        mData.add(new SystemInfo(KEY_SCREEN, "屏幕信息"));
+        mData.add(new SystemInfo(KEY_SCREEN, "屏幕"));
         mData.add(new SystemInfo(KEY_SYSTEM, "系统"));
-        mData.add(new SystemInfo(KEY_NETWORK, "网络相关"));
+        mData.add(new SystemInfo(KEY_NETWORK, "网络"));
         mData.add(new SystemInfo(KEY_HARDWARE, "硬件"));
-        mData.add(new SystemInfo(KEY_IDS, "本机ID"));
-        mData.add(new SystemInfo(KEY_FEATURES, "Feature列表"));
+        mData.add(new SystemInfo(KEY_IDS, "ID"));
+        mData.add(new SystemInfo(KEY_FEATURES, "Feature"));
         if (AppHelper.isPhone(this)) {
-            mData.add(new SystemInfo(KEY_PHONE, "电话相关"));
+            mData.add(new SystemInfo(KEY_PHONE, "电话"));
         }
     }
 
