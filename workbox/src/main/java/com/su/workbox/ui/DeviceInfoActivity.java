@@ -28,6 +28,8 @@ import android.util.Pair;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.view.inputmethod.InputMethodInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.su.workbox.AppHelper;
@@ -66,6 +68,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
     private static final String KEY_FEATURES = "features";
     private static final String KEY_PHONE = "phone";
     private static final String KEY_SENSOR = "sensor";
+    private static final String KEY_INPUT_METHOD = "input_method";
     private List<SystemInfo> mData = new ArrayList<>();
 
     @Override
@@ -105,10 +108,10 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         if (AppHelper.isPhone(this)) {
             mData.add(new SystemInfo(KEY_PHONE, "电话"));
         }
-
         if (SensorUtil.hasUsefulSensors()) {
             mData.add(new SystemInfo(KEY_SENSOR, "传感器"));
         }
+        mData.add(new SystemInfo(KEY_INPUT_METHOD, "输入法"));
     }
 
     @Override
@@ -203,6 +206,8 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                     return getTelephonyInfo();
                 case KEY_SENSOR:
                     return getSensorInfo();
+                case KEY_INPUT_METHOD:
+                    return getInstalledInputMethod();
                 default:
                     throw new IllegalArgumentException("can not find any info about key: " + key);
             }
@@ -409,6 +414,28 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                     builder.append("\n");
                     builder.append("\n");
                 }
+            }
+            return builder.toString();
+        }
+
+        private String getInstalledInputMethod() {
+            String defaultInputMethodId = Settings.Secure.getString(mActivity.getContentResolver(), Settings.Secure.DEFAULT_INPUT_METHOD);
+            InputMethodManager inputMgr = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            List<InputMethodInfo> inputMethodList = inputMgr.getEnabledInputMethodList();
+            StringBuilder builder = new StringBuilder();
+            PackageManager pm = mActivity.getPackageManager();
+            for (InputMethodInfo method : inputMethodList) {
+                builder.append(method.loadLabel(pm));
+                if (TextUtils.equals(method.getId(), defaultInputMethodId)) {
+                    builder.append( "(");
+                    builder.append("current");
+                    builder.append(")");
+                }
+                builder.append("\n");
+                builder.append("package: ");
+                builder.append(method.getPackageName());
+                builder.append("\n");
+                builder.append("\n");
             }
             return builder.toString();
         }
