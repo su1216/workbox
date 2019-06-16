@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Point;
+import android.hardware.Sensor;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -34,6 +35,7 @@ import com.su.workbox.R;
 import com.su.workbox.entity.SystemInfo;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.NetworkUtil;
+import com.su.workbox.utils.SensorUtil;
 import com.su.workbox.utils.SystemInfoHelper;
 import com.su.workbox.utils.TelephonyManagerWrapper;
 import com.su.workbox.utils.UiHelper;
@@ -43,7 +45,9 @@ import com.su.workbox.widget.recycler.GridItemSpaceDecoration;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by mahao on 17-5-27.
@@ -61,6 +65,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
     private static final String KEY_IDS = "ids";
     private static final String KEY_FEATURES = "features";
     private static final String KEY_PHONE = "phone";
+    private static final String KEY_SENSOR = "sensor";
     private List<SystemInfo> mData = new ArrayList<>();
 
     @Override
@@ -99,6 +104,10 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         mData.add(new SystemInfo(KEY_FEATURES, "Feature"));
         if (AppHelper.isPhone(this)) {
             mData.add(new SystemInfo(KEY_PHONE, "电话"));
+        }
+
+        if (SensorUtil.hasUsefulSensors()) {
+            mData.add(new SystemInfo(KEY_SENSOR, "传感器"));
         }
     }
 
@@ -192,6 +201,8 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                     return getFeatureList();
                 case KEY_PHONE:
                     return getTelephonyInfo();
+                case KEY_SENSOR:
+                    return getSensorInfo();
                 default:
                     throw new IllegalArgumentException("can not find any info about key: " + key);
             }
@@ -371,6 +382,34 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                 builder.append(wrapper.field2String("运营商名称", indexHolder, operatorName) + "\n\n");
             }
             builder.deleteCharAt(builder.length() - 2);
+            return builder.toString();
+        }
+
+        private String getSensorInfo() {
+            Set<Integer> recordedType = new HashSet<>();
+            List<Sensor> sensors = SensorUtil.getAllSensors();
+            StringBuilder builder = new StringBuilder();
+            for (Sensor sensor : sensors) {
+                int type = sensor.getType();
+                if (SensorUtil.isUsefulSensor(type) && !recordedType.contains(type)) {
+                    recordedType.add(type);
+                    builder.append(SensorUtil.getReadableType(sensor.getType()));
+                    builder.append("\n");
+                    builder.append("名称: ");
+                    builder.append(sensor.getName());
+                    builder.append("\n");
+                    builder.append("功耗: ");
+                    builder.append(sensor.getPower());
+                    builder.append("\n");
+                    builder.append("供应商: ");
+                    builder.append(sensor.getVendor());
+                    builder.append("\n");
+                    builder.append("版本: ");
+                    builder.append(sensor.getVersion());
+                    builder.append("\n");
+                    builder.append("\n");
+                }
+            }
             return builder.toString();
         }
     }
