@@ -168,7 +168,7 @@ public class TelephonyManagerWrapper {
         return mManager.getDeviceSoftwareVersion();
     }
 
-    public String field2String(String fieldName, String indexHolder, String value) {
-        return fieldName + indexHolder + ": " + value;
+    public String field2String(String fieldName, String value) {
+        return fieldName + ": " + value;
     }
 }

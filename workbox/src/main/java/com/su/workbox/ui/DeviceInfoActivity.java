@@ -85,7 +85,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         //设置控件显示的顺序
         controller.setOrder(LayoutAnimationController.ORDER_NORMAL);
         //设置控件显示间隔时间
-        controller.setDelay(0.5f);
+        controller.setDelay(0.35f);
         recyclerView.setLayoutAnimation(controller);
         MyAdapter adapter = new MyAdapter(this, mData);
         recyclerView.setAdapter(adapter);
@@ -357,34 +357,34 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                     continue;
                 }
 
-                int slot = i + 1;
-                String indexHolder = count > 1 ? " " + slot : "";
-                int phoneType = wrapper.getPhoneType(slot);
+                String indexHolder = String.valueOf(i + 1);
+                builder.append("卡" + indexHolder + "\n");
+                int phoneType = wrapper.getPhoneType(i);
                 if (phoneType == TelephonyManager.PHONE_TYPE_CDMA || phoneType == TelephonyManager.PHONE_TYPE_GSM) {
                     if (phoneType == TelephonyManager.PHONE_TYPE_CDMA) {
-                        String meid = wrapper.getMeid(slot);
-                        builder.append(wrapper.field2String("网络制式", indexHolder, "CDMA") + "\n");
-                        builder.append(wrapper.field2String("meid", indexHolder, meid) + "\n");
+                        String meid = wrapper.getMeid(i);
+                        builder.append(wrapper.field2String("网络制式", "CDMA") + "\n");
+                        builder.append(wrapper.field2String("meid", meid) + "\n");
                     } else {
-                        String imei = wrapper.getImei(slot);
-                        builder.append(wrapper.field2String("网络制式", indexHolder, "GSM") + "\n");
-                        builder.append(wrapper.field2String("imei", indexHolder, imei) + "\n");
+                        String imei = wrapper.getImei(i);
+                        builder.append(wrapper.field2String("网络制式", "GSM") + "\n");
+                        builder.append(wrapper.field2String("imei", imei) + "\n");
                     }
                 }
-                String subscriberId = wrapper.getSubscriberId(slot);
-                builder.append(wrapper.field2String("Subscriber Id", indexHolder, subscriberId) + "\n");
-                String sv = wrapper.getDeviceSoftwareVersion(slot);
-                builder.append(wrapper.field2String("sv", indexHolder, sv) + "\n");
-                String phoneNumber = wrapper.getLine1Number(slot);
-                builder.append(wrapper.field2String("电话号码", indexHolder, phoneNumber) + "\n");
-                String simSerialNumber = wrapper.getSimSerialNumber(slot);
-                builder.append(wrapper.field2String("SIM序列号", indexHolder, simSerialNumber) + "\n");
+                String subscriberId = wrapper.getSubscriberId(i);
+                builder.append(wrapper.field2String("Subscriber Id", subscriberId) + "\n");
+                String sv = wrapper.getDeviceSoftwareVersion(i);
+                builder.append(wrapper.field2String("sv", sv) + "\n");
+                String phoneNumber = wrapper.getLine1Number(i);
+                builder.append(wrapper.field2String("电话号码", phoneNumber) + "\n");
+                String simSerialNumber = wrapper.getSimSerialNumber(i);
+                builder.append(wrapper.field2String("SIM序列号", simSerialNumber) + "\n");
 
-                String networkCountryIso = wrapper.getNetworkCountryIso(slot);
-                builder.append(wrapper.field2String("国家代码", indexHolder, networkCountryIso) + "\n");
+                String networkCountryIso = wrapper.getNetworkCountryIso(i);
+                builder.append(wrapper.field2String("国家代码", networkCountryIso) + "\n");
 
-                String operatorName = wrapper.getNetworkOperatorName(slot);
-                builder.append(wrapper.field2String("运营商名称", indexHolder, operatorName) + "\n\n");
+                String operatorName = wrapper.getNetworkOperatorName(i);
+                builder.append(wrapper.field2String("运营商名称", operatorName) + "\n\n");
             }
             builder.deleteCharAt(builder.length() - 2);
             return builder.toString();
