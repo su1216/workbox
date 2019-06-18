@@ -150,7 +150,7 @@
             android:title="@JavascriptInterface接口调试" />
         <android.support.v7.preference.Preference
             android:key="js_rhino"
-            android:summary="利用rhino在app内执行java代码"
-            android:title="本地js调用调试" />
+            android:summary="使用rhino执行js"
+            android:title="rhino调试" />
     </android.support.v7.preference.PreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>
