@@ -148,6 +148,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"
             android:windowSoftInputMode="stateHidden"/>
+        <!-- 应用列表 -->
+        <activity
+            android:name=".ui.AppListActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxSearchViewToolbar"
+            android:windowSoftInputMode="stateHidden"/>
         <!-- js文件与函数列表 -->
         <activity
             android:name=".ui.JsListActivity"

@@ -37,7 +37,8 @@ public class SearchableHelper {
     private Map<String, List<Map<Integer, Integer>>> mNameFilterColorMap = new HashMap<>();
     private SearchView mSearchView;
 
-    public SearchableHelper() {}
+    public SearchableHelper() {
+    }
 
     public SearchableHelper(@NonNull Class<?> query) {
         mQueryClass = query;
@@ -113,6 +114,13 @@ public class SearchableHelper {
     }
 
     public boolean find(@NonNull String filter, @NonNull Object query) {
+        return find(filter, query, true);
+    }
+
+    public boolean find(@NonNull String filter, @NonNull Object query, boolean ignoreCase) {
+        if (ignoreCase) {
+            filter = filter.toLowerCase();
+        }
         List<String> keys = new ArrayList<>();
         Matcher matcher = PATTERN.matcher(filter);
         while (matcher.find()) {
@@ -124,14 +132,18 @@ public class SearchableHelper {
         boolean[] findStatus = new boolean[size];
         for (int i = 0; i < size; i++) {
             String fieldOrMethodName = mFieldsAndMethods.get(i);
-            String source = getSource(mQueryClass, fieldOrMethodName, query).toLowerCase();
+            String source;
+            if (ignoreCase) {
+                source = getSource(mQueryClass, fieldOrMethodName, query).toLowerCase();
+            } else {
+                source = getSource(mQueryClass, fieldOrMethodName, query);
+            }
 
             int startPointer = 0;
             int endPointer = 0;
             int[] colorIndex = new int[keysSize];
             int[] colorLengthIndex = new int[keysSize];
             findStatus[i] = true;
-
 
             for (int j = 0; j < keysSize; j++) {
                 String c = keys.get(j);

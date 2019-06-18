@@ -90,6 +90,9 @@
             android:key="more_phone_info"
             android:title="更多信息"
             android:summary="分辨率，存储，网络，cpu等信息" />
+        <android.support.v7.preference.Preference
+            android:key="app_list"
+            android:title="应用列表" />
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory
         android:title="Network">

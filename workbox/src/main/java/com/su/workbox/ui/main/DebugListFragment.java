@@ -33,6 +33,7 @@ import com.su.workbox.R;
 import com.su.workbox.Workbox;
 import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.net.interceptor.DataUsageInterceptor;
+import com.su.workbox.ui.AppListActivity;
 import com.su.workbox.ui.DeviceInfoActivity;
 import com.su.workbox.ui.HostsActivity;
 import com.su.workbox.ui.JsInterfaceListActivity;
@@ -156,6 +157,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         databasePreference.setOnPreferenceClickListener(this);
         databasePreference.setVisible(AppHelper.getDatabasesCount(mActivity) > 0);
         findPreference("more_phone_info").setOnPreferenceClickListener(this);
+        findPreference("app_list").setOnPreferenceClickListener(this);
         mHostsPreference = findPreference("hosts");
         mWebViewHostsPreference = findPreference("web_view_hosts");
         initNetworkPreferences();
@@ -540,6 +542,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 return true;
             case "more_phone_info":
                 startActivity(new Intent(mActivity, DeviceInfoActivity.class));
+                return true;
+            case "app_list":
+                startActivity(new Intent(mActivity, AppListActivity.class));
                 return true;
             case "data_usage":
                 startActivity(new Intent(mActivity, RecordListActivity.class));
