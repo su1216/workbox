@@ -237,14 +237,12 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
             desc += "\n\n" + "CPU 位数: " + SystemInfoHelper.getCpuBit();
             desc += "\n\n" + "CPU 型号: " + SystemInfoHelper.getCpuName();
             desc += "\n\n" + "ABIs: " + TextUtils.join(", ", new String[]{Build.CPU_ABI, Build.CPU_ABI2});
-            desc += "\n\n" + "存储: 共"
-                    + SystemInfoHelper.formatFileSize(SystemInfoHelper.getTotalExternalMemorySize(), false)
-                    + "," + SystemInfoHelper.formatFileSize(SystemInfoHelper.getAvailableExternalMemorySize(), false)
-                    + "可用";
-            desc += "\n\n" + "内存: 共"
-                    + SystemInfoHelper.formatFileSize(SystemInfoHelper.getTotalMemorySize(), false)
-                    + "," + SystemInfoHelper.formatFileSize(SystemInfoHelper.getAvailableMemory(mActivity), false)
-                    + "可用";
+            desc += "\n\n" + "存储: 共 "
+                    + SystemInfoHelper.formatFileSize(SystemInfoHelper.getTotalExternalMemorySize())
+                    + ", 可用 " + SystemInfoHelper.formatFileSize(SystemInfoHelper.getAvailableExternalMemorySize());
+            desc += "\n\n" + "内存: 共 "
+                    + SystemInfoHelper.formatFileSize(SystemInfoHelper.getTotalMemorySize(mActivity))
+                    + ", 可用 " + SystemInfoHelper.formatFileSize(SystemInfoHelper.getAvailableMemory(mActivity));
             return desc;
         }
 

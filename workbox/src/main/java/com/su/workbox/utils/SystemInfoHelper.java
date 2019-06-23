@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -17,7 +18,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.DecimalFormat;
 
 /**
  * Created by mahao on 17-5-31.
@@ -27,8 +27,6 @@ public class SystemInfoHelper {
 
     private static final String TAG = SystemInfoHelper.class.getSimpleName();
     private static final int ERROR = -1;
-    private static DecimalFormat fileIntegerFormat = new DecimalFormat("#0");
-    private static DecimalFormat fileDecimalFormat = new DecimalFormat("#0.##");
 
     private static SparseArray<String> sSystemVersionName;
     private static SparseArray<String> sSystemVersionCode;
@@ -183,9 +181,7 @@ public class SystemInfoHelper {
         if (externalMemoryAvailable()) {
             File path = Environment.getExternalStorageDirectory();
             StatFs stat = new StatFs(path.getPath());
-            long blockSize = stat.getBlockSizeLong();
-            long availableBlocks = stat.getAvailableBlocksLong();
-            return availableBlocks * blockSize;
+            return stat.getAvailableBytes();
         } else {
             return ERROR;
         }
@@ -198,9 +194,7 @@ public class SystemInfoHelper {
         if (externalMemoryAvailable()) {
             File path = Environment.getExternalStorageDirectory();
             StatFs stat = new StatFs(path.getPath());
-            long blockSize = stat.getBlockSizeLong();
-            long totalBlocks = stat.getBlockCountLong();
-            return totalBlocks * blockSize;
+            return stat.getTotalBytes();
         } else {
             return ERROR;
         }
@@ -211,23 +205,11 @@ public class SystemInfoHelper {
      *
      * @return 总内存大单位为B。
      */
-    public static long getTotalMemorySize() {
-        String dir = "/proc/meminfo";
-        FileReader fr = null;
-        BufferedReader br = null;
-        try {
-            fr = new FileReader(dir);
-            br = new BufferedReader(fr, 2048);
-            String memoryLine = br.readLine();
-            String subMemoryLine = memoryLine.substring(memoryLine.indexOf("MemTotal:"));
-            return Integer.parseInt(subMemoryLine.replaceAll("\\D+", "")) * 1024L;
-        } catch (IOException e) {
-            Log.w(TAG, e);
-        } finally {
-            IOUtil.closeQuietly(br);
-            IOUtil.closeQuietly(fr);
-        }
-        return 0L;
+    public static long getTotalMemorySize(Context context) {
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+        am.getMemoryInfo(memoryInfo);
+        return memoryInfo.totalMem;
     }
 
     /**
@@ -243,25 +225,7 @@ public class SystemInfoHelper {
         return memoryInfo.availMem;
     }
 
-    /**
-     * 单位换算
-     *
-     * @param size      单位为B
-     * @param isInteger 是否返回取整的单位
-     * @return 转换后的单位
-     */
-    public static String formatFileSize(long size, boolean isInteger) {
-        DecimalFormat df = isInteger ? fileIntegerFormat : fileDecimalFormat;
-        String fileSizeString;
-        if (size < 1024L && size > 0L) {
-            fileSizeString = df.format((double) size) + "B";
-        } else if (size < 1024L * 1024L) {
-            fileSizeString = df.format((double) size / 1024L) + "K";
-        } else if (size < 1024L * 1024L * 1024L) {
-            fileSizeString = df.format((double) size / (1024L * 1024L)) + "M";
-        } else {
-            fileSizeString = df.format((double) size / (1024L * 1024L * 1024L)) + "G";
-        }
-        return fileSizeString;
+    public static String formatFileSize(long size) {
+        return Formatter.formatFileSize(GeneralInfoHelper.getContext(), size);
     }
 }
