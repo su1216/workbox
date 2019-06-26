@@ -27,6 +27,7 @@ import java.util.Set;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -107,9 +108,11 @@ public class DataCollectorInterceptor implements Interceptor {
         String host = AppHelper.getHostFromUrl(newUrl);
         String path = uri.getPath();
         RequestBody requestBody = request.body();
+        entity.setMultipartRequestBody(requestBody instanceof MultipartBody);
         String bodyString = "";
         String contentType = "";
-        if (requestBody != null) {
+        entity.setHasRequestBody(requestBody != null);
+        if (!entity.isMultipartRequestBody() && requestBody != null) {
             MediaType mediaType = requestBody.contentType();
             if (mediaType != null) {
                 contentType = mediaType.toString();
@@ -140,6 +143,7 @@ public class DataCollectorInterceptor implements Interceptor {
             Log.d(TAG, "method: " + method);
             Log.d(TAG, "contentType: " + contentType);
             Log.d(TAG, "requestHeaders: " + headersJson);
+            Log.d(TAG, "isMultipartRequestBody: " + entity.isMultipartRequestBody());
             Log.d(TAG, "requestBody: " + bodyString);
         }
         entity.setUrl(url);
@@ -156,6 +160,7 @@ public class DataCollectorInterceptor implements Interceptor {
         Headers headers = response.headers();
         JSONObject responseHeaders = getHeaders(response.headers());
         ResponseBody responseBody = response.body();
+        entity.setHasResponseBody(responseBody != null);
         long contentLength = responseBody.contentLength();
         BufferedSource source = responseBody.source();
         source.request(Long.MAX_VALUE); // Buffer the entire body.

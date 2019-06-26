@@ -45,6 +45,8 @@ public final class DataUsageRecord implements Parcelable {
     private long requestHeaderLength = 0;
     @ColumnInfo(name = "requestBodyLength")
     private long requestBodyLength = 0;
+    @ColumnInfo(name = "multipartRequestBody")
+    private boolean multipartRequestBody;
     @ColumnInfo(name = "hasRequestBody")
     private boolean hasRequestBody;
     @ColumnInfo(name = "responseTime")
@@ -172,6 +174,14 @@ public final class DataUsageRecord implements Parcelable {
 
     public void setRequestHeaders(String requestHeaders) {
         this.requestHeaders = requestHeaders;
+    }
+
+    public boolean isMultipartRequestBody() {
+        return multipartRequestBody;
+    }
+
+    public void setMultipartRequestBody(boolean multipartRequestBody) {
+        this.multipartRequestBody = multipartRequestBody;
     }
 
     public String getRequestBody() {
@@ -434,6 +444,7 @@ public final class DataUsageRecord implements Parcelable {
                 ", requestLength=" + requestLength +
                 ", requestHeaderLength=" + requestHeaderLength +
                 ", requestBodyLength=" + requestBodyLength +
+                ", multipartRequestBody=" + multipartRequestBody +
                 ", hasRequestBody=" + hasRequestBody +
                 ", responseTime=" + responseTime +
                 ", responseLength=" + responseLength +

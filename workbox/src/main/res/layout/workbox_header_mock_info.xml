@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:ellipsize="end"
-            android:lines="1"
+            android:maxLines="3"
             android:textColor="@color/workbox_second_text"
             android:textSize="18sp"
             tools:text="www.baidu.com"/>
@@ -112,7 +112,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:ellipsize="end"
-            android:lines="1"
+            android:maxLines="3"
             android:textColor="@color/workbox_second_text"
             android:textSize="18sp"
             tools:text="test"/>

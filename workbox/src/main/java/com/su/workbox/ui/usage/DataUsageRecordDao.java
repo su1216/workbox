@@ -11,7 +11,7 @@ import java.util.List;
 @Dao
 public interface DataUsageRecordDao {
 
-    @Query("SELECT * FROM data_usage WHERE url LIKE  '%' || :query || '%' ")
+    @Query("SELECT * FROM data_usage WHERE url LIKE  '%' || :query || '%' ORDER BY requestTime DESC")
     LiveData<List<DataUsageRecord>> getDataUsageRecords(String query);
 
     @Query("SELECT * FROM data_usage WHERE _id = :id")

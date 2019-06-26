@@ -18,7 +18,7 @@ import com.su.workbox.ui.log.crash.CrashLogRecordDao;
 import com.su.workbox.ui.mock.RequestResponseRecordDao;
 import com.su.workbox.ui.usage.DataUsageRecordDao;
 
-@Database(entities = {DataUsageRecord.class, RequestResponseRecord.class, LifecycleRecord.class, CrashLogRecord.class}, version = 5)
+@Database(entities = {DataUsageRecord.class, RequestResponseRecord.class, LifecycleRecord.class, CrashLogRecord.class}, version = 6)
 public abstract class HttpDataDatabase extends RoomDatabase {
 
     public static final String DATABASE_NAME = "workbox.db";

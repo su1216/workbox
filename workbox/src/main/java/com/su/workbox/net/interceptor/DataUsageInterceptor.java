@@ -16,6 +16,7 @@ import java.nio.charset.Charset;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -78,7 +79,7 @@ public class DataUsageInterceptor implements Interceptor {
         String bodyString = "";
         String contentType = "";
         boolean binary = false;
-        if (requestBody != null) {
+        if (!(requestBody instanceof MultipartBody) && requestBody != null) {
             MediaType mediaType = requestBody.contentType();
             if (mediaType != null) {
                 contentType = mediaType.toString();
@@ -88,8 +89,10 @@ public class DataUsageInterceptor implements Interceptor {
             requestBody.writeTo(buffer);
             if (isPlaintext(buffer)) {
                 bodyString = buffer.readString(UTF8);
+                entity.setRequestBody(bodyString);
             } else {
                 binary = true;
+                entity.setRequestBody(null);
             }
         }
 
@@ -101,7 +104,6 @@ public class DataUsageInterceptor implements Interceptor {
         entity.setMethod(method);
         entity.setContentType(contentType);
         entity.setRequestHeaders(getHeaders(request.headers()));
-        entity.setRequestBody(bodyString);
         entity.setUrlLength(readUrlLength(url));
         entity.setRequestHeaderLength(readHeaderLength(request.headers()));
         entity.setRequestBodyLength(readRequestBodyLength(request));

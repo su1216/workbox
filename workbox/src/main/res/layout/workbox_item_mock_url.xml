@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@drawable/workbox_item_selector"
-              android:clickable="true"
-              android:focusable="true"
-              android:gravity="center_vertical"
-              android:orientation="horizontal"
-              android:paddingStart="13dp"
-              android:paddingTop="4dp"
-              android:paddingEnd="13dp"
-              android:paddingBottom="4dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/workbox_item_selector"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="13dp"
+    android:paddingTop="4dp"
+    android:paddingEnd="13dp"
+    android:paddingBottom="4dp">
+
     <LinearLayout
         android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
+        <!--scheme & host-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="scheme:"
                 android:textColor="@color/workbox_first_text"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
+
             <TextView
                 android:id="@+id/scheme"
                 android:layout_width="wrap_content"
@@ -37,14 +41,16 @@
                 android:lines="1"
                 android:textColor="@color/workbox_second_text"
                 android:textSize="12sp"
-                tools:text="https"/>
+                tools:text="https" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="host:"
                 android:textColor="@color/workbox_first_text"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
+
             <TextView
                 android:id="@+id/host"
                 android:layout_width="wrap_content"
@@ -54,37 +60,23 @@
                 android:lines="1"
                 android:textColor="@color/workbox_second_text"
                 android:textSize="12sp"
-                tools:text="www.baidu.com"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dip"
-                android:text="type:"
-                android:textColor="@color/workbox_first_text"
-                android:textSize="12sp"/>
-            <TextView
-                android:id="@+id/type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:ellipsize="end"
-                android:lines="1"
-                android:textColor="@color/workbox_color_accent"
-                android:textSize="12sp"
-                tools:text="auto"/>
+                tools:text="www.baidu.com" />
         </LinearLayout>
+        <!--path-->
         <LinearLayout
             android:id="@+id/path_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="path:"
                 android:textColor="@color/workbox_first_text"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
+
             <TextView
                 android:id="@+id/path"
                 android:layout_width="wrap_content"
@@ -94,20 +86,23 @@
                 android:lines="1"
                 android:textColor="@color/workbox_second_text"
                 android:textSize="12sp"
-                tools:text="/test"/>
+                tools:text="/test" />
         </LinearLayout>
+        <!--query-->
         <LinearLayout
             android:id="@+id/query_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="query:"
                 android:textColor="@color/workbox_first_text"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
+
             <TextView
                 android:id="@+id/query"
                 android:layout_width="wrap_content"
@@ -117,42 +112,22 @@
                 android:lines="1"
                 android:textColor="@color/workbox_second_text"
                 android:textSize="12sp"
-                tools:text=""/>
+                tools:text="" />
         </LinearLayout>
-        <LinearLayout
-            android:id="@+id/request_body_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="requestBody:"
-                android:textColor="@color/workbox_first_text"
-                android:textSize="12sp"/>
-            <TextView
-                android:id="@+id/request_body"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:ellipsize="end"
-                android:lines="1"
-                android:textColor="@color/workbox_second_text"
-                android:textSize="12sp"
-                tools:text="https://www.baidu.com"/>
-        </LinearLayout>
+        <!--method & content type-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="method:"
                 android:textColor="@color/workbox_first_text"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
+
             <TextView
                 android:id="@+id/method"
                 android:layout_width="wrap_content"
@@ -161,7 +136,8 @@
                 android:textAllCaps="true"
                 android:textColor="@color/workbox_second_text"
                 android:textSize="12sp"
-                tools:text="post"/>
+                tools:text="post" />
+
             <TextView
                 android:id="@+id/content_type_title"
                 android:layout_width="wrap_content"
@@ -169,7 +145,8 @@
                 android:layout_marginStart="8dp"
                 android:text="content type:"
                 android:textColor="@color/workbox_first_text"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
+
             <TextView
                 android:id="@+id/content_type"
                 android:layout_width="wrap_content"
@@ -179,20 +156,68 @@
                 android:lines="1"
                 android:textColor="@color/workbox_second_text"
                 android:textSize="12sp"
-                tools:text="https://www.baidu.com"/>
+                tools:text="https://www.baidu.com" />
         </LinearLayout>
+        <!--类型：自动、手动 & mockable-->
+        <LinearLayout
+            android:id="@+id/important_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="type:"
+                android:textColor="@color/workbox_first_text"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:textColor="@color/workbox_color_primary"
+                android:textSize="12sp"
+                tools:text="auto" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dip"
+                android:text="mockable:"
+                android:textColor="@color/workbox_first_text"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/mockable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:textColor="@color/workbox_second_text"
+                android:textSize="12sp"
+                tools:text="true" />
+        </LinearLayout>
+        <!--desc-->
         <LinearLayout
             android:id="@+id/desc_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="desc:"
                 android:textColor="@color/workbox_first_text"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
+
             <TextView
                 android:id="@+id/desc"
                 android:layout_width="wrap_content"
@@ -202,14 +227,15 @@
                 android:lines="1"
                 android:textColor="@color/workbox_second_text"
                 android:textSize="12sp"
-                tools:text="https://www.baidu.com"/>
+                tools:text="https://www.baidu.com" />
         </LinearLayout>
     </LinearLayout>
+
     <android.support.v7.widget.AppCompatCheckBox
         android:id="@+id/check_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        app:buttonTint="@color/workbox_color_primary"/>
+        app:buttonTint="@color/workbox_color_primary" />
 </LinearLayout>

@@ -11,8 +11,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.database.HttpDataDatabase;
-import com.su.workbox.ui.mock.RequestResponseRecord;
 import com.su.workbox.ui.mock.MockUtil;
+import com.su.workbox.ui.mock.RequestResponseRecord;
 import com.su.workbox.ui.mock.RequestResponseRecordSource;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.SpHelper;
@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import okhttp3.Headers;
 import okhttp3.Interceptor;
@@ -46,7 +45,6 @@ public class MockInterceptor implements Interceptor {
 
     private static final String TAG = MockInterceptor.class.getSimpleName();
     private static final Charset UTF8 = Charset.forName("UTF-8");
-    private static final Pattern PATTERN_BODY = Pattern.compile("([^=&?]+)=([^=&]*)");
     private static boolean sDebug = false;
 
     @NonNull
@@ -99,7 +97,7 @@ public class MockInterceptor implements Interceptor {
                         1);
             }
 
-            if (record != null) {
+            if (record != null && entity.isMockable()) {
                 Log.d(TAG, "got mock result!");
                 String response = record.getResponseBody();
                 if (response == null) {

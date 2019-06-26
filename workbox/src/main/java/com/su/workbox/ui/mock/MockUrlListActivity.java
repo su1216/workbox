@@ -122,15 +122,14 @@ public class MockUrlListActivity extends BaseAppCompatActivity implements Search
             View queryLayout = holder.getView(R.id.query_layout);
             TextView schemeView = holder.getView(R.id.scheme);
             TextView hostView = holder.getView(R.id.host);
-            TextView typeView = holder.getView(R.id.type);
             TextView pathView = holder.getView(R.id.path);
             View pathLayout = holder.getView(R.id.path_layout);
             TextView queryView = holder.getView(R.id.query);
-            TextView requestBodyView = holder.getView(R.id.request_body);
-            View requestBodyLayout = holder.getView(R.id.request_body_layout);
             TextView methodView = holder.getView(R.id.method);
             TextView contentTypeTitleView = holder.getView(R.id.content_type_title);
             TextView contentTypeView = holder.getView(R.id.content_type);
+            TextView typeView = holder.getView(R.id.type);
+            TextView mockableView = holder.getView(R.id.mockable);
             TextView descView = holder.getView(R.id.desc);
             View descLayout = holder.getView(R.id.desc_layout);
             AppCompatCheckBox checkBox = holder.getView(R.id.check_box);
@@ -140,9 +139,9 @@ public class MockUrlListActivity extends BaseAppCompatActivity implements Search
             String host = record.getHost();
             String method = record.getMethod();
             String contentType = record.getContentType();
-            String parameters = record.getRequestBody();
             String description = record.getDescription();
             boolean auto = record.isAuto();
+            boolean mockable = record.isMockable();
             boolean inUse = record.isInUse();
 
             Uri uri = Uri.parse(url);
@@ -156,13 +155,6 @@ public class MockUrlListActivity extends BaseAppCompatActivity implements Search
                 queryLayout.setVisibility(View.VISIBLE);
             }
 
-            String requestBodyContent = MockUtil.makeRequestBodyContent(parameters, " ");
-            if (TextUtils.isEmpty(parameters)) {
-                requestBodyLayout.setVisibility(View.GONE);
-            } else {
-                requestBodyView.setText(requestBodyContent);
-                requestBodyLayout.setVisibility(View.VISIBLE);
-            }
             schemeView.setText(scheme);
             if (TextUtils.equals("http", scheme)) {
                 schemeView.setTextColor(mResources.getColor(R.color.workbox_error_hint));
@@ -171,6 +163,13 @@ public class MockUrlListActivity extends BaseAppCompatActivity implements Search
             }
             hostView.setText(host);
             typeView.setText(auto ? "auto" : "manual");
+            if (mockable) {
+                mockableView.setTextColor(mResources.getColor(R.color.workbox_second_text));
+            } else {
+                mockableView.setTextColor(mResources.getColor(R.color.workbox_error_hint));
+            }
+            mockableView.setText(String.valueOf(mockable));
+
             if (TextUtils.isEmpty(uri.getPath())) {
                 pathLayout.setVisibility(View.GONE);
             } else {

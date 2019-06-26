@@ -55,6 +55,8 @@ public final class RequestResponseRecord implements Parcelable, Cloneable {
     private long requestHeaderLength = 0;
     @ColumnInfo(name = "requestBodyLength")
     private long requestBodyLength = 0;
+    @ColumnInfo(name = "multipartRequestBody")
+    private boolean multipartRequestBody;
     @ColumnInfo(name = "hasRequestBody")
     private boolean hasRequestBody;
     @ColumnInfo(name = "responseTime")
@@ -76,7 +78,8 @@ public final class RequestResponseRecord implements Parcelable, Cloneable {
     @ColumnInfo(name = "inUse")
     private boolean inUse;
 
-    public RequestResponseRecord() {}
+    public RequestResponseRecord() {
+    }
 
     protected RequestResponseRecord(Parcel in) {
         id = in.readLong();
@@ -96,6 +99,7 @@ public final class RequestResponseRecord implements Parcelable, Cloneable {
         requestLength = in.readLong();
         requestHeaderLength = in.readLong();
         requestBodyLength = in.readLong();
+        multipartRequestBody = in.readByte() != 0;
         hasRequestBody = in.readByte() != 0;
         responseTime = in.readLong();
         responseLength = in.readLong();
@@ -127,6 +131,7 @@ public final class RequestResponseRecord implements Parcelable, Cloneable {
         dest.writeLong(requestLength);
         dest.writeLong(requestHeaderLength);
         dest.writeLong(requestBodyLength);
+        dest.writeByte((byte) (multipartRequestBody ? 1 : 0));
         dest.writeByte((byte) (hasRequestBody ? 1 : 0));
         dest.writeLong(responseTime);
         dest.writeLong(responseLength);
@@ -270,6 +275,14 @@ public final class RequestResponseRecord implements Parcelable, Cloneable {
         this.hasRequestBody = hasRequestBody;
     }
 
+    public boolean isMultipartRequestBody() {
+        return multipartRequestBody;
+    }
+
+    public void setMultipartRequestBody(boolean multipartRequestBody) {
+        this.multipartRequestBody = multipartRequestBody;
+    }
+
     public long getResponseTime() {
         return responseTime;
     }
@@ -374,6 +387,12 @@ public final class RequestResponseRecord implements Parcelable, Cloneable {
         this.inUse = inUse;
     }
 
+    public boolean isMockable() {
+        return !(isMultipartRequestBody()
+                || (isHasRequestBody() && TextUtils.isEmpty(getRequestBody()))
+                || (isHasResponseBody() && TextUtils.isEmpty(getResponseBody())));
+    }
+
     public static class Summary {
         @ColumnInfo(name = "host")
         private String host;
@@ -436,6 +455,7 @@ public final class RequestResponseRecord implements Parcelable, Cloneable {
                 ", requestLength=" + requestLength +
                 ", requestHeaderLength=" + requestHeaderLength +
                 ", requestBodyLength=" + requestBodyLength +
+                ", multipartRequestBody=" + multipartRequestBody +
                 ", hasRequestBody=" + hasRequestBody +
                 ", responseTime=" + responseTime +
                 ", responseLength=" + responseLength +
