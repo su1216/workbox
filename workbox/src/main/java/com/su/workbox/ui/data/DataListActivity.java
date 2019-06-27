@@ -35,7 +35,6 @@ public class DataListActivity extends BaseAppCompatActivity {
     private static final SimpleBlockedDialogFragment DIALOG_FRAGMENT = SimpleBlockedDialogFragment.newInstance();
     private static File sExportedApkFile;
     private static File sExportedSoDirFile;
-    private static File sExportedSharedPrivateDirFile;
 
     public static void startActivity(@NonNull Context context) {
         context.startActivity(new Intent(context, DataListActivity.class));
@@ -49,7 +48,6 @@ public class DataListActivity extends BaseAppCompatActivity {
         File exportedBaseDir = new File(Workbox.getWorkboxSdcardDir(), getPackageName());
         sExportedApkFile = new File(exportedBaseDir, versionName + "-" + GeneralInfoHelper.getAppName() + ".apk");
         sExportedSoDirFile = new File(exportedBaseDir, versionName + "-native");
-        sExportedSharedPrivateDirFile = exportedBaseDir;
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment, new ItemListFragment(), "app_data_export").commit();
     }
 
@@ -97,19 +95,6 @@ public class DataListActivity extends BaseAppCompatActivity {
             });
         }
 
-        private void exportPrivateDirFile() {
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            DIALOG_FRAGMENT.show(ft, "导出中...");
-            mAppExecutors.diskIO().execute(() -> {
-                if (!sExportedSharedPrivateDirFile.exists()) {
-                    sExportedSharedPrivateDirFile.mkdirs();
-                }
-                IOUtil.copyDirectory(new File(mDataDirPath), sExportedSharedPrivateDirFile);
-                mActivity.runOnUiThread(() -> new ToastBuilder("已将应用私有文件导出到" + sExportedSharedPrivateDirFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
-                DIALOG_FRAGMENT.dismissAllowingStateLoss();
-            });
-        }
-
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.workbox_preference_data_export);
@@ -152,7 +137,7 @@ public class DataListActivity extends BaseAppCompatActivity {
             sharedPreferencePreference.setOnPreferenceClickListener(this);
             if (IOUtil.hasFilesInDir(sharedPreferenceDir, mSpFilenameFilter)) {
                 sharedPreferencePreference.setEnabled(true);
-                sharedPreferencePreference.setSummary("共" + sharedPreferenceDir.list(mSpFilenameFilter).length + "个数据库文件");
+                sharedPreferencePreference.setSummary("共" + sharedPreferenceDir.list(mSpFilenameFilter).length + "个SharedPreference文件");
             } else {
                 sharedPreferencePreference.setEnabled(false);
                 sharedPreferencePreference.setSummary("暂无SharedPreference文件");
@@ -199,7 +184,7 @@ public class DataListActivity extends BaseAppCompatActivity {
                     startActivity(new Intent(mActivity, SharedPreferenceListActivity.class));
                     break;
                 case "private_dir":
-                    exportPrivateDirFile();
+                    ExplorerActivity.startActivity(mActivity, mDataDirPath);
                     break;
                 default:
                     break;
