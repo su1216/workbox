@@ -41,16 +41,14 @@ import com.su.workbox.ui.JsListActivity;
 import com.su.workbox.ui.WebViewListActivity;
 import com.su.workbox.ui.app.AppComponentActivity;
 import com.su.workbox.ui.app.AppInfoListActivity;
-import com.su.workbox.ui.app.DataExportActivity;
-import com.su.workbox.ui.app.DatabaseListActivity;
 import com.su.workbox.ui.app.FeatureListActivity;
 import com.su.workbox.ui.app.PermissionListActivity;
-import com.su.workbox.ui.app.SharedPreferenceDetailActivity;
-import com.su.workbox.ui.app.SharedPreferenceListActivity;
-import com.su.workbox.ui.base.ActivityLifecycleListener;
 import com.su.workbox.ui.app.record.CurrentActivitySettingActivity;
 import com.su.workbox.ui.app.record.CurrentActivityView;
 import com.su.workbox.ui.app.record.LifecycleRecordListActivity;
+import com.su.workbox.ui.base.ActivityLifecycleListener;
+import com.su.workbox.ui.data.DataListActivity;
+import com.su.workbox.ui.data.DatabaseListActivity;
 import com.su.workbox.ui.log.common.CommonLogActivity;
 import com.su.workbox.ui.log.crash.CrashLogActivity;
 import com.su.workbox.ui.mock.MockGroupHostActivity;
@@ -92,7 +90,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     private CurrentActivityView mCurrentActivityView;
     private SwitchPreferenceCompat mCurrentActivityPreference;
     private Preference mProxyPreference;
-    private Preference mSharedPreferencePreference;
     private Preference mNotificationPreference;
     private ListPreference mMockPolicyPreference;
     private Preference mHostsPreference;
@@ -128,7 +125,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 + "版本:" + GeneralInfoHelper.getVersionName()
                 + "(" + GeneralInfoHelper.getVersionCode() + ")");
         findPreference("app_component_info").setOnPreferenceClickListener(this);
-        findPreference("data_export").setOnPreferenceClickListener(this);
+        findPreference("data_view_export").setOnPreferenceClickListener(this);
 
         Preference softwareInfoPreference = findPreference("software_info");
         softwareInfoPreference.setSummary("Android " + Build.VERSION.RELEASE + "    " + SystemInfoHelper.getSystemVersionName(Build.VERSION.SDK_INT) + "    "
@@ -145,17 +142,12 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         Preference featurePreference = findPreference("feature");
         featurePreference.setOnPreferenceClickListener(this);
         featurePreference.setVisible(!AppHelper.getRequiredFeatures(mActivity).isEmpty());
-        mSharedPreferencePreference = findPreference("shared_preference");
-        mSharedPreferencePreference.setOnPreferenceClickListener(this);
         mCurrentActivityView = CurrentActivityView.getInstance();
         mCurrentActivityPreference = (SwitchPreferenceCompat) findPreference("current_activity");
         mCurrentActivityPreference.setChecked(mCurrentActivityView.isShowing());
         mCurrentActivityPreference.setOnPreferenceClickListener(this);
         mCurrentActivityPreference.setOnPreferenceChangeListener(this);
         findPreference("lifecycle_history").setOnPreferenceClickListener(this);
-        Preference databasePreference = findPreference("database");
-        databasePreference.setOnPreferenceClickListener(this);
-        databasePreference.setVisible(AppHelper.getDatabasesCount(mActivity) > 0);
         findPreference("more_phone_info").setOnPreferenceClickListener(this);
         findPreference("app_list").setOnPreferenceClickListener(this);
         mHostsPreference = findPreference("hosts");
@@ -207,7 +199,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         mWebViewHost = Workbox.getWebViewHost();
         initHostPreference(mHostsPreference, mHost, HostsActivity.TYPE_HOST);
         initHostPreference(mWebViewHostsPreference, mWebViewHost, HostsActivity.TYPE_WEB_VIEW_HOST);
-        mSharedPreferencePreference.setEnabled(SpHelper.sharedPreferenceCount(mActivity) != 0);
         setNotificationSummary();
         if (!NetworkUtil.isNetworkAvailable()) {
             mProxyPreference.setSummary("无网络连接");
@@ -513,17 +504,8 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             case "feature":
                 startActivity(new Intent(mActivity, FeatureListActivity.class));
                 return true;
-            case "data_export":
-                DataExportActivity.startActivity(mActivity);
-                return true;
-            case "shared_preference":
-                if (SpHelper.sharedPreferenceCount(mActivity) == 1) {
-                    Intent sharedPreferenceIntent = new Intent(mActivity, SharedPreferenceDetailActivity.class);
-                    sharedPreferenceIntent.putExtra("name", SpHelper.getOnlySharedPreferenceFileName(mActivity));
-                    startActivity(sharedPreferenceIntent);
-                } else {
-                    startActivity(new Intent(mActivity, SharedPreferenceListActivity.class));
-                }
+            case "data_view_export":
+                DataListActivity.startActivity(mActivity);
                 return true;
             case "current_activity":
                 startActivity(new Intent(mActivity, CurrentActivitySettingActivity.class));

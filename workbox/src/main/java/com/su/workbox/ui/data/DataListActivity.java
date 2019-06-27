@@ -1,4 +1,4 @@
-package com.su.workbox.ui.app;
+package com.su.workbox.ui.data;
 
 import android.Manifest;
 import android.content.Context;
@@ -17,6 +17,7 @@ import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.Workbox;
 import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.ui.app.PermissionListActivity;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;
@@ -29,18 +30,15 @@ import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 import java.io.File;
 import java.io.FilenameFilter;
 
-public class DataExportActivity extends BaseAppCompatActivity {
-    private static final String TAG = DataExportActivity.class.getSimpleName();
+public class DataListActivity extends BaseAppCompatActivity {
+    private static final String TAG = DataListActivity.class.getSimpleName();
     private static final SimpleBlockedDialogFragment DIALOG_FRAGMENT = SimpleBlockedDialogFragment.newInstance();
     private static File sExportedApkFile;
-    private static File sExportedManifestFile;
     private static File sExportedSoDirFile;
-    private static File sExportedDatabaseDirFile;
-    private static File sExportedSharedPreferenceDirFile;
     private static File sExportedSharedPrivateDirFile;
 
     public static void startActivity(@NonNull Context context) {
-        context.startActivity(new Intent(context, DataExportActivity.class));
+        context.startActivity(new Intent(context, DataListActivity.class));
     }
 
     @Override
@@ -50,10 +48,7 @@ public class DataExportActivity extends BaseAppCompatActivity {
         String versionName = GeneralInfoHelper.getVersionName();
         File exportedBaseDir = new File(Workbox.getWorkboxSdcardDir(), getPackageName());
         sExportedApkFile = new File(exportedBaseDir, versionName + "-" + GeneralInfoHelper.getAppName() + ".apk");
-        sExportedManifestFile = new File(exportedBaseDir, versionName + "-manifest.xml");
         sExportedSoDirFile = new File(exportedBaseDir, versionName + "-native");
-        sExportedDatabaseDirFile = new File(exportedBaseDir, versionName + "-databases");
-        sExportedSharedPreferenceDirFile = new File(exportedBaseDir, versionName + "-" + SpHelper.SHARED_PREFERENCE_BASE_DIRNAME);
         sExportedSharedPrivateDirFile = exportedBaseDir;
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment, new ItemListFragment(), "app_data_export").commit();
     }
@@ -61,7 +56,7 @@ public class DataExportActivity extends BaseAppCompatActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        setTitle("数据导出");
+        setTitle("数据查看与导出");
     }
 
     public static class ItemListFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener {
@@ -98,55 +93,6 @@ public class DataExportActivity extends BaseAppCompatActivity {
                     IOUtil.copyFile(so, new File(sExportedSoDirFile, so.getName()));
                 }
                 mActivity.runOnUiThread(() -> new ToastBuilder("已将so导出到" + sExportedSoDirFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
-                DIALOG_FRAGMENT.dismissAllowingStateLoss();
-            });
-        }
-
-        private void exportManifestFile() {
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            DIALOG_FRAGMENT.show(ft, "导出中...");
-            mAppExecutors.diskIO().execute(() -> {
-                File dir = sExportedManifestFile.getParentFile();
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
-                ManifestParser parser = new ManifestParser(mActivity);
-                IOUtil.writeFile(sExportedManifestFile.getAbsolutePath(), parser.getManifest());
-                mActivity.runOnUiThread(() -> new ToastBuilder("已将apk导出到" + sExportedManifestFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
-                DIALOG_FRAGMENT.dismissAllowingStateLoss();
-            });
-        }
-
-        private void exportDatabaseFile() {
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            DIALOG_FRAGMENT.show(ft, "导出中...");
-            mAppExecutors.diskIO().execute(() -> {
-                File databasesDir = new File(mDataDirPath, "databases");
-                if (!sExportedDatabaseDirFile.exists()) {
-                    sExportedDatabaseDirFile.mkdirs();
-                }
-                File[] databases = databasesDir.listFiles(mDbFilenameFilter);
-                for (File database : databases) {
-                    IOUtil.copyFile(database, new File(sExportedDatabaseDirFile, database.getName()));
-                }
-                mActivity.runOnUiThread(() -> new ToastBuilder("已将数据库文件导出到" + sExportedDatabaseDirFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
-                DIALOG_FRAGMENT.dismissAllowingStateLoss();
-            });
-        }
-
-        private void exportSharedPreferenceFile() {
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            DIALOG_FRAGMENT.show(ft, "导出中...");
-            mAppExecutors.diskIO().execute(() -> {
-                File databasesDir = new File(mDataDirPath, "databases");
-                if (!sExportedSharedPreferenceDirFile.exists()) {
-                    sExportedSharedPreferenceDirFile.mkdirs();
-                }
-                File[] sharedPreferences = databasesDir.listFiles(mSpFilenameFilter);
-                for (File sharedPreference : sharedPreferences) {
-                    IOUtil.copyFile(sharedPreference, new File(sExportedSharedPreferenceDirFile, sharedPreference.getName()));
-                }
-                mActivity.runOnUiThread(() -> new ToastBuilder("已将SharedPreference文件导出到" + sExportedSharedPreferenceDirFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
                 DIALOG_FRAGMENT.dismissAllowingStateLoss();
             });
         }
@@ -240,13 +186,17 @@ public class DataExportActivity extends BaseAppCompatActivity {
                     exportSoFile();
                     break;
                 case "manifest":
-                    exportManifestFile();
+                    ManifestParser parser = new ManifestParser(mActivity);
+                    Intent intent = new Intent(mActivity, XmlViewerActivity.class);
+                    intent.putExtra("title", "Manifest");
+                    intent.putExtra("content", parser.getManifest());
+                    startActivity(intent);
                     break;
                 case "database":
-                    exportDatabaseFile();
+                    DatabaseListActivity.startActivity(mActivity);
                     break;
                 case "shared_preference":
-                    exportSharedPreferenceFile();
+                    startActivity(new Intent(mActivity, SharedPreferenceListActivity.class));
                     break;
                 case "private_dir":
                     exportPrivateDirFile();

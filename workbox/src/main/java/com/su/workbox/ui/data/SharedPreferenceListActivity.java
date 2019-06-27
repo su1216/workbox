@@ -1,4 +1,4 @@
-package com.su.workbox.ui.app;
+package com.su.workbox.ui.data;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,24 +12,29 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.su.workbox.R;
-import com.su.workbox.ui.BaseAppCompatActivity;
 import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.SpHelper;
+import com.su.workbox.widget.ToastBuilder;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SharedPreferenceListActivity extends BaseAppCompatActivity implements AdapterView.OnItemClickListener {
+public class SharedPreferenceListActivity extends DataActivity implements AdapterView.OnItemClickListener {
     public static final String TAG = SharedPreferenceListActivity.class.getSimpleName();
     private SharedPreferenceAdapter mAdapter;
+    private FilenameFilter mSpFilenameFilter = (dir, name) -> name.endsWith(".xml");
+    private static File sExportedSharedPreferenceDirFile;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.workbox_template_page_list_view);
+        sExportedSharedPreferenceDirFile = new File(mExportedBaseDir, mVersionName + "-" + SpHelper.SHARED_PREFERENCE_BASE_DIRNAME);
         mAdapter = new SharedPreferenceAdapter(this);
         ListView listView = findViewById(R.id.list_view);
         listView.setAdapter(mAdapter);
@@ -59,6 +64,19 @@ public class SharedPreferenceListActivity extends BaseAppCompatActivity implemen
         Intent sharedPreferenceIntent = new Intent(this, SharedPreferenceDetailActivity.class);
         sharedPreferenceIntent.putExtra("name", IOUtil.getFileNameWithoutExtension(file));
         startActivity(sharedPreferenceIntent);
+    }
+
+    @Override
+    protected void export() {
+        File sharedPreferencesDir = new File(mDataDirPath, SpHelper.SHARED_PREFERENCE_BASE_DIRNAME);
+        if (!sExportedSharedPreferenceDirFile.exists()) {
+            sExportedSharedPreferenceDirFile.mkdirs();
+        }
+        File[] sharedPreferences = sharedPreferencesDir.listFiles(mSpFilenameFilter);
+        for (File sharedPreference : sharedPreferences) {
+            IOUtil.copyFile(sharedPreference, new File(sExportedSharedPreferenceDirFile, sharedPreference.getName()));
+        }
+        runOnUiThread(() -> new ToastBuilder("已将SharedPreference文件导出到" + sExportedSharedPreferenceDirFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
     }
 
     private static class SharedPreferenceAdapter extends BaseAdapter {

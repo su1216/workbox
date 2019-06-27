@@ -54,7 +54,7 @@
             android:theme="@style/WorkboxListTheme"/>
         <!--应用数据导出-->
         <activity
-            android:name=".ui.app.DataExportActivity"
+            android:name=".ui.data.DataListActivity"
             android:exported="false"
             android:theme="@style/WorkboxListTheme"/>
         <!--切换host弹窗-->
@@ -107,13 +107,13 @@
             android:screenOrientation="portrait"/>
         <!-- SharedPreference列表 -->
         <activity
-            android:name=".ui.app.SharedPreferenceListActivity"
+            android:name=".ui.data.SharedPreferenceListActivity"
             android:exported="false"
             android:theme="@style/WorkboxListTheme"
             android:screenOrientation="portrait"/>
         <!-- SharedPreference详情 -->
         <activity
-            android:name=".ui.app.SharedPreferenceDetailActivity"
+            android:name=".ui.data.SharedPreferenceDetailActivity"
             android:exported="false"
             android:theme="@style/WorkboxListTheme"
             android:screenOrientation="portrait"/>
@@ -131,13 +131,13 @@
             android:screenOrientation="portrait"/>
         <!-- Database列表 -->
         <activity
-            android:name=".ui.app.DatabaseListActivity"
+            android:name=".ui.data.DatabaseListActivity"
             android:exported="false"
             android:theme="@style/WorkboxListTheme"
             android:screenOrientation="portrait"/>
         <!-- table信息 -->
         <activity
-            android:name=".ui.app.TableInfoActivity"
+            android:name=".ui.data.TableInfoActivity"
             android:exported="false"
             android:theme="@style/WorkboxListTheme"
             android:screenOrientation="portrait"/>
@@ -234,7 +234,7 @@
             android:theme="@style/WorkboxListTheme"/>
         <!-- 文本浏览 -->
         <activity
-            android:name=".ui.XmlViewerActivity"
+            android:name=".ui.data.XmlViewerActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"

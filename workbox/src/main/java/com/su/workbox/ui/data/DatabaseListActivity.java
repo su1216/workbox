@@ -1,4 +1,4 @@
-package com.su.workbox.ui.app;
+package com.su.workbox.ui.data;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,24 +12,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.su.workbox.R;
 import com.su.workbox.database.DbInfoProvider;
 import com.su.workbox.entity.database.Table;
 import com.su.workbox.entity.database.Trigger;
-import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.utils.IOUtil;
+import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DatabaseListActivity extends BaseAppCompatActivity {
+public class DatabaseListActivity extends DataActivity {
     public static final String TAG = DatabaseListActivity.class.getSimpleName();
     private List<String> mGroupList = new ArrayList<>();
     private List<Database> mDatabaseList = new ArrayList<>();
     private DatabaseAdapter mAdapter;
+    private FilenameFilter mDbFilenameFilter = (dir, name) -> name.endsWith(".db");
+    private static File sExportedDatabaseDirFile;
 
     public static void startActivity(@NonNull Context context) {
         context.startActivity(new Intent(context, DatabaseListActivity.class));
@@ -39,6 +45,7 @@ public class DatabaseListActivity extends BaseAppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.workbox_template_recycler_list);
+        sExportedDatabaseDirFile = new File(mExportedBaseDir, mVersionName + "-databases");
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         mAdapter = new DatabaseAdapter(this);
         PreferenceItemDecoration decoration = new PreferenceItemDecoration(this, 0, 0);
@@ -121,6 +128,19 @@ public class DatabaseListActivity extends BaseAppCompatActivity {
         } while (cursor.moveToNext());
         cursor.close();
         return list;
+    }
+
+    @Override
+    protected void export() {
+        File databasesDir = new File(mDataDirPath, "databases");
+        if (!sExportedDatabaseDirFile.exists()) {
+            sExportedDatabaseDirFile.mkdirs();
+        }
+        File[] databases = databasesDir.listFiles(mDbFilenameFilter);
+        for (File database : databases) {
+            IOUtil.copyFile(database, new File(sExportedDatabaseDirFile, database.getName()));
+        }
+        runOnUiThread(() -> new ToastBuilder("已将数据库文件导出到" + sExportedDatabaseDirFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
     }
 
     private static class DatabaseAdapter extends RecyclerView.Adapter<BaseRecyclerAdapter.BaseViewHolder> {

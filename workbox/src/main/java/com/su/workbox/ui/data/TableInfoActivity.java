@@ -1,4 +1,4 @@
-package com.su.workbox.ui.app;
+package com.su.workbox.ui.data;
 
 import android.content.Intent;
 import android.database.Cursor;

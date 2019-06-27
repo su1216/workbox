@@ -17,8 +17,8 @@ import com.su.workbox.net.interceptor.MockInterceptor;
 import com.su.workbox.ui.JsInterfaceListActivity;
 import com.su.workbox.ui.app.AppInfoListActivity;
 import com.su.workbox.ui.app.ComponentListActivity;
-import com.su.workbox.ui.app.DataExportActivity;
-import com.su.workbox.ui.app.DatabaseListActivity;
+import com.su.workbox.ui.data.DataListActivity;
+import com.su.workbox.ui.data.DatabaseListActivity;
 import com.su.workbox.ui.app.PermissionListActivity;
 import com.su.workbox.ui.base.ActivityLifecycleListener;
 import com.su.workbox.ui.base.AppLifecycleListener;
@@ -116,7 +116,7 @@ public class Workbox {
     public static void startActivity(@NonNull String module, @NonNull Context context) {
         switch (module) {
             case MODULE_DATA_EXPORT:
-                DataExportActivity.startActivity(context);
+                DataListActivity.startActivity(context);
                 break;
             case MODULE_PERMISSIONS:
                 PermissionListActivity.startActivity(context);

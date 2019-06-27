@@ -1,19 +1,15 @@
 package com.su.workbox.ui.app;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.su.workbox.R;
 import com.su.workbox.ui.BaseAppCompatActivity;
-import com.su.workbox.ui.XmlViewerActivity;
-import com.su.workbox.utils.ManifestParser;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 
 /**
@@ -48,7 +44,6 @@ public class AppComponentActivity extends BaseAppCompatActivity {
             findPreference("service").setOnPreferenceClickListener(this);
             findPreference("receiver").setOnPreferenceClickListener(this);
             findPreference("provider").setOnPreferenceClickListener(this);
-            findPreference("manifest").setOnPreferenceClickListener(this);
         }
 
         @Override
@@ -62,20 +57,8 @@ public class AppComponentActivity extends BaseAppCompatActivity {
         @Override
         public boolean onPreferenceClick(Preference preference) {
             String key = preference.getKey();
-            if (TextUtils.equals(key, "manifest")) {
-                startTextViewerActivity();
-                return true;
-            }
             ComponentListActivity.startActivity(mActivity, key);
             return true;
-        }
-
-        private void startTextViewerActivity() {
-            ManifestParser parser = new ManifestParser(mActivity);
-            Intent intent = new Intent(mActivity, XmlViewerActivity.class);
-            intent.putExtra("title", "Manifest文件");
-            intent.putExtra("content", parser.getManifest());
-            startActivity(intent);
         }
     }
 

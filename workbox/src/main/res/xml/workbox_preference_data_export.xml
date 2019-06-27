@@ -2,22 +2,22 @@
 <android.support.v7.preference.PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
     <android.support.v7.preference.Preference
+        android:title="SharedPreference"
+        android:key="shared_preference"/>
+    <android.support.v7.preference.Preference
+        android:title="sqlite3 db"
+        android:key="database"/>
+    <android.support.v7.preference.Preference
+        android:title="Manifest"
+        android:key="manifest"
+        android:summary="可将app中manifest文件导出到sdcard中"/>
+    <android.support.v7.preference.Preference
+        android:title="私有数据"
+        android:key="private_dir"/>
+    <android.support.v7.preference.Preference
         android:title="Apk导出"
         android:key="apk"/>
     <android.support.v7.preference.Preference
         android:title="So导出"
         android:key="so"/>
-    <android.support.v7.preference.Preference
-        android:title="Manifest导出"
-        android:key="manifest"
-        android:summary="可将app中manifest文件导出到sdcard中"/>
-    <android.support.v7.preference.Preference
-        android:title="数据库导出"
-        android:key="database"/>
-    <android.support.v7.preference.Preference
-        android:title="SharedPreference导出"
-        android:key="shared_preference"/>
-    <android.support.v7.preference.Preference
-        android:title="私有数据目录导出"
-        android:key="private_dir"/>
 </android.support.v7.preference.PreferenceScreen>
