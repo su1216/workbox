@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,6 +15,7 @@ import android.widget.TextView;
 
 import com.su.workbox.R;
 import com.su.workbox.entity.NoteComponentEntity;
+import com.su.workbox.ui.base.BaseFragment;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 
 import java.lang.reflect.Field;
@@ -26,7 +26,7 @@ import java.util.List;
  * Created by su on 17-12-25.
  */
 
-public class ComponentFlagsFragment extends Fragment {
+public class ComponentFlagsFragment extends BaseFragment {
 
     private static final String TAG = ComponentFlagsFragment.class.getSimpleName();
     private RecyclerView mRecyclerView;

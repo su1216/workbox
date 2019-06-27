@@ -3,7 +3,6 @@ package com.su.workbox.ui.usage;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +11,12 @@ import android.widget.TextView;
 
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
+import com.su.workbox.ui.base.BaseFragment;
 import com.su.workbox.utils.ThreadUtil;
 
 import java.util.Date;
 
-public class RecordRequestDetailFragment extends Fragment {
+public class RecordRequestDetailFragment extends BaseFragment {
 
     private DataUsageRecord mDataUsageRecord;
 

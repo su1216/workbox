@@ -1,5 +1,6 @@
 package com.su.workbox.ui;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.MenuRes;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import com.su.workbox.R;
 /**
  * Created by su on 18-1-2.
  */
+@SuppressLint("Registered")
 public abstract class BaseAppCompatActivity extends AppCompatActivity {
 
     protected Toolbar mToolbar;

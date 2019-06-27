@@ -4,7 +4,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,7 @@ import android.widget.TextView;
 
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
+import com.su.workbox.ui.base.BaseFragment;
 import com.su.workbox.utils.ThreadUtil;
 
 import java.util.Date;
@@ -20,7 +20,7 @@ import java.util.Date;
 /**
  * 流量监控记录 - 流量监控记录详情 - response
  * */
-public class RecordResponseDetailFragment extends Fragment {
+public class RecordResponseDetailFragment extends BaseFragment {
 
     private Resources mResources;
     private DataUsageRecord mDataUsageRecord;

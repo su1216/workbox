@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.su.workbox.R;
 import com.su.workbox.entity.AppInfo;
+import com.su.workbox.ui.base.BaseFragment;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.SearchableHelper;
@@ -205,7 +206,7 @@ public class AppListActivity extends BaseAppCompatActivity implements SearchView
         }
     }
 
-    public static class AppListFragment extends Fragment {
+    public static class AppListFragment extends BaseFragment {
 
         private AppListActivity mActivity;
         private RecyclerView mRecyclerView;

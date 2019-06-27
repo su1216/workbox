@@ -1,5 +1,6 @@
 package com.su.workbox.ui.data;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,9 +17,9 @@ import com.su.workbox.widget.SimpleBlockedDialogFragment;
 
 import java.io.File;
 
+@SuppressLint("Registered")
 public abstract class DataActivity extends BaseAppCompatActivity {
 
-    public static final String TAG = DataActivity.class.getSimpleName();
     private static final SimpleBlockedDialogFragment DIALOG_FRAGMENT = SimpleBlockedDialogFragment.newInstance();
     private AppExecutors mAppExecutors = AppExecutors.getInstance();
     protected String mDataDirPath;
@@ -48,10 +49,5 @@ public abstract class DataActivity extends BaseAppCompatActivity {
     @Override
     public int menuRes() {
         return R.menu.workbox_export_menu;
-    }
-
-    @Override
-    protected String getTag() {
-        return TAG;
     }
 }
