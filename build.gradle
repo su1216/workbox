@@ -42,8 +42,8 @@ ext {
     buildToolsVersion = '28.0.3'
     supportVersion = '28.0.0'
     archVersion = '1.1.1'
-    fastjson = '1.1.70.android'
-    okhttp = '3.12.0'
+    fastjson = '1.1.71.android'
+    okhttp = '3.12.3'
 
     userOrg = 'su1216'
     repoName = 'maven'
