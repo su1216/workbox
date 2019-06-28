@@ -62,8 +62,19 @@ public class ExplorerActivity extends DataActivity {
     @Override
     protected void export() {
         ExplorerFragment fragment = (ExplorerFragment) getSupportFragmentManager().findFragmentByTag(TAG);
-        int index = fragment.mCurrentPath.indexOf(mRoot);
-        String path = fragment.mCurrentPath.substring(index + mRoot.length());
+        export(fragment.mCurrentPath);
+    }
+
+    private void export(String filepath) {
+        File file = new File(filepath);
+        String fileDirPath;
+        if (file.exists() && file.isFile()) {
+            fileDirPath = file.getParent();
+        } else {
+            fileDirPath = filepath;
+        }
+        int index = fileDirPath.indexOf(mRoot);
+        String path = fileDirPath.substring(index + mRoot.length());
         if (path.startsWith("/")) {
             path = path.substring(1);
         }
@@ -71,8 +82,18 @@ public class ExplorerActivity extends DataActivity {
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        IOUtil.copyDirectory(new File(fragment.mCurrentPath), dir);
-        runOnUiThread(() -> new ToastBuilder("已将应用私有文件导出到" + dir.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
+
+        File destFile;
+        String msg;
+        if (file.isFile()) {
+            destFile = new File(dir, file.getName());
+            msg = "已将文件" + file.getName() + "导出到" + dir.getAbsolutePath();
+        } else {
+            destFile = dir;
+            msg = "已将目录" + file.getName() + "导出到" + dir.getAbsolutePath();
+        }
+        IOUtil.copyDirectory(new File(filepath), destFile);
+        runOnUiThread(() -> new ToastBuilder(msg).setDuration(Toast.LENGTH_LONG).show());
     }
 
     private void addFragment(@NonNull String path) {
@@ -155,7 +176,7 @@ public class ExplorerActivity extends DataActivity {
                 detailView.setText("items: " + file.list().length);
                 arrowView.setVisibility(View.VISIBLE);
             } else {
-                holder.itemView.setOnClickListener(null);
+                holder.itemView.setOnClickListener(v -> mActivity.export(file.getAbsolutePath()));
                 detailView.setText("size: " + SystemInfoHelper.formatFileSize(file.length()));
                 arrowView.setVisibility(View.GONE);
             }
