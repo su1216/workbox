@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.su.workbox.R;
 import com.su.workbox.ui.base.BaseFragment;
 import com.su.workbox.utils.IOUtil;
+import com.su.workbox.utils.SpHelper;
 import com.su.workbox.utils.SystemInfoHelper;
 import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
@@ -31,6 +32,8 @@ import java.util.List;
 public class ExplorerActivity extends DataActivity {
 
     public static final String TAG = ExplorerActivity.class.getSimpleName();
+    private File mDatabasesDir;
+    private File mSharedPreferenceDir;
     private String mRoot;
 
     public static void startActivity(@NonNull Context context, @NonNull String root) {
@@ -43,6 +46,8 @@ public class ExplorerActivity extends DataActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.workbox_template_fragment);
+        mDatabasesDir = new File(mDataDirPath, "databases");
+        mSharedPreferenceDir = new File(mDataDirPath, SpHelper.SHARED_PREFERENCE_BASE_DIRNAME);
         mRoot = getIntent().getStringExtra("root");
     }
 
@@ -146,13 +151,24 @@ public class ExplorerActivity extends DataActivity {
             TextView detailView = holder.getView(R.id.detail);
             nameView.setText(file.getName());
             if (file.exists() && file.isDirectory()) {
-                holder.itemView.setOnClickListener(v -> mActivity.addFragment(file.getAbsolutePath()));
+                setOnClickListenerForDir(file, holder.itemView);
                 detailView.setText("items: " + file.list().length);
                 arrowView.setVisibility(View.VISIBLE);
             } else {
                 holder.itemView.setOnClickListener(null);
                 detailView.setText("size: " + SystemInfoHelper.formatFileSize(file.length()));
                 arrowView.setVisibility(View.GONE);
+            }
+        }
+
+        private void setOnClickListenerForDir(@NonNull File dir, @NonNull View itemView) {
+            final String path = dir.getAbsolutePath();
+            if (mActivity.mDatabasesDir.equals(dir)) {
+                itemView.setOnClickListener(v -> DatabaseListActivity.startActivity(mActivity));
+            } else if (mActivity.mSharedPreferenceDir.equals(dir)) {
+                itemView.setOnClickListener(v -> mActivity.startActivity(new Intent(mActivity, SharedPreferenceListActivity.class)));
+            } else {
+                itemView.setOnClickListener(v -> mActivity.addFragment(path));
             }
         }
 
