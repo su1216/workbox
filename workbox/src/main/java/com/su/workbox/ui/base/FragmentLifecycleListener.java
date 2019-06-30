@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.su.workbox.utils.GeneralInfoHelper;
 
 public class FragmentLifecycleListener implements FragmentLifecycleCallbacks {
 
+    private static boolean sEnableLog = false;
     @SuppressLint("StaticFieldLeak")
     private static FragmentLifecycleListener sFragmentLifecycleListener = new FragmentLifecycleListener();
     private AppExecutors mAppExecutors = AppExecutors.getInstance();
@@ -38,6 +40,7 @@ public class FragmentLifecycleListener implements FragmentLifecycleCallbacks {
         if (clazz.getName().startsWith(GeneralInfoHelper.LIB_PACKAGE_NAME)) {
             return;
         }
+
         LifecycleRecord record = new LifecycleRecord();
         record.setType(LifecycleRecord.FRAGMENT);
         record.setCreateTime(System.currentTimeMillis());
@@ -54,6 +57,10 @@ public class FragmentLifecycleListener implements FragmentLifecycleCallbacks {
         }
         record.setEvent(event);
         insertFragmentRecord(record);
+
+        if (sEnableLog) {
+            Log.d(clazz.getSimpleName(), event);
+        }
     }
 
     private void insertFragmentRecord(LifecycleRecord record) {
@@ -134,5 +141,9 @@ public class FragmentLifecycleListener implements FragmentLifecycleCallbacks {
     @Override
     public void onViewStateRestored(Fragment fragment, @Nullable Bundle savedInstanceState) {
         save(fragment, "viewStateRestored");
+    }
+
+    public static void setEnableLog(boolean enableLog) {
+        sEnableLog = enableLog;
     }
 }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -17,6 +18,7 @@ import com.su.workbox.net.interceptor.MockInterceptor;
 import com.su.workbox.ui.JsInterfaceListActivity;
 import com.su.workbox.ui.app.AppInfoListActivity;
 import com.su.workbox.ui.app.ComponentListActivity;
+import com.su.workbox.ui.base.FragmentListenerManager;
 import com.su.workbox.ui.data.DataListActivity;
 import com.su.workbox.ui.data.DatabaseListActivity;
 import com.su.workbox.ui.app.PermissionListActivity;
@@ -111,6 +113,14 @@ public class Workbox {
 
     public static Intent getWorkboxMainIntent() {
         return new Intent(GeneralInfoHelper.getContext(), WorkboxMainActivity.class);
+    }
+
+    public static void registerFragment(@NonNull Fragment fragment) {
+        new FragmentListenerManager().registerFragment(fragment);
+    }
+
+    public static void enableFragmentLifecycleLog(boolean enableLog) {
+        FragmentListenerManager.setEnableLog(enableLog);
     }
 
     public static void startActivity(@NonNull String module, @NonNull Context context) {

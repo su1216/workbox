@@ -10,6 +10,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Space;
+
+import com.su.workbox.R;
 
 public class ListenerFragment extends Fragment {
 
@@ -47,7 +50,11 @@ public class ListenerFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mListener.onCreateView(this, inflater, container, savedInstanceState);
-        return null;
+        Space space = new Space(getContext());
+        space.setId(R.id.workbox_space);
+        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(0, 0);
+        space.setLayoutParams(lp);
+        return space;
     }
 
     @Override

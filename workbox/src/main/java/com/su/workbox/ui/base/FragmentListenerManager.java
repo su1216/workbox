@@ -1,15 +1,16 @@
 package com.su.workbox.ui.base;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import java.lang.reflect.Field;
 
 public class FragmentListenerManager {
 
-    static final String LISTENER_FRAGMENT = "listener_fragment";
+    private static final String LISTENER_FRAGMENT = "listener_fragment";
     private ListenerFragment mListenerFragment;
 
-    public void registerFragment(Fragment fragment) {
+    public void registerFragment(@NonNull Fragment fragment) {
         if (mListenerFragment == null) {
             mListenerFragment = new ListenerFragment();
         }
@@ -26,7 +27,7 @@ public class FragmentListenerManager {
      * For bug of Fragment in Android
      * https://issuetracker.google.com/issues/36963722
      */
-    private void compatibleFragment(Fragment fragment) {
+    private void compatibleFragment(@NonNull Fragment fragment) {
         try {
             Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
             childFragmentManager.setAccessible(true);
@@ -36,5 +37,9 @@ public class FragmentListenerManager {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void setEnableLog(boolean enableLog) {
+        FragmentLifecycleListener.setEnableLog(enableLog);
     }
 }

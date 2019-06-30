@@ -1,6 +1,7 @@
 package com.su.workbox;
 
 import android.app.Application;
+import android.app.Fragment;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -48,6 +49,10 @@ public class Workbox {
     public static Intent getWorkboxMainIntent() {
         return null;
     }
+
+    public static void registerFragment(@NonNull Fragment fragment) {}
+
+    public static void enableFragmentLifecycleLog(boolean enableLog) {}
 
     @NonNull
     public static String getWebViewHost() {
