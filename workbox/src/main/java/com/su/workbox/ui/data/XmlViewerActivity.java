@@ -8,9 +8,7 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.su.workbox.R;
-import com.su.workbox.ui.BaseAppCompatActivity;
 import com.su.workbox.utils.IOUtil;
-import com.su.workbox.utils.ManifestParser;
 import com.su.workbox.widget.ToastBuilder;
 
 import java.io.File;

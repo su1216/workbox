@@ -62,6 +62,7 @@ public class AppListActivity extends BaseAppCompatActivity implements SearchView
         mTabLayout.addTab(makeTab("System"));
         mTabLayout.addTab(makeTab("All"));
         mPager = findViewById(R.id.pager);
+        mPager.setOffscreenPageLimit(2);
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
         mTabLayout.addOnTabSelectedListener(new SimpleOnTabSelectedListener() {
             @Override
@@ -252,10 +253,6 @@ public class AppListActivity extends BaseAppCompatActivity implements SearchView
                     break;
             }
             mAppAdapter.updateData(list);
-        }
-
-        int getType() {
-            return mType;
         }
 
         static AppListFragment newInstance(int type) {

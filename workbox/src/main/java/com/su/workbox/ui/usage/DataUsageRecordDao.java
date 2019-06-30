@@ -26,9 +26,6 @@ public interface DataUsageRecordDao {
     @Query("DELETE FROM data_usage WHERE url LIKE  '%' || :query || '%' ")
     void deleteDataUsageRecords(String query);
 
-    @Query("DELETE FROM data_usage WHERE requestTime <= :requestTime")
-    int deleteDataUsageRecords(long requestTime);
-
     @Query("SELECT count(1) as total, sum(requestLength) as totalRequestLength, sum(responseLength) as totalResponseLength FROM data_usage WHERE url LIKE  '%' || :urlFragment || '%' ")
     LiveData<DataUsageRecord.Summary> getDataUsageRecordSummary(String urlFragment);
 

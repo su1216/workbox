@@ -46,10 +46,6 @@ public class CrashLogRecordModel extends AndroidViewModel {
         return mRecordList;
     }
 
-    public LiveData<CrashLogRecord> getCrashLogRecord(long id) {
-        return mCrashLogRecordDao.getLogById(id);
-    }
-
     public void deleteAll() {
         mDataSource.deleteCrashLogRecords();
     }
