@@ -18,10 +18,10 @@ Android 4.4+ (API level 19+)
 ## Workbox
 
 ```groovy
-debugApi 'com.su:workbox.annotations:0.8.8'
-debugAnnotationProcessor 'com.su:workbox.compiler:0.8.8'
-debugImplementation 'com.su:workbox:0.8.8'
-releaseImplementation 'com.su:workbox-no-op:0.8.8'
+debugApi 'com.su:workbox.annotations:0.9.0'
+debugAnnotationProcessor 'com.su:workbox.compiler:0.9.0'
+debugImplementation 'com.su:workbox:0.9.0'
+releaseImplementation 'com.su:workbox-no-op:0.9.0'
 
 ```
 
@@ -59,6 +59,17 @@ private static void initWorkbox(Application application, String className) {
 
 
 
+监听activity/fragment生命周期
+
+如果只想监听activity生命周期，初始化Workbox之后无需做额外的任何事情即可在`生命周期历史记录`中看到activity生命周期记录，如果想记录fragment生命周期，则需在您的BaseFragment的`onAttach`方法中调用
+
+```
+Workbox.registerFragment(this)
+```
+
+由于生命周期记录是存储在数据库中的，所以需要您定期手动清理。
+
+
 
 
 收集崩溃日志
@@ -74,6 +85,8 @@ if (BuildConfig.DEBUG) {
 或者，在您的UncaughtExceptionHandler中调用CrashLogHandler其`uncaughtException`方法
 
 根据需要设置是否杀死进程
+
+由于崩溃日志是存储在数据库中的，所以需要您定期手动清理。普通日志并没有存在数据库中，无需特殊处理。
 
 
 
