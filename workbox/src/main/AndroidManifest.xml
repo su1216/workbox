@@ -14,17 +14,17 @@
         <activity
             android:name=".ui.main.WorkboxMainActivity"
             android:exported="false"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"
-            android:launchMode="singleTask"/>
+            android:theme="@style/WorkboxListTheme"/>
         <!-- Debug调试功能列表入口 -->
         <activity-alias
             android:name=".ui.DebugEntryActivity"
-            android:label="Workbox"
-            android:targetActivity=".ui.main.WorkboxMainActivity"
-            android:exported="true"
             android:enabled="false"
+            android:exported="true"
+            android:label="Workbox"
             android:screenOrientation="portrait"
+            android:targetActivity=".ui.main.WorkboxMainActivity"
             android:theme="@style/WorkboxListTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -35,27 +35,32 @@
         <activity
             android:name=".ui.log.crash.CrashLogActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"/>
         <!--崩溃日志详情-->
         <activity
             android:name=".ui.log.crash.CrashDetailActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"/>
         <!--常规日志列表-->
         <activity
             android:name=".ui.log.common.CommonLogActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:theme="@style/WorkboxSearchViewToolbar"
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <!--App信息列表-->
         <activity
             android:name=".ui.app.AppInfoListActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"/>
         <!--应用数据导出-->
         <activity
             android:name=".ui.data.DataListActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"/>
         <!--文件浏览-->
         <activity
@@ -67,13 +72,14 @@
         <activity
             android:name=".ui.HostsActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:theme="@style/WorkboxCustomDialog"/>
         <!--js接口列表-->
         <activity
             android:name=".ui.JsInterfaceListActivity"
             android:exported="false"
-            android:theme="@style/WorkboxSearchViewToolbar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxSearchViewToolbar"/>
         <!-- Debug调试WebView列表 -->
         <activity
             android:name=".ui.WebViewListActivity"
@@ -84,69 +90,69 @@
         <activity
             android:name=".ui.app.AppComponentActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait"/>
+            android:windowSoftInputMode="stateHidden"/>
         <!-- 组件列表 -->
         <activity
             android:name=".ui.app.ComponentListActivity"
             android:exported="false"
-            android:theme="@style/WorkboxSearchViewToolbar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxSearchViewToolbar"/>
         <!-- 组件信息 -->
         <activity
             android:name=".ui.app.ComponentActivity"
             android:exported="false"
-            android:theme="@style/WorkboxListTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxListTheme"/>
         <!-- Permission列表 -->
         <activity
             android:name=".ui.app.PermissionListActivity"
             android:exported="false"
-            android:theme="@style/WorkboxListTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxListTheme"/>
         <!-- Feature列表 -->
         <activity
             android:name=".ui.app.FeatureListActivity"
             android:exported="false"
-            android:theme="@style/WorkboxListTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxListTheme"/>
         <!-- SharedPreference列表 -->
         <activity
             android:name=".ui.data.SharedPreferenceListActivity"
             android:exported="false"
-            android:theme="@style/WorkboxListTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxListTheme"/>
         <!-- SharedPreference详情 -->
         <activity
             android:name=".ui.data.SharedPreferenceDetailActivity"
             android:exported="false"
-            android:theme="@style/WorkboxListTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxListTheme"/>
         <!-- 当前Activity信息展示设置 -->
         <activity
             android:name=".ui.app.record.CurrentActivitySettingActivity"
             android:exported="false"
-            android:theme="@style/WorkboxListTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxListTheme"/>
         <!-- Activity历史记录 -->
         <activity
             android:name=".ui.app.record.LifecycleRecordListActivity"
             android:exported="false"
-            android:theme="@style/WorkboxSearchViewToolbar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxSearchViewToolbar"/>
         <!-- Database列表 -->
         <activity
             android:name=".ui.data.DatabaseListActivity"
             android:exported="false"
-            android:theme="@style/WorkboxListTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxListTheme"/>
         <!-- table信息 -->
         <activity
             android:name=".ui.data.TableInfoActivity"
             android:exported="false"
-            android:theme="@style/WorkboxListTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxListTheme"/>
         <!-- 系统信息 -->
         <activity
             android:name=".ui.DeviceInfoActivity"
