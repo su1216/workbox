@@ -20,9 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".LifecycleActivity"/>
         <activity android:name=".RequestActivity"/>
         <activity android:name=".ObjectParameterActivity"/>
         <activity android:name=".web.WebViewActivity" android:windowSoftInputMode="stateAlwaysHidden"/>
+        <!--only for test-->
         <service android:name=".component.TestService" />
         <receiver android:name=".component.TestReceiver"
                   android:exported="false"

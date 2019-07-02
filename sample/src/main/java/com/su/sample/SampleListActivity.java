@@ -17,6 +17,7 @@ public class SampleListActivity extends BaseAppCompatActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+        findViewById(R.id.history).setOnClickListener(this);
         findViewById(R.id.activity_test).setOnClickListener(this);
         findViewById(R.id.network_test).setOnClickListener(this);
         findViewById(R.id.web_view_test).setOnClickListener(this);
@@ -37,6 +38,9 @@ public class SampleListActivity extends BaseAppCompatActivity implements View.On
                 if (BuildConfig.DEBUG) {
                     debug();
                 }
+                break;
+            case R.id.history:
+                startActivity(new Intent(this, LifecycleActivity.class));
                 break;
             case R.id.network_test:
                 startActivity(new Intent(this, RequestActivity.class));
