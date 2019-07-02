@@ -14,6 +14,16 @@ import okhttp3.Interceptor;
 
 public class Workbox {
 
+    public static final String MODULE_DATA_EXPORT = "data_export";
+    public static final String MODULE_PERMISSIONS = "permissions";
+    public static final String MODULE_ACTIVITIES = "activities";
+    public static final String MODULE_MOCK_DATA = "mock_data";
+    public static final String MODULE_JS_INTERFACES = "js_interfaces";
+    public static final String MODULE_APP_INFO = "app_info";
+    public static final String MODULE_DATABASES = "databases";
+    public static final String MODULE_RULER = "ruler";
+    public static final String MODULE_LIFECYCLE = "lifecycle";
+
     private Workbox() {}
 
     public static void init(Application app) {}

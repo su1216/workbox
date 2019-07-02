@@ -18,6 +18,7 @@ import com.su.workbox.net.interceptor.MockInterceptor;
 import com.su.workbox.ui.JsInterfaceListActivity;
 import com.su.workbox.ui.app.AppInfoListActivity;
 import com.su.workbox.ui.app.ComponentListActivity;
+import com.su.workbox.ui.app.record.LifecycleRecordListActivity;
 import com.su.workbox.ui.base.FragmentListenerManager;
 import com.su.workbox.ui.data.DataListActivity;
 import com.su.workbox.ui.data.DatabaseListActivity;
@@ -49,6 +50,7 @@ public class Workbox {
     public static final String MODULE_APP_INFO = "app_info";
     public static final String MODULE_DATABASES = "databases";
     public static final String MODULE_RULER = "ruler";
+    public static final String MODULE_LIFECYCLE = "lifecycle";
     private static File sWorkboxSdcardDir = new File(Environment.getExternalStorageDirectory(), "workbox");
 
     private Workbox() {}
@@ -148,6 +150,9 @@ public class Workbox {
                 break;
             case MODULE_RULER:
                 RulerActivity.startActivity(context);
+                break;
+            case MODULE_LIFECYCLE:
+                LifecycleRecordListActivity.startActivity(context);
                 break;
             default:
                 context.startActivity(getWorkboxMainIntent());

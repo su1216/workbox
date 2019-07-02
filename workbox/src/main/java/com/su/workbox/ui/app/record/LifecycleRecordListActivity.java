@@ -3,6 +3,8 @@ package com.su.workbox.ui.app.record;
 import android.app.AlertDialog;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,6 +35,10 @@ public class LifecycleRecordListActivity extends BaseAppCompatActivity implement
     private RecordAdapter mAdapter;
     private LifecycleRecordModel mModel;
     private SearchableHelper mSearchableHelper = new SearchableHelper();
+
+    public static void startActivity(@NonNull Context context) {
+        context.startActivity(new Intent(context, LifecycleRecordListActivity.class));
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
