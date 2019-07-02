@@ -11,8 +11,10 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.su.workbox.R;
@@ -45,7 +47,7 @@ public class LifecycleRecordListActivity extends BaseAppCompatActivity implement
         super.onCreate(savedInstanceState);
         setContentView(R.layout.workbox_template_recycler_list);
         mModel = ViewModelProviders.of(this).get(LifecycleRecordModel.class);
-        mAdapter = new RecordAdapter(new ArrayList<>());
+        mAdapter = new RecordAdapter();
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         PreferenceItemDecoration decoration = new PreferenceItemDecoration(this, 0, 0);
         recyclerView.addItemDecoration(decoration);
@@ -66,9 +68,18 @@ public class LifecycleRecordListActivity extends BaseAppCompatActivity implement
         MutableLiveData<List<LifecycleRecord>> recordListData = mModel.getRecordList(taskId.trim());
         recordListData.observe(this, records -> {
             if (records == null || records.isEmpty()) {
-                mAdapter.refresh(Collections.EMPTY_LIST);
+                mAdapter.update(Collections.EMPTY_LIST);
             } else {
-                mAdapter.refresh(records);
+                mAdapter.update(records);
+            }
+        });
+
+        MutableLiveData<List<LifecycleRecord.Summary>> countData = mModel.getRecordCount(taskId.trim());
+        countData.observe(this, count -> {
+            if (count == null) {
+                mAdapter.updateCount(Collections.EMPTY_LIST);
+            } else {
+                mAdapter.updateCount(count);
             }
         });
     }
@@ -96,55 +107,110 @@ public class LifecycleRecordListActivity extends BaseAppCompatActivity implement
         mModel.deleteAllHistoryRecords();
     }
 
-    private class RecordAdapter extends BaseRecyclerAdapter<LifecycleRecord> implements RecyclerItemClickListener.OnItemClickListener {
+    private class RecordAdapter extends RecyclerView.Adapter<BaseRecyclerAdapter.BaseViewHolder> implements RecyclerItemClickListener.OnItemClickListener {
 
-        private RecordAdapter(List<LifecycleRecord> data) {
-            super(data);
-        }
-
-        @Override
-        public int getLayoutId(int itemType) {
-            return R.layout.workbox_item_activity_record;
-        }
-
-        @Override
-        public int getItemType(int position) {
-            return ITEM_TYPE_NORMAL;
-        }
-
-        @Override
-        protected void bindData(@NonNull BaseViewHolder holder, int position, int itemType) {
-            LifecycleRecord record = getData().get(position);
-            TextView simpleNameView = holder.getView(R.id.simple_name);
-            TextView eventView = holder.getView(R.id.event);
-            TextView timeView = holder.getView(R.id.time);
-            TextView taskIdView = holder.getView(R.id.task_id);
-            simpleNameView.setText(record.getSimpleName());
-            eventView.setText(record.getEvent());
-            timeView.setText(ThreadUtil.getSimpleDateFormat("MM-dd HH:mm:ss SSS").format(new Date(record.getCreateTime())));
-            taskIdView.setText("taskId: " + record.getTaskId());
-            TextView parentView = holder.getView(R.id.parent);
-            TextView tagView = holder.getView(R.id.tag);
-            String parentFragment = record.getParentFragment();
-            String tag = record.getFragmentTag();
-            if (TextUtils.isEmpty(parentFragment)) {
-                parentView.setVisibility(View.GONE);
-            } else {
-                parentView.setText(parentFragment);
-                parentView.setVisibility(View.VISIBLE);
-            }
-            if (TextUtils.isEmpty(tag)) {
-                tagView.setVisibility(View.GONE);
-            } else {
-                tagView.setText(tag);
-                tagView.setVisibility(View.VISIBLE);
-            }
-        }
+        private static final int TYPE_HEADER = 0;
+        private static final int TYPE_NORMAL = 1;
+        private List<LifecycleRecord.Summary> mSummaries = new ArrayList<>();
+        private List<LifecycleRecord> mList = new ArrayList<>();
 
         @Override
         public void onItemClick(View view, int position) {
-            LifecycleRecord record = getData().get(position);
+            if (position == 0) {
+                return;
+            }
+            LifecycleRecord record = mList.get(position - 1);
             new ToastBuilder(record.getName()).show();
+        }
+
+        @NonNull
+        @Override
+        public BaseRecyclerAdapter.BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            View view;
+            if (viewType == TYPE_HEADER) {
+                view = inflater.inflate(R.layout.workbox_header_lifecycle_record, parent, false);
+            } else {
+                view = inflater.inflate(R.layout.workbox_item_activity_record, parent, false);
+            }
+            return new BaseRecyclerAdapter.BaseViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull BaseRecyclerAdapter.BaseViewHolder holder, int position) {
+            int viewType = getItemViewType(position);
+            if (viewType == TYPE_HEADER) {
+                TextView countView = holder.getView(R.id.count);
+                if (mSummaries.isEmpty()) {
+                    countView.setText("无记录");
+                } else {
+                    int total = 0;
+                    StringBuilder sb = new StringBuilder();
+                    for (LifecycleRecord.Summary summary : mSummaries) {
+                        total += summary.getTotal();
+                        sb.append(LifecycleRecord.getTypeString(summary.getType()));
+                        sb.append(": ");
+                        sb.append(summary.getTotal());
+                        sb.append("    ");
+                    }
+                    if (mSummaries.size() > 1) {
+                        sb.insert(0, "    ");
+                        sb.insert(0, total);
+                        sb.insert(0, "total: ");
+                    }
+                    sb.delete(sb.length() - 4, sb.length());
+                    countView.setText(sb);
+                }
+            } else {
+                LifecycleRecord record = mList.get(position - 1);
+                TextView simpleNameView = holder.getView(R.id.simple_name);
+                TextView eventView = holder.getView(R.id.event);
+                TextView timeView = holder.getView(R.id.time);
+                TextView taskIdView = holder.getView(R.id.task_id);
+                simpleNameView.setText(record.getSimpleName());
+                eventView.setText(record.getEvent());
+                timeView.setText(ThreadUtil.getSimpleDateFormat("MM-dd HH:mm:ss SSS").format(new Date(record.getCreateTime())));
+                taskIdView.setText("taskId: " + record.getTaskId());
+                TextView parentView = holder.getView(R.id.parent);
+                TextView tagView = holder.getView(R.id.tag);
+                String parentFragment = record.getParentFragment();
+                String tag = record.getFragmentTag();
+                if (TextUtils.isEmpty(parentFragment)) {
+                    parentView.setVisibility(View.GONE);
+                } else {
+                    parentView.setText(parentFragment);
+                    parentView.setVisibility(View.VISIBLE);
+                }
+                if (TextUtils.isEmpty(tag)) {
+                    tagView.setVisibility(View.GONE);
+                } else {
+                    tagView.setText(tag);
+                    tagView.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+
+        private void updateCount(List<LifecycleRecord.Summary> summaries) {
+            mSummaries = summaries;
+            notifyItemChanged(0);
+        }
+
+        private void update(List<LifecycleRecord> list) {
+            mList = list;
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (position == 0) {
+                return TYPE_HEADER;
+            }
+            return TYPE_NORMAL;
+        }
+
+        @Override
+        public int getItemCount() {
+            return mList.size() + 1;
         }
     }
 

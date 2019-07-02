@@ -121,6 +121,50 @@ public class LifecycleRecord {
         this.parentFragment = parentFragment;
     }
 
+    public static String getTypeString(int type) {
+        String typeString = "";
+        switch (type) {
+            case ACTIVITY:
+                typeString = "activity";
+                break;
+            case FRAGMENT:
+                typeString = "fragment";
+                break;
+            default:
+                break;
+        }
+        return typeString;
+    }
+
+    public static class Summary {
+        private int type;
+        private int total;
+
+        public int getType() {
+            return type;
+        }
+
+        public void setType(int type) {
+            this.type = type;
+        }
+
+        public int getTotal() {
+            return total;
+        }
+
+        public void setTotal(int total) {
+            this.total = total;
+        }
+
+        @Override
+        public String toString() {
+            return "Summary{" +
+                    "type=" + type +
+                    ", total=" + total +
+                    '}';
+        }
+    }
+
     @Override
     public String toString() {
         return "LifecycleRecord{" +

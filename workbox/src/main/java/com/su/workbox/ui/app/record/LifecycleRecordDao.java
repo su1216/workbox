@@ -16,8 +16,11 @@ public interface LifecycleRecordDao {
     @Query("SELECT * FROM lifecycle_history WHERE type = 1 ORDER BY createTime DESC")
     LiveData<List<LifecycleRecord>> getAllFragmentRecords();
 
-    @Query("SELECT * FROM lifecycle_history where simpleName LIKE  '%' || :keyword || '%' ORDER BY createTime DESC")
+    @Query("SELECT * FROM lifecycle_history where simpleName LIKE  '%' || :keyword || '%' ORDER BY createTime DESC ")
     LiveData<List<LifecycleRecord>> getActivityRecordsByKeyword(String keyword);
+
+    @Query("SELECT type, count(1) as total FROM lifecycle_history where simpleName LIKE  '%' || :keyword || '%' GROUP BY type")
+    LiveData<List<LifecycleRecord.Summary>> getAllHistoryRecordCount(String keyword);
 
     @Insert
     long insertActivityRecord(LifecycleRecord lifecycleRecord);

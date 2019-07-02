@@ -17,6 +17,9 @@ public class LifecycleRecordModel extends AndroidViewModel {
     private MediatorLiveData<List<LifecycleRecord>> mRecordList;
     private LiveData<List<LifecycleRecord>> mRecordListSource;
     private Observer<List<LifecycleRecord>> mOnRecordListChanged;
+    private MediatorLiveData<List<LifecycleRecord.Summary>> mRecordCount;
+    private LiveData<List<LifecycleRecord.Summary>> mRecordCountSource;
+    private Observer<List<LifecycleRecord.Summary>> mOnRecordCountChanged;
     private LifecycleRecordSource dataSource;
 
     public LifecycleRecordModel(@NonNull Application application) {
@@ -32,6 +35,16 @@ public class LifecycleRecordModel extends AndroidViewModel {
                 mRecordList.postValue(productEntities);
             }
         };
+
+        mRecordCount = new MediatorLiveData<>();
+        mRecordCount.setValue(null);
+        mRecordCountSource = mRecordDao.getAllHistoryRecordCount("");
+        mOnRecordCountChanged = count -> {
+            if (database.getDatabaseCreated().getValue() != null) {
+                mRecordCount.postValue(count);
+            }
+        };
+
         mRecordList.addSource(mRecordListSource, mOnRecordListChanged);
     }
 
@@ -40,6 +53,13 @@ public class LifecycleRecordModel extends AndroidViewModel {
         mRecordListSource = mRecordDao.getActivityRecordsByKeyword(keyword);
         mRecordList.addSource(mRecordListSource, mOnRecordListChanged);
         return mRecordList;
+    }
+
+    public MediatorLiveData<List<LifecycleRecord.Summary>> getRecordCount(String keyword) {
+        mRecordCount.removeSource(mRecordCountSource);
+        mRecordCountSource = mRecordDao.getAllHistoryRecordCount(keyword);
+        mRecordCount.addSource(mRecordCountSource, mOnRecordCountChanged);
+        return mRecordCount;
     }
 
     public void deleteAllHistoryRecords() {

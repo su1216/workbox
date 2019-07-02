@@ -33,6 +33,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Created by su on 19-4-7
+ * 流量监控记录
+ * */
 public class RecordListActivity extends BaseAppCompatActivity implements SearchView.OnQueryTextListener {
 
     public static final String TAG = RecordListActivity.class.getSimpleName();
