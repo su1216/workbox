@@ -109,7 +109,6 @@ public class LifecycleRecordListActivity extends BaseAppCompatActivity implement
         @Override
         protected void bindData(@NonNull BaseViewHolder holder, int position, int itemType) {
             LifecycleRecord record = getData().get(position);
-            View fragmentLayout = holder.getView(R.id.fragment_layout);
             TextView simpleNameView = holder.getView(R.id.simple_name);
             TextView eventView = holder.getView(R.id.event);
             TextView timeView = holder.getView(R.id.time);
@@ -118,20 +117,21 @@ public class LifecycleRecordListActivity extends BaseAppCompatActivity implement
             eventView.setText(record.getEvent());
             timeView.setText(ThreadUtil.getSimpleDateFormat("MM-dd HH:mm:ss SSS").format(new Date(record.getCreateTime())));
             taskIdView.setText("taskId: " + record.getTaskId());
-            if (record.getType() == LifecycleRecord.ACTIVITY) {
-                fragmentLayout.setVisibility(View.GONE);
+            TextView parentView = holder.getView(R.id.parent);
+            TextView tagView = holder.getView(R.id.tag);
+            String parentFragment = record.getParentFragment();
+            String tag = record.getFragmentTag();
+            if (TextUtils.isEmpty(parentFragment)) {
+                parentView.setVisibility(View.GONE);
             } else {
-                TextView parentView = holder.getView(R.id.parent);
-                TextView tagView = holder.getView(R.id.tag);
-                String parentFragment = record.getParentFragment();
-                String tag = record.getFragmentTag();
-                if (TextUtils.isEmpty(parentFragment) && TextUtils.isEmpty(tag)) {
-                    fragmentLayout.setVisibility(View.GONE);
-                } else {
-                    fragmentLayout.setVisibility(View.VISIBLE);
-                    parentView.setText(parentFragment);
-                    tagView.setText(tag);
-                }
+                parentView.setText(parentFragment);
+                parentView.setVisibility(View.VISIBLE);
+            }
+            if (TextUtils.isEmpty(tag)) {
+                tagView.setVisibility(View.GONE);
+            } else {
+                tagView.setText(tag);
+                tagView.setVisibility(View.VISIBLE);
             }
         }
 
