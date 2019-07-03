@@ -14,6 +14,8 @@ import com.su.workbox.ui.main.WorkboxMainActivity;
 public class QuickSettingService extends TileService {
     @Override
     public void onClick() {
-        startActivityAndCollapse(new Intent(this, WorkboxMainActivity.class));
+        Intent intent = new Intent(this, WorkboxMainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivityAndCollapse(intent);
     }
 }
