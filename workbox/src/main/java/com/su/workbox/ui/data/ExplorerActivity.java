@@ -16,7 +16,6 @@ import com.su.workbox.R;
 import com.su.workbox.ui.base.BaseFragment;
 import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.SpHelper;
-import com.su.workbox.utils.SystemInfoHelper;
 import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
@@ -28,7 +27,7 @@ import java.util.List;
 
 /**
  * 文件浏览
- * */
+ */
 public class ExplorerActivity extends DataActivity {
 
     public static final String TAG = ExplorerActivity.class.getSimpleName();
@@ -159,6 +158,7 @@ public class ExplorerActivity extends DataActivity {
     private static class FileAdapter extends BaseRecyclerAdapter<File> {
 
         private ExplorerActivity mActivity;
+
         FileAdapter(ExplorerActivity activity, List<File> data) {
             super(data);
             mActivity = activity;
@@ -173,13 +173,12 @@ public class ExplorerActivity extends DataActivity {
             nameView.setText(file.getName());
             if (file.exists() && file.isDirectory()) {
                 setOnClickListenerForDir(file, holder.itemView);
-                detailView.setText("items: " + file.list().length);
                 arrowView.setVisibility(View.VISIBLE);
             } else {
                 holder.itemView.setOnClickListener(v -> mActivity.export(file.getAbsolutePath()));
-                detailView.setText("size: " + SystemInfoHelper.formatFileSize(file.length()));
                 arrowView.setVisibility(View.GONE);
             }
+            detailView.setText(IOUtil.getFileBrief(file));
         }
 
         private void setOnClickListenerForDir(@NonNull File dir, @NonNull View itemView) {

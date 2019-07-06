@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.su.workbox.widget.ToastBuilder;
@@ -29,6 +30,7 @@ import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -48,6 +50,18 @@ public final class IOUtil {
             (SCHEME_FILE + ":///" + ANDROID_ASSET + "/").length();
 
     private IOUtil() {
+    }
+
+    public static String getFileBrief(@NonNull File file) {
+        String details;
+        if (file.isDirectory()) {
+            details = "items: " + file.list().length;
+        } else {
+            details = "size: " + SystemInfoHelper.formatFileSize(file.length());
+        }
+        details += "    ";
+        details += ThreadUtil.getSimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(file.lastModified()));
+        return details;
     }
 
     /**

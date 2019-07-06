@@ -100,6 +100,7 @@ public class SharedPreferenceListActivity extends DataActivity implements Adapte
             }
             File item = mList.get(position);
             holder.fileView.setText(item.getName());
+            holder.detailView.setText(IOUtil.getFileBrief(item));
             return convertView;
         }
 
@@ -126,9 +127,11 @@ public class SharedPreferenceListActivity extends DataActivity implements Adapte
 
     private static class ViewHolder {
         private TextView fileView;
+        private TextView detailView;
 
         ViewHolder(View convertView) {
             fileView = convertView.findViewById(R.id.file);
+            detailView = convertView.findViewById(R.id.detail);
         }
     }
 
