@@ -55,10 +55,6 @@
             android:key="system_notification"
             android:title="通知设置"
             android:summary="系统的通知设置情况" />
-        <android.support.v7.preference.Preference
-            android:key="clean_data"
-            android:summary="清理内外部缓存目录与自定义目录"
-            android:title="缓存清理" />
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory
         android:title="System">

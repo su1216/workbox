@@ -16,24 +16,27 @@ import android.widget.Toast;
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.Workbox;
+import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.ui.app.AppInfoListActivity;
 import com.su.workbox.ui.app.PermissionListActivity;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.ManifestParser;
 import com.su.workbox.utils.SpHelper;
+import com.su.workbox.utils.UiHelper;
 import com.su.workbox.widget.SimpleBlockedDialogFragment;
 import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.List;
 
 public class DataListActivity extends BaseAppCompatActivity {
     private static final String TAG = DataListActivity.class.getSimpleName();
     private static final SimpleBlockedDialogFragment DIALOG_FRAGMENT = SimpleBlockedDialogFragment.newInstance();
-    private static File sExportedApkFile;
     private static File sExportedSoDirFile;
 
     public static void startActivity(@NonNull Context context) {
@@ -46,7 +49,6 @@ public class DataListActivity extends BaseAppCompatActivity {
         setContentView(R.layout.workbox_preference_activity_template);
         String versionName = GeneralInfoHelper.getVersionName();
         File exportedBaseDir = new File(Workbox.getWorkboxSdcardDir(), getPackageName());
-        sExportedApkFile = new File(exportedBaseDir, versionName + "-" + GeneralInfoHelper.getAppName() + ".apk");
         sExportedSoDirFile = new File(exportedBaseDir, versionName + "-native");
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment, new ItemListFragment(), "app_data_export").commit();
     }
@@ -63,20 +65,6 @@ public class DataListActivity extends BaseAppCompatActivity {
         private FilenameFilter mDbFilenameFilter = (dir, name) -> name.endsWith(".db");
         private FilenameFilter mSpFilenameFilter = (dir, name) -> name.endsWith(".xml");
         private AppExecutors mAppExecutors = AppExecutors.getInstance();
-
-        private void exportApkFile() {
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            DIALOG_FRAGMENT.show(ft, "导出中...");
-            mAppExecutors.diskIO().execute(() -> {
-                File dir = sExportedApkFile.getParentFile();
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
-                IOUtil.copyFile(new File(GeneralInfoHelper.getSourceDir()), sExportedApkFile);
-                mActivity.runOnUiThread(() -> new ToastBuilder("已将apk导出到" + sExportedApkFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
-                DIALOG_FRAGMENT.dismissAllowingStateLoss();
-            });
-        }
 
         private void exportSoFile() {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -95,6 +83,22 @@ public class DataListActivity extends BaseAppCompatActivity {
             });
         }
 
+        private void showCleanCacheDialog() {
+            UiHelper.showConfirm(mActivity, "清除缓存后，部分功能需要重启应用才可使用，确定要清除应用缓存数据？", (dialog, which) -> mAppExecutors.diskIO().execute(() -> {
+                IOUtil.deleteAllCache();
+                WorkboxSupplier supplier = WorkboxSupplier.getInstance();
+                List<File> files = supplier.getAllCustomCacheDirs();
+                if (files == null || files.isEmpty()) {
+                    mActivity.runOnUiThread(() -> new ToastBuilder("缓存清除完毕！").show());
+                    return;
+                }
+                for (File file : files) {
+                    IOUtil.deleteFiles(file);
+                }
+                mActivity.runOnUiThread(() -> new ToastBuilder("缓存清除完毕！").show());
+            }));
+        }
+
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.workbox_preference_data_export);
@@ -102,22 +106,15 @@ public class DataListActivity extends BaseAppCompatActivity {
             mDataDirPath = mActivity.getApplicationInfo().dataDir;
             Preference apkPreference = findPreference("apk");
             apkPreference.setOnPreferenceClickListener(this);
-            String[] splitSourceDirs = GeneralInfoHelper.getSplitSourceDirs();
-            if (splitSourceDirs != null && splitSourceDirs.length > 0) {
-                apkPreference.setSummary("请关闭instant run后重新编译安装应用");
-                apkPreference.setEnabled(false);
-            } else {
-                apkPreference.setSummary("可将您现在使用中的App导出到sdcard中");
-            }
             Preference soPreference = findPreference("so");
             soPreference.setOnPreferenceClickListener(this);
             File nativeLibraryDir = new File(GeneralInfoHelper.getNativeLibraryDir());
             if (IOUtil.hasFilesInDir(nativeLibraryDir)) {
                 soPreference.setEnabled(true);
-                soPreference.setSummary("共" + nativeLibraryDir.list().length + "个So文件");
+                soPreference.setSummary("共" + nativeLibraryDir.list().length + "个so文件");
             } else {
                 soPreference.setEnabled(false);
-                soPreference.setSummary("暂无So文件");
+                soPreference.setSummary("暂无so文件");
             }
             findPreference("manifest").setOnPreferenceClickListener(this);
 
@@ -146,6 +143,8 @@ public class DataListActivity extends BaseAppCompatActivity {
             Preference privateDirPreference = findPreference("private_dir");
             privateDirPreference.setSummary(mDataDirPath);
             privateDirPreference.setOnPreferenceClickListener(this);
+
+            findPreference("clean_data").setOnPreferenceClickListener(this);
         }
 
         @Override
@@ -165,7 +164,7 @@ public class DataListActivity extends BaseAppCompatActivity {
             }
             switch (preference.getKey()) {
                 case "apk":
-                    exportApkFile();
+                    AppInfoListActivity.startActivity(mActivity);
                     break;
                 case "so":
                     exportSoFile();
@@ -186,6 +185,13 @@ public class DataListActivity extends BaseAppCompatActivity {
                 case "private_dir":
                     ExplorerActivity.startActivity(mActivity, mDataDirPath);
                     break;
+                case "clean_data":
+                    if (!AppHelper.hasPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        new ToastBuilder("没有外存写权限").show();
+                        return true;
+                    }
+                    showCleanCacheDialog();
+                    return true;
                 default:
                     break;
             }

@@ -16,14 +16,14 @@ import java.io.File;
 public class XmlViewerActivity extends DataActivity {
 
     public static final String TAG = XmlViewerActivity.class.getSimpleName();
-    private File sExportedManifestFile;
+    private File mExportedManifestFile;
     private String mManifestContent;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.workbox_activity_text_viewer);
-        sExportedManifestFile = new File(mExportedBaseDir, mVersionName + "-manifest.xml");
+        mExportedManifestFile = new File(mExportedBaseDir, mVersionName + "-manifest.xml");
         Intent intent = getIntent();
         mManifestContent = intent.getStringExtra("content");
         WebView webView = findViewById(R.id.web_view);
@@ -41,12 +41,12 @@ public class XmlViewerActivity extends DataActivity {
 
     @Override
     protected void export() {
-        File dir = sExportedManifestFile.getParentFile();
+        File dir = mExportedManifestFile.getParentFile();
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        IOUtil.writeFile(sExportedManifestFile.getAbsolutePath(), mManifestContent);
-        runOnUiThread(() -> new ToastBuilder("已将apk导出到" + sExportedManifestFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
+        IOUtil.writeFile(mExportedManifestFile.getAbsolutePath(), mManifestContent);
+        runOnUiThread(() -> new ToastBuilder("已将apk导出到" + mExportedManifestFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
 
     }
 

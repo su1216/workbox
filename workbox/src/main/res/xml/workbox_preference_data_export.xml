@@ -10,14 +10,19 @@
     <android.support.v7.preference.Preference
         android:title="Manifest"
         android:key="manifest"
-        android:summary="可将app中manifest文件导出到sdcard中"/>
+        android:summary="查看、导出当前manifest"/>
     <android.support.v7.preference.Preference
         android:title="私有数据"
         android:key="private_dir"/>
     <android.support.v7.preference.Preference
-        android:title="Apk导出"
-        android:key="apk"/>
+        android:title="apk"
+        android:key="apk"
+        android:summary="查看、导出当前使用的apk"/>
     <android.support.v7.preference.Preference
-        android:title="So导出"
+        android:title="so"
         android:key="so"/>
+    <android.support.v7.preference.Preference
+        android:key="clean_data"
+        android:summary="清理内外部缓存目录与自定义目录"
+        android:title="缓存清理" />
 </android.support.v7.preference.PreferenceScreen>

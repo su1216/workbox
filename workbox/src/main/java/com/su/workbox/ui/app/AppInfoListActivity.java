@@ -17,11 +17,13 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
-import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.ui.data.DataActivity;
 import com.su.workbox.utils.GeneralInfoHelper;
+import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.SystemInfoHelper;
 import com.su.workbox.utils.ThreadUtil;
 import com.su.workbox.utils.UiHelper;
@@ -37,12 +39,13 @@ import java.util.List;
 /**
  * 应用信息
  */
-public class AppInfoListActivity extends BaseAppCompatActivity implements ExpandableListView.OnChildClickListener {
+public class AppInfoListActivity extends DataActivity implements ExpandableListView.OnChildClickListener {
     private static final String TAG = AppInfoListActivity.class.getSimpleName();
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = ThreadUtil.getSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private ExpandableListView mListView;
     private List<List<Pair<String, String>>> mDataList = new ArrayList<>();
     private AppInfoAdapter mAdapter;
+    private File mExportedApkFile;
 
     public static void startActivity(@NonNull Context context) {
         context.startActivity(new Intent(context, AppInfoListActivity.class));
@@ -52,6 +55,7 @@ public class AppInfoListActivity extends BaseAppCompatActivity implements Expand
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.workbox_activity_app_info_list);
+        mExportedApkFile = new File(mExportedBaseDir, mVersionName + "-" + GeneralInfoHelper.getAppName() + ".apk");
         mListView = findViewById(R.id.expandable_list);
         mAdapter = new AppInfoAdapter(this);
         mListView.setAdapter(mAdapter);
@@ -135,6 +139,22 @@ public class AppInfoListActivity extends BaseAppCompatActivity implements Expand
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle("应用信息");
+    }
+
+    @Override
+    protected void export() {
+        String[] splitSourceDirs = GeneralInfoHelper.getSplitSourceDirs();
+        if (splitSourceDirs != null && splitSourceDirs.length > 0) {
+            runOnUiThread(() -> new ToastBuilder("请关闭instant run后重新编译安装应用").setDuration(Toast.LENGTH_LONG).show());
+            return;
+        }
+
+        File dir = mExportedApkFile.getParentFile();
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        IOUtil.copyFile(new File(GeneralInfoHelper.getSourceDir()), mExportedApkFile);
+        runOnUiThread(() -> new ToastBuilder("已将apk导出到" + mExportedApkFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
     }
 
     @Override
