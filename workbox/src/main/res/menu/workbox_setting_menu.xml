@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="设置"
+        android:title="settings"
         android:onClick="goSetting"
         android:icon="@drawable/workbox_ic_settings_white"
         android:id="@+id/settings"
