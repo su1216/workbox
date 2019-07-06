@@ -186,7 +186,7 @@ public class DatabaseListActivity extends DataActivity {
             triggersView.setVisibility(database.triggerCount == 0 ? View.GONE : View.VISIBLE);
             triggersView.setOnClickListener(v -> showAllTriggers(database));
             versionView.setText("version: " + database.version);
-            tablesView.setText("tables: " + database.tableCount);
+            tablesView.setText("tables: " + database.tableCount + "    views: " + database.viewCount);
             holder.getView(R.id.arrow).setSelected(!database.collapse);
             holder.itemView.setOnClickListener(v -> {
                 database.collapse = !database.collapse;
@@ -298,6 +298,7 @@ public class DatabaseListActivity extends DataActivity {
         private int version;
         private List<Table> tableList;
         private int tableCount;
+        private int viewCount;
         private int triggerCount;
         private boolean collapse;
         private List<Trigger> triggerSqlList;
@@ -308,7 +309,17 @@ public class DatabaseListActivity extends DataActivity {
             this.tableList = tableList;
             this.triggerSqlList = triggerSqlList;
             if (tableList != null) {
-                tableCount = tableList.size();
+                int tableCount = 0;
+                int viewCount = 0;
+                for (Table table : tableList) {
+                    if ("table".equals(table.getType())) {
+                        tableCount++;
+                    } else {
+                        viewCount++;
+                    }
+                }
+                this.tableCount = tableCount;
+                this.viewCount = viewCount;
             }
             if (triggerSqlList != null) {
                 triggerCount = triggerSqlList.size();
