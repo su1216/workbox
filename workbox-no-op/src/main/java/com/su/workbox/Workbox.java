@@ -1,6 +1,7 @@
 package com.su.workbox;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -63,6 +64,8 @@ public class Workbox {
     public static void registerFragment(@NonNull Fragment fragment) {}
 
     public static void enableFragmentLifecycleLog(boolean enableLog) {}
+
+    public static void startActivity(@NonNull String module, @NonNull Context context) {}
 
     @NonNull
     public static String getWebViewHost() {
