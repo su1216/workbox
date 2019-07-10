@@ -136,7 +136,8 @@ public class DatabaseListActivity extends DataActivity {
         if (!sExportedDatabaseDirFile.exists()) {
             sExportedDatabaseDirFile.mkdirs();
         }
-        File[] databases = databasesDir.listFiles(mDbFilenameFilter);
+        //需要将db/db-shm/db-wal同时导出
+        File[] databases = databasesDir.listFiles();
         for (File database : databases) {
             IOUtil.copyFile(database, new File(sExportedDatabaseDirFile, database.getName()));
         }
