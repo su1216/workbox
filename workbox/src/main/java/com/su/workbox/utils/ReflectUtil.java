@@ -32,8 +32,7 @@ public class ReflectUtil {
     }
 
     @NonNull
-    public static List<Pair<String, String>> getMatchedFlags(@NonNull Class<?> clazz, @NonNull String prefix, int flags) {
-        List<Field> fields = getFieldsWithPrefix(ActivityInfo.class, prefix);
+    public static List<Pair<String, String>> getMatchedFlags(@NonNull Class<?> clazz, @NonNull List<Field> fields, int flags) {
         List<Pair<String, String>> list = new ArrayList<>();
         try {
             for (Field field : fields) {
@@ -51,8 +50,7 @@ public class ReflectUtil {
     }
 
     @NonNull
-    public static Pair<String, String> getSingleMatchedFlag(@NonNull Class<?> clazz, @NonNull String prefix, int flag) {
-        List<Field> fields = getFieldsWithPrefix(ActivityInfo.class, prefix);
+    public static Pair<String, String> getSingleMatchedFlag(@NonNull Class<?> clazz, @NonNull List<Field> fields, int flag) {
         try {
             for (Field field : fields) {
                 if (int.class.equals(field.getType())) {
@@ -69,7 +67,7 @@ public class ReflectUtil {
     }
 
     @NonNull
-    private static List<Field> getFieldsWithPrefix(Class<?> clazz, String prefix) {
+    public static List<Field> getFieldsWithPrefix(Class<?> clazz, String prefix) {
         Field[] fields = clazz.getDeclaredFields();
         List<Field> list = new ArrayList<>();
         for (Field field : fields) {

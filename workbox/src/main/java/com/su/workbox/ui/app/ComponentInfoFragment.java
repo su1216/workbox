@@ -24,6 +24,7 @@ import com.su.workbox.ui.base.BaseFragment;
 import com.su.workbox.utils.ReflectUtil;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -116,14 +117,18 @@ public class ComponentInfoFragment extends BaseFragment {
         add(new Pair<>("processName", info.processName));
         add(new Pair<>("taskAffinity", info.taskAffinity));
         add(new Pair<>("permission", info.permission));
-        add(new Pair<>("launchMode", ReflectUtil.getSingleMatchedFlag(ActivityInfo.class, "LAUNCH_", info.launchMode).first));
+        List<Field> launchModeFields = ReflectUtil.getFieldsWithPrefix(ActivityInfo.class, "LAUNCH_");
+        add(new Pair<>("launchMode", ReflectUtil.getSingleMatchedFlag(ActivityInfo.class, launchModeFields, info.launchMode).first));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            add(new Pair<>("documentLaunchMode", ReflectUtil.getSingleMatchedFlag(ActivityInfo.class, "DOCUMENT_LAUNCH_", info.documentLaunchMode).first));
+            List<Field> documentLaunchModeFields = ReflectUtil.getFieldsWithPrefix(ActivityInfo.class, "DOCUMENT_LAUNCH_");
+            add(new Pair<>("documentLaunchMode", ReflectUtil.getSingleMatchedFlag(ActivityInfo.class, documentLaunchModeFields, info.documentLaunchMode).first));
         }
         add(new Pair<>("parentActivityName", info.parentActivityName));
-        add(new Pair<>("screenOrientation", ReflectUtil.getSingleMatchedFlag(ActivityInfo.class, "SCREEN_ORIENTATION_", info.screenOrientation).first));
-//        mActivityInfo.softInputMode
-        List<Pair<String, String>> configChanges = ReflectUtil.getMatchedFlags(ActivityInfo.class, "CONFIG_", info.configChanges);
+        List<Field> screenOrientationFields = ReflectUtil.getFieldsWithPrefix(ActivityInfo.class, "SCREEN_ORIENTATION_");
+        add(new Pair<>("screenOrientation", ReflectUtil.getSingleMatchedFlag(ActivityInfo.class, screenOrientationFields, info.screenOrientation).first));
+        //info.softInputMode
+        List<Field> configChangesFields = ReflectUtil.getFieldsWithPrefix(ActivityInfo.class, "CONFIG_");
+        List<Pair<String, String>> configChanges = ReflectUtil.getMatchedFlags(ActivityInfo.class, configChangesFields, info.configChanges);
         StringBuilder configChangeDesc = new StringBuilder();
         for (Pair<String, String> configChange : configChanges) {
             configChangeDesc.append(configChange.first + ", ");
@@ -133,7 +138,8 @@ public class ComponentInfoFragment extends BaseFragment {
         }
         add(new Pair<>("configChanges", configChangeDesc.toString()));
 
-        List<Pair<String, String>> flags = ReflectUtil.getMatchedFlags(ActivityInfo.class, "FLAG_", info.flags);
+        List<Field> flagsFields = ReflectUtil.getFieldsWithPrefix(ActivityInfo.class, "FLAG_");
+        List<Pair<String, String>> flags = ReflectUtil.getMatchedFlags(ActivityInfo.class, flagsFields, info.flags);
         StringBuilder flagDesc = new StringBuilder(64);
         for (Pair<String, String> flag : flags) {
             flagDesc.append(flag.first + ", ");
@@ -160,7 +166,8 @@ public class ComponentInfoFragment extends BaseFragment {
         add(new Pair<>("exported", String.valueOf(info.exported)));
         add(new Pair<>("processName", info.processName));
         add(new Pair<>("permission", info.permission));
-        List<Pair<String, String>> flags = ReflectUtil.getMatchedFlags(ServiceInfo.class, "FLAG_", info.flags);
+        List<Field> flagsFields = ReflectUtil.getFieldsWithPrefix(ServiceInfo.class, "FLAG_");
+        List<Pair<String, String>> flags = ReflectUtil.getMatchedFlags(ServiceInfo.class, flagsFields, info.flags);
         StringBuilder flagDesc = new StringBuilder(64);
         for (Pair<String, String> flag : flags) {
             flagDesc.append(flag.first + ", ");
@@ -187,7 +194,8 @@ public class ComponentInfoFragment extends BaseFragment {
         add(new Pair<>("grantUriPermissions", String.valueOf(info.grantUriPermissions)));
         add(new Pair<>("initOrder", String.valueOf(info.initOrder)));
 
-        List<Pair<String, String>> flags = ReflectUtil.getMatchedFlags(ProviderInfo.class, "FLAG_", info.flags);
+        List<Field> flagsFields = ReflectUtil.getFieldsWithPrefix(ProviderInfo.class, "FLAG_");
+        List<Pair<String, String>> flags = ReflectUtil.getMatchedFlags(ProviderInfo.class, flagsFields, info.flags);
         StringBuilder flagDesc = new StringBuilder(64);
         for (Pair<String, String> flag : flags) {
             flagDesc.append(flag.first + ", ");
@@ -209,7 +217,8 @@ public class ComponentInfoFragment extends BaseFragment {
         add(new Pair<>("taskAffinity", info.taskAffinity));
         add(new Pair<>("permission", info.permission));
 //        mActivityInfo.softInputMode
-        List<Pair<String, String>> configChanges = ReflectUtil.getMatchedFlags(ActivityInfo.class, "CONFIG_", info.configChanges);
+        List<Field> configChangesFields = ReflectUtil.getFieldsWithPrefix(ActivityInfo.class, "CONFIG_");
+        List<Pair<String, String>> configChanges = ReflectUtil.getMatchedFlags(ActivityInfo.class, configChangesFields, info.configChanges);
         StringBuilder configChangeDesc = new StringBuilder();
         for (Pair<String, String> configChange : configChanges) {
             configChangeDesc.append(configChange.first + ", ");
@@ -219,7 +228,8 @@ public class ComponentInfoFragment extends BaseFragment {
         }
         add(new Pair<>("configChanges", configChangeDesc.toString()));
 
-        List<Pair<String, String>> flags = ReflectUtil.getMatchedFlags(ActivityInfo.class, "FLAG_", info.flags);
+        List<Field> flagsFields = ReflectUtil.getFieldsWithPrefix(ActivityInfo.class, "FLAG_");
+        List<Pair<String, String>> flags = ReflectUtil.getMatchedFlags(ActivityInfo.class, flagsFields, info.flags);
         StringBuilder flagDesc = new StringBuilder(64);
         for (Pair<String, String> flag : flags) {
             flagDesc.append(flag.first + ", ");
