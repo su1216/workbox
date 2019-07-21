@@ -1,7 +1,6 @@
 package com.su.workbox.utils;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -79,7 +78,7 @@ public class ReflectUtil {
     }
 
     //检查class是否有默认构造函数
-    public static boolean hasDefaultConstructor(@NonNull Class clazz) {
+    public static boolean hasDefaultConstructor(@NonNull Class<?> clazz) {
         try {
             clazz.getConstructor();
             return true;
@@ -194,6 +193,17 @@ public class ReflectUtil {
                 || clazz.equals(char.class)
                 || clazz.equals(boolean.class)
                 || clazz.equals(String.class);
+    }
+
+    public static boolean isPrimitiveWrapperClass(Class clazz) {
+        return clazz.equals(Integer.class)
+                || clazz.equals(Short.class)
+                || clazz.equals(Long.class)
+                || clazz.equals(Double.class)
+                || clazz.equals(Float.class)
+                || clazz.equals(Byte.class)
+                || clazz.equals(Character.class)
+                || clazz.equals(Boolean.class);
     }
 
     @Nullable

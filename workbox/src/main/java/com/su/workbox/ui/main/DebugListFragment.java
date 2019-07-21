@@ -46,7 +46,7 @@ import com.su.workbox.ui.app.PermissionListActivity;
 import com.su.workbox.ui.app.record.CurrentActivitySettingActivity;
 import com.su.workbox.ui.app.record.CurrentActivityView;
 import com.su.workbox.ui.app.record.LifecycleRecordListActivity;
-import com.su.workbox.ui.base.ActivityLifecycleListener;
+import com.su.workbox.ui.app.record.ActivityLifecycleListener;
 import com.su.workbox.ui.data.DataListActivity;
 import com.su.workbox.ui.data.DatabaseListActivity;
 import com.su.workbox.ui.log.common.CommonLogActivity;

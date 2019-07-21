@@ -9,6 +9,8 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.su.workbox.ui.app.activity.ActivityExtras;
+import com.su.workbox.ui.app.activity.ActivityExtrasDao;
 import com.su.workbox.ui.app.record.LifecycleRecord;
 import com.su.workbox.ui.app.record.LifecycleRecordDao;
 import com.su.workbox.ui.usage.DataUsageRecord;
@@ -18,7 +20,11 @@ import com.su.workbox.ui.log.crash.CrashLogRecordDao;
 import com.su.workbox.ui.mock.RequestResponseRecordDao;
 import com.su.workbox.ui.usage.DataUsageRecordDao;
 
-@Database(entities = {DataUsageRecord.class, RequestResponseRecord.class, LifecycleRecord.class, CrashLogRecord.class}, version = 6)
+@Database(entities = {DataUsageRecord.class,
+        RequestResponseRecord.class,
+        LifecycleRecord.class,
+        ActivityExtras.class,
+        CrashLogRecord.class}, version = 7)
 public abstract class HttpDataDatabase extends RoomDatabase {
 
     public static final String DATABASE_NAME = "workbox.db";
@@ -28,6 +34,7 @@ public abstract class HttpDataDatabase extends RoomDatabase {
     public abstract DataUsageRecordDao dataUsageRecordDao();
     public abstract RequestResponseRecordDao requestResponseRecordDao();
     public abstract LifecycleRecordDao activityRecordDao();
+    public abstract ActivityExtrasDao activityExtrasDao();
     public abstract CrashLogRecordDao crashLogRecordDao();
 
     private static final Object LOCK = new Object();

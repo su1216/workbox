@@ -1,18 +1,15 @@
-package com.su.workbox.ui.base;
+package com.su.workbox.ui.app.record;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Application;
 import android.os.Bundle;
 
 import com.su.workbox.database.HttpDataDatabase;
-import com.su.workbox.ui.app.record.CurrentActivityView;
-import com.su.workbox.ui.app.record.LifecycleRecord;
-import com.su.workbox.ui.app.record.LifecycleRecordDao;
+import com.su.workbox.ui.base.SimpleActivityLifecycleCallbacks;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
 
-public class ActivityLifecycleListener implements Application.ActivityLifecycleCallbacks {
+public class ActivityLifecycleListener extends SimpleActivityLifecycleCallbacks {
 
     @SuppressLint("StaticFieldLeak")
     private static ActivityLifecycleListener sActivityLifecycleListener;
@@ -22,7 +19,8 @@ public class ActivityLifecycleListener implements Application.ActivityLifecycleC
     private CurrentActivityView mCurrentActivityView;
 
     public ActivityLifecycleListener() {
-        mLifecycleRecordDao = HttpDataDatabase.getInstance(GeneralInfoHelper.getContext()).activityRecordDao();
+        HttpDataDatabase dataDatabase = HttpDataDatabase.getInstance(GeneralInfoHelper.getContext());
+        mLifecycleRecordDao = dataDatabase.activityRecordDao();
         mCurrentActivityView = CurrentActivityView.getInstance();
     }
 

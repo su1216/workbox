@@ -19,11 +19,12 @@ import com.su.workbox.ui.JsInterfaceListActivity;
 import com.su.workbox.ui.app.AppInfoListActivity;
 import com.su.workbox.ui.app.ComponentListActivity;
 import com.su.workbox.ui.app.record.LifecycleRecordListActivity;
+import com.su.workbox.ui.app.activity.ActivityExtrasCollector;
 import com.su.workbox.ui.base.FragmentListenerManager;
 import com.su.workbox.ui.data.DataListActivity;
 import com.su.workbox.ui.data.DatabaseListActivity;
 import com.su.workbox.ui.app.PermissionListActivity;
-import com.su.workbox.ui.base.ActivityLifecycleListener;
+import com.su.workbox.ui.app.record.ActivityLifecycleListener;
 import com.su.workbox.ui.base.AppLifecycleListener;
 import com.su.workbox.ui.log.crash.CrashLogHandler;
 import com.su.workbox.ui.main.WorkboxMainActivity;
@@ -66,6 +67,7 @@ public class Workbox {
         ActivityLifecycleListener lifecycleListener = new ActivityLifecycleListener();
         ActivityLifecycleListener.setActivityLifecycleListener(lifecycleListener);
         app.registerActivityLifecycleCallbacks(lifecycleListener);
+        app.registerActivityLifecycleCallbacks(new ActivityExtrasCollector());
         // events will be dispatched with a delay after a last activity passed through them.
         // This delay is long enough to guarantee that ProcessLifecycleOwner won't send any events if activities are destroyed and recreated due to a configuration change
         ProcessLifecycleOwner.get().getLifecycle().addObserver(AppLifecycleListener.getInstance());
