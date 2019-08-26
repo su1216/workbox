@@ -2,8 +2,10 @@ package com.su.workbox.ui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -13,6 +15,7 @@ import android.hardware.Sensor;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -37,6 +40,7 @@ import com.su.workbox.R;
 import com.su.workbox.entity.SystemInfo;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.NetworkUtil;
+import com.su.workbox.utils.ReflectUtil;
 import com.su.workbox.utils.SensorUtil;
 import com.su.workbox.utils.SystemInfoHelper;
 import com.su.workbox.utils.TelephonyManagerWrapper;
@@ -68,8 +72,86 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
     private static final String KEY_FEATURES = "features";
     private static final String KEY_PHONE = "phone";
     private static final String KEY_SENSOR = "sensor";
+    private static final String KEY_BATTERY = "battery";
     private static final String KEY_INPUT_METHOD = "input_method";
     private List<SystemInfo> mData = new ArrayList<>();
+
+    private String mBatteryInfo;
+    private BroadcastReceiver mBatteryInfoReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (Intent.ACTION_BATTERY_CHANGED.equals(action)) {
+                int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, 0);
+                String statusString;
+                switch (status) {
+                    case BatteryManager.BATTERY_STATUS_CHARGING:
+                        int chargePlug = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+                        if (chargePlug == BatteryManager.BATTERY_PLUGGED_USB) {
+                            statusString = "充电中 (USB)";
+                        } else {
+                            statusString = "充电中 (AC)";
+                        }
+                        break;
+                    case BatteryManager.BATTERY_STATUS_DISCHARGING:
+                        statusString = "放电中";
+                        break;
+                    case BatteryManager.BATTERY_STATUS_NOT_CHARGING:
+                        statusString = "未充电";
+                        break;
+                    case BatteryManager.BATTERY_STATUS_FULL:
+                        statusString = "满电";
+                        break;
+                    case BatteryManager.BATTERY_STATUS_UNKNOWN:
+                    default:
+                        statusString = "未知";
+                        break;
+                }
+                int health =intent.getIntExtra(BatteryManager.EXTRA_HEALTH, -1);
+                String healthString;
+                switch (health) {
+                    case BatteryManager.BATTERY_HEALTH_GOOD:
+                        healthString = "良好";
+                        break;
+                    case BatteryManager.BATTERY_HEALTH_OVERHEAT:
+                        healthString = "过热";
+                        break;
+                    case BatteryManager.BATTERY_HEALTH_DEAD:
+                        healthString = "低电";
+                        break;
+                    case BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE:
+                        healthString = "电压过高";
+                        break;
+                    case BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE:
+                        healthString = "未知错误";
+                        break;
+                    case BatteryManager.BATTERY_HEALTH_COLD:
+                        healthString = "低温";
+                        break;
+                    case BatteryManager.BATTERY_HEALTH_UNKNOWN:
+                    default:
+                        healthString = "未知";
+                        break;
+                }
+                int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+                int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 0);
+                float voltage = intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0);
+                if (voltage > 1000) {
+                    voltage = voltage / 1000.0f;
+                }
+                float temperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) / 10.0f;
+                String technology = intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY);
+                mBatteryInfo = "状态: " + statusString + "\n"
+                        + "类型: " + technology + "\n"
+                        + "健康: " + healthString + "\n"
+                        + "电量: " + level * 100 / scale + "%\n"
+                        + "电压: " + voltage + " V\n"
+                        + "温度: " + temperature + " °C\n"
+                        + "容量: " + ReflectUtil.getBatteryCapacity(context) + " mA";
+            }
+        }
+    };
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,6 +159,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         setContentView(R.layout.workbox_activity_system_info);
         RecyclerView recyclerView = findViewById(R.id.recycler);
         initData();
+        registerReceiver(mBatteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new GridItemSpaceDecoration(3, 30));
@@ -98,6 +181,12 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         permissionRequest(Manifest.permission.READ_PHONE_STATE, REQUEST_IDS_CODE);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mBatteryInfoReceiver);
+    }
+
     private void initData() {
         mData.add(new SystemInfo(KEY_SCREEN, "屏幕"));
         mData.add(new SystemInfo(KEY_SYSTEM, "系统"));
@@ -111,6 +200,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         if (SensorUtil.hasUsefulSensors()) {
             mData.add(new SystemInfo(KEY_SENSOR, "传感器"));
         }
+        mData.add(new SystemInfo(KEY_BATTERY, "电池"));
         mData.add(new SystemInfo(KEY_INPUT_METHOD, "输入法"));
     }
 
@@ -206,6 +296,8 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                     return getTelephonyInfo();
                 case KEY_SENSOR:
                     return getSensorInfo();
+                case KEY_BATTERY:
+                    return getBatteryInfo();
                 case KEY_INPUT_METHOD:
                     return getInstalledInputMethod();
                 default:
@@ -416,6 +508,10 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
             return builder.toString();
         }
 
+        private String getBatteryInfo() {
+            return mActivity.mBatteryInfo;
+        }
+
         private String getInstalledInputMethod() {
             String defaultInputMethodId = Settings.Secure.getString(mActivity.getContentResolver(), Settings.Secure.DEFAULT_INPUT_METHOD);
             InputMethodManager inputMgr = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -425,7 +521,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
             for (InputMethodInfo method : inputMethodList) {
                 builder.append(method.loadLabel(pm));
                 if (TextUtils.equals(method.getId(), defaultInputMethodId)) {
-                    builder.append( "(");
+                    builder.append("(");
                     builder.append("current");
                     builder.append(")");
                 }

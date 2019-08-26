@@ -1,5 +1,6 @@
 package com.su.workbox.utils;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -86,6 +87,27 @@ public class ReflectUtil {
             Log.w(TAG, "clazz: " + clazz, e);
             return false;
         }
+    }
+
+    public static int getBatteryCapacity(Context context) {
+        Object powerProfile;
+        double batteryCapacity = 0;
+        final String POWER_PROFILE_CLASS = "com.android.internal.os.PowerProfile";
+        try {
+            powerProfile = Class.forName(POWER_PROFILE_CLASS)
+                    .getConstructor(Context.class)
+                    .newInstance(context);
+
+            batteryCapacity = (double) Class.forName(POWER_PROFILE_CLASS)
+                    .getMethod("getBatteryCapacity")
+                    .invoke(powerProfile);
+
+        } catch (Exception e) {
+            Log.w(TAG, e);
+        }
+
+        return (int) batteryCapacity;
+
     }
 
     public static boolean isUseOkHttp3() {
