@@ -64,6 +64,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
     private static final String TAG = DeviceInfoActivity.class.getSimpleName();
     private static final int REQUEST_PHONE_CODE = 1;
     private static final int REQUEST_IDS_CODE = 2;
+    private static final int REQUEST_NETWORK_CODE = 3;
     private static final String KEY_SCREEN = "screen";
     private static final String KEY_SYSTEM = "system";
     private static final String KEY_NETWORK = "network";
@@ -76,6 +77,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
     private static final String KEY_INPUT_METHOD = "input_method";
     private List<SystemInfo> mData = new ArrayList<>();
 
+    private MyAdapter mAdapter;
     private String mBatteryInfo;
     private BroadcastReceiver mBatteryInfoReceiver = new BroadcastReceiver() {
         @Override
@@ -107,7 +109,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                         statusString = "未知";
                         break;
                 }
-                int health =intent.getIntExtra(BatteryManager.EXTRA_HEALTH, -1);
+                int health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, -1);
                 String healthString;
                 switch (health) {
                     case BatteryManager.BATTERY_HEALTH_GOOD:
@@ -170,15 +172,14 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         //设置控件显示间隔时间
         controller.setDelay(0.35f);
         recyclerView.setLayoutAnimation(controller);
-        MyAdapter adapter = new MyAdapter(this, mData);
-        recyclerView.setAdapter(adapter);
+        mAdapter = new MyAdapter(this, mData);
+        recyclerView.setAdapter(mAdapter);
     }
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle("设备信息");
-        permissionRequest(Manifest.permission.READ_PHONE_STATE, REQUEST_IDS_CODE);
     }
 
     @Override
@@ -206,29 +207,41 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
 
     @Override
     public AlertDialog makeHintDialog(String permission, int requestCode) {
-        if (REQUEST_IDS_CODE == 1) {
+        if (REQUEST_PHONE_CODE == requestCode) {
             return makePhonePermissionHintDialog();
+        } else if (REQUEST_IDS_CODE == requestCode) {
+            return makeIdsPermissionHintDialog();
+        } else {
+            return makeNetworkPermissionHintDialog();
         }
-        return makeIdsPermissionHintDialog();
     }
 
     private AlertDialog makePhonePermissionHintDialog() {
-        return new AlertDialog.Builder(this)
-                .setTitle("权限申请")
-                .setMessage("授予访问设备电话权限将可查看更多电话相关信息")
-                .setPositiveButton(R.string.workbox_set_permission, (dialog, which) ->
-                        startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", getPackageName(), null))))
-                .setNegativeButton(R.string.workbox_cancel, null)
-                .show();
+        return makePermissionHintDialog("授予访问设备电话权限将可查看更多电话相关信息", KEY_PHONE);
     }
 
     private AlertDialog makeIdsPermissionHintDialog() {
+        return makePermissionHintDialog("授予访问设备电话权限将可查设备序列号", KEY_IDS);
+    }
+
+    private AlertDialog makeNetworkPermissionHintDialog() {
+        return makePermissionHintDialog("授予定位权限将可查Wifi SSID", KEY_NETWORK);
+    }
+
+    private AlertDialog makePermissionHintDialog(String hint, String key) {
         return new AlertDialog.Builder(this)
                 .setTitle("权限申请")
-                .setMessage("授予访问设备电话权限将可查设备序列号")
+                .setMessage(hint)
                 .setPositiveButton(R.string.workbox_set_permission, (dialog, which) ->
                         startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", getPackageName(), null))))
-                .setNegativeButton(R.string.workbox_cancel, null)
+                .setNegativeButton(R.string.workbox_cancel, (dialog, which) -> {
+                    for (SystemInfo systemInfo : mAdapter.getData()) {
+                        if (TextUtils.equals(systemInfo.getKey(), key)) {
+                            mAdapter.showInfoDialog(systemInfo);
+                            return;
+                        }
+                    }
+                })
                 .show();
     }
 
@@ -253,29 +266,40 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
             ((TextView) holder.itemView).setText(getData().get(position).getTitle());
             holder.itemView.setOnClickListener(v -> {
                         SystemInfo systemInfo = getData().get(holder.getAdapterPosition());
-                        if (KEY_PHONE.equals(systemInfo.getKey())) {
+                        String key = systemInfo.getKey();
+                        if (KEY_PHONE.equals(key)) {
                             if (PackageManager.PERMISSION_GRANTED != mPackageManager.checkPermission(Manifest.permission.READ_PHONE_STATE, mActivity.getPackageName())) {
                                 mActivity.permissionRequest(Manifest.permission.READ_PHONE_STATE, REQUEST_PHONE_CODE);
                                 return;
                             }
-                        } else if (KEY_IDS.equals(systemInfo.getKey())) {
+                        } else if (KEY_IDS.equals(key)) {
                             if (PackageManager.PERMISSION_GRANTED != mPackageManager.checkPermission(Manifest.permission.READ_PHONE_STATE, mActivity.getPackageName())) {
                                 mActivity.permissionRequest(Manifest.permission.READ_PHONE_STATE, REQUEST_IDS_CODE);
+                                return;
+                            }
+                        } else if (KEY_NETWORK.equals(key)) {
+                            if (PackageManager.PERMISSION_GRANTED != mPackageManager.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, mActivity.getPackageName())) {
+                                mActivity.permissionRequest(Manifest.permission.ACCESS_FINE_LOCATION, REQUEST_NETWORK_CODE);
+                                return;
                             }
                         }
-                        new AlertDialog.Builder(mActivity)
-                                .setTitle(systemInfo.getTitle())
-                                .setMessage(getMsg(systemInfo.getKey()))
-                                .setNegativeButton(R.string.workbox_close, null)
-                                .setPositiveButton(R.string.workbox_share, (dialog, which) -> {
-                                    Intent intent = new Intent(Intent.ACTION_SEND);
-                                    intent.putExtra(Intent.EXTRA_TEXT, getData().get(position).getDesc());
-                                    intent.setType("text/plain");
-                                    mActivity.startActivity(Intent.createChooser(intent, "分享到"));
-                                })
-                                .show();
+                        showInfoDialog(systemInfo);
                     }
             );
+        }
+
+        private void showInfoDialog(SystemInfo systemInfo) {
+            new AlertDialog.Builder(mActivity)
+                    .setTitle(systemInfo.getTitle())
+                    .setMessage(getMsg(systemInfo.getKey()))
+                    .setNegativeButton(R.string.workbox_close, null)
+                    .setPositiveButton(R.string.workbox_share, (dialog, which) -> {
+                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.putExtra(Intent.EXTRA_TEXT, systemInfo.getDesc());
+                        intent.setType("text/plain");
+                        mActivity.startActivity(Intent.createChooser(intent, "分享到"));
+                    })
+                    .show();
         }
 
         private String getMsg(@NonNull String key) {
