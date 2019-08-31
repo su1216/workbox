@@ -24,6 +24,7 @@ import com.alibaba.fastjson.JSON;
 import com.su.workbox.R;
 import com.su.workbox.entity.NoteComponentEntity;
 import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.ui.app.activity.IntentInfoActivity;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.SearchableHelper;
@@ -263,6 +264,12 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
             return;
         }
         final ComponentInfo info = mAdapter.getData().get(position - 1);
+        if (TextUtils.equals(mType, "activity")) {
+            Intent intent = new Intent(this, IntentInfoActivity.class);
+            intent.putExtra("info", (Parcelable) info); //ComponentInfo子类都实现了Parcelable接口
+            startActivity(intent);
+            return;
+        }
         Intent intent = new Intent(this, ComponentActivity.class);
         intent.putExtra("info", (Parcelable) info); //ComponentInfo子类都实现了Parcelable接口
         intent.putExtra("note", mNoteComponentMap.get(info.name));

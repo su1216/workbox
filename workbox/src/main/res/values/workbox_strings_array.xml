@@ -27,4 +27,52 @@
         <item>0</item>
         <item>1</item>
     </string-array>
+    <string-array name="workbox_intent_extra_types">
+        <item>Boolean</item>
+        <item>Byte</item>
+        <item>Char</item>
+        <item>Double</item>
+        <item>Float</item>
+        <item>Int</item>
+        <item>Long</item>
+        <item>Short</item>
+        <item>String</item>
+        <!--array-->
+        <item>Boolean Array</item>
+        <item>Byte Array</item>
+        <item>Char Array</item>
+        <item>Double Array</item>
+        <item>Float Array</item>
+        <item>Int Array</item>
+        <item>Long Array</item>
+        <item>Short Array</item>
+        <item>String Array</item>
+        <!--list-->
+        <item>Integer Array List</item>
+        <item>String Array List</item>
+    </string-array>
+    <string-array name="workbox_intent_extra_type_class_names">
+        <item>java.lang.Boolean</item>
+        <item>java.lang.Byte</item>
+        <item>java.lang.Character</item>
+        <item>java.lang.Double</item>
+        <item>java.lang.Float</item>
+        <item>java.lang.Integer</item>
+        <item>java.lang.Long</item>
+        <item>java.lang.Short</item>
+        <item>java.lang.String</item>
+        <!--array-->
+        <item>[Ljava.lang.Boolean;</item>
+        <item>[Ljava.lang.Byte;</item>
+        <item>[Ljava.lang.Character;</item>
+        <item>[Ljava.lang.Double;</item>
+        <item>[Ljava.lang.Float;</item>
+        <item>[Ljava.lang.Integer;</item>
+        <item>[Ljava.lang.Long;</item>
+        <item>[Ljava.lang.Short;</item>
+        <item>[Ljava.lang.String;</item>
+        <!--list-->
+        <item>java.util.ArrayList_java.lang.Integer</item>
+        <item>java.util.ArrayList_java.lang.String</item>
+    </string-array>
 </resources>

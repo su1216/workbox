@@ -7,6 +7,8 @@ import android.view.View;
 
 import com.su.sample.web.WebViewActivity;
 
+import java.util.ArrayList;
+
 /**
  * Created by su on 2018/1/29.
  */
@@ -63,11 +65,18 @@ public class SampleListActivity extends BaseAppCompatActivity implements View.On
                 p2.setId(2);
                 p2.setProvince("上海");
                 p2.setProvinceCode(21);
+                ArrayList<Integer> intList = new ArrayList<>();
+                intList.add(10);
+                intList.add(20);
+                intList.add(30);
                 Intent intent = new Intent(this, ObjectParameterActivity.class);
                 intent.putExtra(ObjectParameterActivity.EXTRA_KEY_PARAMETER_INT, 1024);
+                intent.putIntegerArrayListExtra(ObjectParameterActivity.EXTRA_KEY_PARAMETER_INT_LIST, intList);
                 intent.putExtra(ObjectParameterActivity.EXTRA_KEY_PARAMETER_LONG, 2048L);
                 intent.putExtra(ObjectParameterActivity.EXTRA_KEY_PARAMETER_OBJECT, p);
                 intent.putExtra(ObjectParameterActivity.EXTRA_KEY_PARAMETER_OBJECTS, new ObjectParameter[]{p1, p2});
+                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                intent.addCategory("com.su.sample.DEFAULT");
                 startActivity(intent);
                 break;
             case R.id.crash_test:

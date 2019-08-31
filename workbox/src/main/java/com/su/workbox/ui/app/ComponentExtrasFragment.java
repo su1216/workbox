@@ -28,7 +28,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.entity.NoteComponentEntity;
 import com.su.workbox.entity.Parameter;
@@ -168,8 +167,7 @@ public class ComponentExtrasFragment extends BaseFragment {
         return intent;
     }
 
-    @SuppressWarnings("unchecked")
-    private void makeParameter(@NonNull Intent intent, @NonNull Class clazz, @NonNull Parameter parameter) {
+    private void makeParameter(@NonNull Intent intent, @NonNull Class<?> clazz, @NonNull Parameter parameter) {
         String parameterName = parameter.getParameterName();
         String parameterValue = parameter.getParameter();
         if (TextUtils.isEmpty(parameterValue)) {
@@ -241,6 +239,7 @@ public class ComponentExtrasFragment extends BaseFragment {
         private int mNormalColor;
         private int mRequiredColor;
         private List<Parameter> mOrigin;
+        private int mPosition;
 
         private ParameterViewAdapter(@NonNull Context context, @NonNull List<Parameter> origin, @NonNull List<Parameter> data) {
             super(data);
@@ -300,63 +299,67 @@ public class ComponentExtrasFragment extends BaseFragment {
             };
             valueView.addTextChangedListener(textWatcher);
             valueView.setTag(textWatcher);
-            setNewInstanceView(holder, parameter);
-            holder.getView(R.id.reset).setOnClickListener(v -> {
-                Parameter originParameter = mOrigin.get(position);
-                String value = originParameter.getParameter();
-                valueView.setText(value);
-                valueView.setSelection(value.length());
-            });
+//            setNewInstanceView(holder, parameter);
+//            holder.getView(R.id.reset).setOnClickListener(v -> {
+//                Parameter originParameter = mOrigin.get(position);
+//                String value = originParameter.getParameter();
+//                valueView.setText(value);
+//                valueView.setSelection(value.length());
+//            });
         }
 
-        private void setNewInstanceView(@NonNull final BaseViewHolder holder, @NonNull Parameter parameter) {
-            final Class<?> clazz = parameter.getParameterClass();
-            TextView newInstanceView = holder.getView(R.id.new_instance);
-            final EditText valueView = holder.getView(R.id.value);
-            if (ReflectUtil.isPrimitiveClass(clazz)) {
-                newInstanceView.setVisibility(View.GONE);
-                return;
-            }
-
-            View.OnClickListener onClickListener = v -> {
-                Object object;
-                if (clazz.isArray()) {
-                    Object[] objects = ReflectUtil.newArrayInstance(clazz, DEFAULT_ARRAY_SIZE);
-                    Class<?> componentType = clazz.getComponentType();
-                    if (objects != null && componentType != null) {
-                        for (int i = 0; i < DEFAULT_ARRAY_SIZE; i++) {
-                            objects[i] = ReflectUtil.newInstance(componentType);
-                            if (i == 0) {
-                                AppHelper.copyToClipboard(mContext, componentType.getCanonicalName(), objectToString(objects[i]));
-                                new ToastBuilder("已将单个" + componentType.getCanonicalName() + "实体复制到粘贴板中").show();
-                            }
-                        }
-                    }
-                    object = objects;
-                } else {
-                    object = ReflectUtil.newInstance(clazz);
-                }
-                if (object != null) {
-                    String value = objectToString(object);
-                    valueView.setText(value);
-                    valueView.setSelection(value.length());
-                }
-            };
-            if (clazz.isArray()) {
-                final Class<?> componentType = clazz.getComponentType();
-                if (componentType == null || ReflectUtil.hasDefaultConstructor(componentType)) {
-                    newInstanceView.setOnClickListener(onClickListener);
-                    newInstanceView.setVisibility(View.VISIBLE);
-                } else {
-                    newInstanceView.setVisibility(View.GONE);
-                }
-            } else if (ReflectUtil.hasDefaultConstructor(clazz)) {
-                newInstanceView.setVisibility(View.VISIBLE);
-                newInstanceView.setOnClickListener(onClickListener);
-            } else {
-                newInstanceView.setVisibility(View.GONE);
-            }
+        public int getPosition() {
+            return mPosition;
         }
+
+//        private void setNewInstanceView(@NonNull final BaseViewHolder holder, @NonNull Parameter parameter) {
+//            final Class<?> clazz = parameter.getParameterClass();
+//            TextView newInstanceView = holder.getView(R.id.new_instance);
+//            final EditText valueView = holder.getView(R.id.value);
+//            if (ReflectUtil.isPrimitiveClass(clazz)) {
+//                newInstanceView.setVisibility(View.GONE);
+//                return;
+//            }
+//
+//            View.OnClickListener onClickListener = v -> {
+//                Object object;
+//                if (clazz.isArray()) {
+//                    Object[] objects = ReflectUtil.newArrayInstance(clazz, DEFAULT_ARRAY_SIZE);
+//                    Class<?> componentType = clazz.getComponentType();
+//                    if (objects != null && componentType != null) {
+//                        for (int i = 0; i < DEFAULT_ARRAY_SIZE; i++) {
+//                            objects[i] = ReflectUtil.newInstance(componentType);
+//                            if (i == 0) {
+//                                AppHelper.copyToClipboard(mContext, componentType.getCanonicalName(), objectToString(objects[i]));
+//                                new ToastBuilder("已将单个" + componentType.getCanonicalName() + "实体复制到粘贴板中").show();
+//                            }
+//                        }
+//                    }
+//                    object = objects;
+//                } else {
+//                    object = ReflectUtil.newInstance(clazz);
+//                }
+//                if (object != null) {
+//                    String value = objectToString(object);
+//                    valueView.setText(value);
+//                    valueView.setSelection(value.length());
+//                }
+//            };
+//            if (clazz.isArray()) {
+//                final Class<?> componentType = clazz.getComponentType();
+//                if (componentType == null || ReflectUtil.hasDefaultConstructor(componentType)) {
+//                    newInstanceView.setOnClickListener(onClickListener);
+//                    newInstanceView.setVisibility(View.VISIBLE);
+//                } else {
+//                    newInstanceView.setVisibility(View.GONE);
+//                }
+//            } else if (ReflectUtil.hasDefaultConstructor(clazz)) {
+//                newInstanceView.setVisibility(View.VISIBLE);
+//                newInstanceView.setOnClickListener(onClickListener);
+//            } else {
+//                newInstanceView.setVisibility(View.GONE);
+//            }
+//        }
 
         private String objectToString(Object object) {
             return JSON.toJSONString(object,

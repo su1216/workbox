@@ -41,6 +41,7 @@ public class ObjectParameterActivity extends BaseAppCompatActivity {
     public static final String EXTRA_KEY_PARAMETER_OBJECTS = "objects";
     public static final String EXTRA_KEY_PARAMETER_INT = "int";
     public static final String EXTRA_KEY_PARAMETER_LONG = "long";
+    public static final String EXTRA_KEY_PARAMETER_INT_LIST = "int_list";
     private List<com.su.sample.Parameter> mData = new ArrayList<>();
     private BaseAdapter mAdapter;
 
@@ -71,10 +72,12 @@ public class ObjectParameterActivity extends BaseAppCompatActivity {
                 return;
             }
             int intParameter = intent.getIntExtra(EXTRA_KEY_PARAMETER_INT, 0);
+            ArrayList<Integer> intListParameter = intent.getIntegerArrayListExtra(EXTRA_KEY_PARAMETER_INT_LIST);
             long longParameter = intent.getLongExtra(EXTRA_KEY_PARAMETER_LONG, 0L);
             mData.add(makeParameters(EXTRA_KEY_PARAMETER_OBJECT, object));
             mData.add(makeParameters(EXTRA_KEY_PARAMETER_OBJECTS, objects));
             mData.add(makeParameters(EXTRA_KEY_PARAMETER_INT, intParameter));
+            mData.add(makeParameters(EXTRA_KEY_PARAMETER_INT_LIST, intListParameter));
             mData.add(makeParameters(EXTRA_KEY_PARAMETER_LONG, longParameter));
             mAdapter.notifyDataSetChanged();
         } catch (RuntimeException e) {

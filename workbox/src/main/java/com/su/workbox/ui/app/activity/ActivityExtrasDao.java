@@ -7,13 +7,11 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
-import java.util.List;
-
 @Dao
 public interface ActivityExtrasDao {
 
     @Query("SELECT * FROM activity_extras WHERE componentPackageName = :componentPackageName AND componentClassName = :componentClassName")
-    List<ActivityExtras> getActivityExtras(String componentPackageName, String componentClassName);
+    ActivityExtras getActivityExtras(String componentPackageName, String componentClassName);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertActivityExtras(ActivityExtras activityExtras);

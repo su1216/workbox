@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.su.workbox.utils.ReflectUtil;
@@ -20,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-@Entity(tableName = "activity_extras", indices = {@Index(value = {"componentPackageName", "componentClassName", "action", "auto"}, unique = true)})
+@Entity(tableName = "activity_extras", indices = {@Index(value = {"componentPackageName", "componentClassName"}, unique = true)})
 public class ActivityExtras implements Parcelable, Cloneable {
 
     @PrimaryKey(autoGenerate = true)
@@ -40,6 +42,8 @@ public class ActivityExtras implements Parcelable, Cloneable {
     private String extras;
     @ColumnInfo(name = "categories")
     private String categories;
+    @ColumnInfo(name = "flags")
+    private int flags;
     @ColumnInfo(name = "auto")
     private boolean auto = true;
     @Ignore
@@ -58,6 +62,7 @@ public class ActivityExtras implements Parcelable, Cloneable {
         type = in.readString();
         extras = in.readString();
         categories = in.readString();
+        flags = in.readInt();
         auto = in.readByte() != 0;
         extraList = in.createTypedArrayList(ActivityExtra.CREATOR);
         categoryList = in.createStringArrayList();
@@ -73,6 +78,7 @@ public class ActivityExtras implements Parcelable, Cloneable {
         dest.writeString(type);
         dest.writeString(extras);
         dest.writeString(categories);
+        dest.writeInt(flags);
         dest.writeByte((byte) (auto ? 1 : 0));
         dest.writeTypedList(extraList);
         dest.writeStringList(categoryList);
@@ -167,6 +173,14 @@ public class ActivityExtras implements Parcelable, Cloneable {
         this.categories = categories;
     }
 
+    public int getFlags() {
+        return flags;
+    }
+
+    public void setFlags(int flags) {
+        this.flags = flags;
+    }
+
     public List<ActivityExtra> getExtraList() {
         return extraList;
     }
@@ -184,6 +198,7 @@ public class ActivityExtras implements Parcelable, Cloneable {
         activityExtras.action = intent.getAction();
         activityExtras.data = intent.getDataString();
         activityExtras.type = intent.getType();
+        activityExtras.flags = intent.getFlags();
         if (intent.getCategories() != null) {
             activityExtras.categoryList = new ArrayList<>(intent.getCategories());
             activityExtras.categories = JSON.toJSONString(activityExtras.categoryList);
@@ -203,7 +218,7 @@ public class ActivityExtras implements Parcelable, Cloneable {
         return activityExtras;
     }
 
-    public static void copyFromBundle(@NonNull ActivityExtras activityExtras, @NonNull Bundle extras) {
+    static void copyFromBundle(@NonNull ActivityExtras activityExtras, @NonNull Bundle extras) {
         activityExtras.extraList.clear();
         Set<String> keySet = extras.keySet();
         for (String key : keySet) {
@@ -214,17 +229,62 @@ public class ActivityExtras implements Parcelable, Cloneable {
             ActivityExtra activityExtra = new ActivityExtra();
             activityExtra.setName(key);
             Class<?> valueClass = value.getClass();
-            activityExtra.setValueClassName(valueClass.getName());
-            if (ReflectUtil.isPrimitiveClass(valueClass) || ReflectUtil.isPrimitiveWrapperClass(valueClass)) {
-                activityExtra.setValue(JSON.toJSONString(value));
-            } else if (valueClass.isArray()) {
-                Class<?> componentType = valueClass.getComponentType();
-                if (ReflectUtil.isPrimitiveClass(componentType) || ReflectUtil.isPrimitiveWrapperClass(componentType)) {
-                    activityExtra.setValue(JSON.toJSONString(value));
+            if (valueClass.isArray()) {
+                activityExtra.setArrayClassName(valueClass.getName());
+                //如果是数组，并且数组中有元素，则取第一个元素类型
+                //无法直接使用Parcelable
+                Object[] objects = (Object[]) value;
+                Class<?> componentType;
+                if (objects.length > 0) {
+                    componentType = objects[0].getClass();
+                } else {
+                    componentType = valueClass.getComponentType();
                 }
+                activityExtra.setValueClassName(componentType.getName());
+            } else if (ReflectUtil.isPrimitiveClass(valueClass) || ReflectUtil.isPrimitiveWrapperClass(valueClass)) {
+                activityExtra.setValueClassName(valueClass.getName());
+            } else if (valueClass == ArrayList.class) {
+                activityExtra.setValueClassName(valueClass.getName());
+                ArrayList<?> objects = (ArrayList) value;
+                Class<?> componentType;
+                if (objects.isEmpty()) {
+                    componentType = valueClass.getComponentType();
+                } else {
+                    componentType = objects.get(0).getClass();
+                }
+                activityExtra.setListClassName(componentType.getName());
+            } else {
+                activityExtra.setValueClassName(valueClass.getName());
             }
+            activityExtra.setValue(JSON.toJSONString(value));
+
             activityExtras.extraList.add(activityExtra);
         }
+    }
+
+    void initExtrasAndCategories() {
+        if (!TextUtils.isEmpty(extras)) {
+            extraList = JSON.parseArray(extras, ActivityExtra.class);
+        }
+        if (!TextUtils.isEmpty(categories)) {
+            categoryList = JSON.parseArray(categories, String.class);
+        }
+    }
+
+    @Override
+    public ActivityExtras clone() {
+        ActivityExtras o = null;
+        try {
+            o = (ActivityExtras) super.clone();
+            o.extraList = new ArrayList<>();
+            for (ActivityExtra extra : extraList) {
+                o.extraList.add(extra.clone());
+            }
+            o.categoryList = new ArrayList<>(categoryList);
+        } catch (CloneNotSupportedException e) {
+            Log.w("CLONE", e);
+        }
+        return o;
     }
 
     @Override
@@ -237,8 +297,11 @@ public class ActivityExtras implements Parcelable, Cloneable {
                 ", data='" + data + '\'' +
                 ", type='" + type + '\'' +
                 ", extras='" + extras + '\'' +
+                ", categories='" + categories + '\'' +
+                ", flags=" + flags +
                 ", auto=" + auto +
                 ", extraList=" + extraList +
+                ", categoryList=" + categoryList +
                 '}';
     }
 }

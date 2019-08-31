@@ -27,6 +27,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
+            <LinearLayout
+                android:id="@+id/button_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:divider="@drawable/workbox_horizontal_divider_1px"
+                android:showDividers="middle"
+                android:visibility="gone">
+                <Button
+                    android:id="@+id/reset"
+                    style="@style/WorkboxMajorButton"
+                    android:layout_width="0dip"
+                    android:layout_height="38dip"
+                    android:layout_weight="1"
+                    android:text="reset" />
+                <Button
+                    android:id="@+id/launch"
+                    style="@style/WorkboxMajorButton"
+                    android:layout_width="0dip"
+                    android:layout_height="38dip"
+                    android:layout_weight="1"
+                    android:text="launch" />
+            </LinearLayout>
         </LinearLayout>
         <!--loading-->
         <ProgressBar

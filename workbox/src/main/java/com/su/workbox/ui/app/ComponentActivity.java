@@ -36,14 +36,11 @@ public class ComponentActivity extends BaseAppCompatActivity {
 
     private static final String TAG = ComponentActivity.class.getSimpleName();
     private int mTabSize = 1;
-    private int mExtrasTabIndex = -1;
-    private int mFlagsTabIndex = -1;
     private String mType;
     private ComponentInfo mComponentInfo;
     private NoteComponentEntity mNoteComponent;
     private ComponentName mComponentName;
     private ComponentExtrasFragment mComponentExtrasFragment;
-    private ComponentFlagsFragment mComponentFlagsFragment;
     private ViewPager mPager;
     private TabLayout mTabLayout;
     private boolean mCanBeLaunched;
@@ -107,12 +104,6 @@ public class ComponentActivity extends BaseAppCompatActivity {
         if (mCanBeLaunched) {
             if (!mNoteComponent.getParameters().isEmpty()) {
                 mTabLayout.addTab(makeTab("Extras"));
-                mExtrasTabIndex = 1;
-                mTabSize += 1;
-            }
-            if ("activity".equalsIgnoreCase(mType)) {
-                mTabLayout.addTab(makeTab("Flags"));
-                mFlagsTabIndex = mExtrasTabIndex + 1;
                 mTabSize += 1;
             }
         }
@@ -150,12 +141,9 @@ public class ComponentActivity extends BaseAppCompatActivity {
         public Fragment getItem(int i) {
             if (i == 0) {
                 return ComponentInfoFragment.newInstance(mType, mNoteComponent, mComponentInfo);
-            } else if (i == mExtrasTabIndex) {
+            } {
                 mComponentExtrasFragment = ComponentExtrasFragment.newInstance(mNoteComponent);
                 return mComponentExtrasFragment;
-            } else {
-                mComponentFlagsFragment = ComponentFlagsFragment.newInstance(mNoteComponent);
-                return mComponentFlagsFragment;
             }
         }
 
@@ -221,11 +209,6 @@ public class ComponentActivity extends BaseAppCompatActivity {
             }
         }
         intent.setComponent(mComponentName);
-        //flags
-        if (mComponentFlagsFragment != null) {
-            int flags = mComponentFlagsFragment.getFlags();
-            intent.setFlags(flags);
-        }
         //start
         if ("activity".equalsIgnoreCase(mType)) {
             startActivity(intent);

@@ -107,6 +107,12 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"/>
+        <!-- 组件信息 -->
+        <activity
+            android:name=".ui.app.activity.IntentInfoActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxListTheme"/>
         <!-- Permission列表 -->
         <activity
             android:name=".ui.app.PermissionListActivity"

@@ -1,10 +1,9 @@
-package com.su.workbox.ui.app;
+package com.su.workbox.ui.app.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,8 +13,6 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.su.workbox.R;
-import com.su.workbox.entity.NoteComponentEntity;
-import com.su.workbox.ui.base.BaseFragment;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 
 import java.lang.reflect.Field;
@@ -26,45 +23,37 @@ import java.util.List;
  * Created by su on 17-12-25.
  */
 
-public class ComponentFlagsFragment extends BaseFragment {
+public class IntentFlagsFragment extends IntentBaseInfoFragment {
 
-    private static final String TAG = ComponentFlagsFragment.class.getSimpleName();
+    private static final String TAG = IntentFlagsFragment.class.getSimpleName();
     private RecyclerView mRecyclerView;
     private FlagAdapter mFlagAdapter;
-    private FragmentActivity mActivity;
-    private NoteComponentEntity mNoteComponent;
     private List<Flag> mOriginFlagList = new ArrayList<>();
     private int mFlags;
 
-    static ComponentFlagsFragment newInstance(NoteComponentEntity noteComponent) {
-        ComponentFlagsFragment fragment = new ComponentFlagsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("note", noteComponent);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mActivity = getActivity();
-        Bundle bundle = getArguments();
-        mNoteComponent = bundle.getParcelable("note");
-        if (mNoteComponent == null) {
-            mNoteComponent = new NoteComponentEntity();
-        }
+    public IntentFlagsFragment() {
+        type = TYPE_FLAGS;
     }
 
     @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRecyclerView = (RecyclerView) inflater.inflate(R.layout.workbox_template_recycler_view, container, false);
+        return inflater.inflate(R.layout.workbox_template_recycler_view, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        mRecyclerView = view.findViewById(R.id.recycler_view);
+        initViews();
+    }
+
+    @Override
+    protected void initViews() {
         List<Flag> data = getFlagList();
-        initFlagStates(data, mNoteComponent.getFlags());
+        initFlagStates(data, mActivityExtras.getFlags());
         initOriginFlags(data);
         mFlagAdapter = new FlagAdapter(this, data);
         mRecyclerView.setAdapter(mFlagAdapter);
-        return mRecyclerView;
     }
 
     private static List<Flag> getFlagList() {
@@ -97,6 +86,7 @@ public class ComponentFlagsFragment extends BaseFragment {
     }
 
     private void initOriginFlags(@NonNull List<Flag> data) {
+        mOriginFlagList.clear();
         for (Flag flag : data) {
             if (flag.checked) {
                 mOriginFlagList.add(new Flag(flag));
@@ -105,15 +95,15 @@ public class ComponentFlagsFragment extends BaseFragment {
         }
     }
 
-    int getFlags() {
-        return mFlags;
+    public void collectIntentData(Intent intent) {
+        intent.setFlags(mFlags);
     }
 
     private static class FlagAdapter extends BaseRecyclerAdapter<Flag> {
 
-        private ComponentFlagsFragment mFragment;
+        private IntentFlagsFragment mFragment;
 
-        private FlagAdapter(@NonNull ComponentFlagsFragment fragment, @NonNull List<Flag> data) {
+        private FlagAdapter(@NonNull IntentFlagsFragment fragment, @NonNull List<Flag> data) {
             super(data);
             mFragment = fragment;
         }
@@ -157,5 +147,13 @@ public class ComponentFlagsFragment extends BaseFragment {
             value = src.value;
             checked = src.checked;
         }
+    }
+
+    public static IntentFlagsFragment newInstance(ActivityExtras activityExtras) {
+        Bundle args = new Bundle();
+        args.putParcelable("activityExtras", activityExtras);
+        IntentFlagsFragment fragment = new IntentFlagsFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 }

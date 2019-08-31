@@ -80,11 +80,14 @@ public class ReflectUtil {
 
     //检查class是否有默认构造函数
     public static boolean hasDefaultConstructor(@NonNull Class<?> clazz) {
+        if (isPrimitiveClass(clazz) || isPrimitiveWrapperClass(clazz)) {
+            return false;
+        }
         try {
             clazz.getConstructor();
             return true;
         } catch (NoSuchMethodException e) {
-            Log.w(TAG, "clazz: " + clazz, e);
+            Log.w(TAG, "no default constructor clazz: " + clazz);
             return false;
         }
     }
@@ -107,7 +110,6 @@ public class ReflectUtil {
         }
 
         return (int) batteryCapacity;
-
     }
 
     public static boolean isUseOkHttp3() {
@@ -137,8 +139,29 @@ public class ReflectUtil {
     }
 
     //使用默认无参构造函数返回一个实例
+    @SuppressWarnings("unchecked")
     @Nullable
     public static <T> T newInstance(@NonNull Class<T> clazz) {
+        if (clazz == Integer.class) {
+            return (T) Integer.valueOf(0);
+        } else if (clazz == Boolean.class) {
+            return (T) Boolean.valueOf(false);
+        } else if (clazz == Character.class) {
+            return (T) Character.valueOf('a');
+        } else if (clazz == Byte.class) {
+            return (T) Byte.valueOf((byte) 48);
+        } else if (clazz == Double.class) {
+            return (T) Double.valueOf(0);
+        } else if (clazz == Float.class) {
+            return (T) Float.valueOf(0);
+        } else if (clazz == Long.class) {
+            return (T) Long.valueOf(0);
+        } else if (clazz == Short.class) {
+            return (T) Short.valueOf((short) 0);
+        } else if (clazz == String.class) {
+            return (T) "string";
+        }
+
         try {
             return clazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
@@ -154,7 +177,6 @@ public class ReflectUtil {
         if (!clazz.isArray()) {
             return null;
         }
-
         return (T[]) Array.newInstance(clazz.getComponentType(), size);
     }
 
@@ -184,22 +206,23 @@ public class ReflectUtil {
     @NonNull
     public static String getFullClassName(@NonNull Class<?> clazz) {
         String name = clazz.getName();
+        String prefix = name.substring(0, name.length() - 2);
         if (name.endsWith("[I")) {
-            return name.substring(0, name.length() - 2) + " (int)";
+            return prefix + " (int)";
         } else if (name.endsWith("[J")) {
-            return name.substring(0, name.length() - 2) + " (long)";
+            return prefix + " (long)";
         } else if (name.endsWith("[S")) {
-            return name.substring(0, name.length() - 2) + " (short)";
+            return prefix + " (short)";
         } else if (name.endsWith("[F")) {
-            return name.substring(0, name.length() - 2) + " (float)";
+            return prefix + " (float)";
         } else if (name.endsWith("[D")) {
-            return name.substring(0, name.length() - 2) + " (double)";
+            return prefix + " (double)";
         } else if (name.endsWith("[C")) {
-            return name.substring(0, name.length() - 2) + " (char)";
+            return prefix + " (char)";
         } else if (name.endsWith("[B")) {
-            return name.substring(0, name.length() - 2) + " (byte)";
+            return prefix + " (byte)";
         } else if (name.endsWith("[Z")) {
-            return name.substring(0, name.length() - 2) + " (boolean)";
+            return prefix + " (boolean)";
         } else {
             return name;
         }
@@ -228,33 +251,27 @@ public class ReflectUtil {
                 || clazz.equals(Boolean.class);
     }
 
-    @Nullable
-    public static Class<?> forName(@NonNull String className) {
-        try {
-            switch (className) {
-                case "int":
-                    return int.class;
-                case "long":
-                    return long.class;
-                case "float":
-                    return float.class;
-                case "double":
-                    return double.class;
-                case "short":
-                    return short.class;
-                case "char":
-                    return char.class;
-                case "boolean":
-                    return boolean.class;
-                case "byte":
-                    return byte.class;
-                default:
-                    return Class.forName(className);
-            }
-        } catch (ClassNotFoundException e) {
-            Log.w("Parameter", e);
+    public static Class<?> forName(@NonNull String className) throws ClassNotFoundException {
+        switch (className) {
+            case "int":
+                return int.class;
+            case "long":
+                return long.class;
+            case "float":
+                return float.class;
+            case "double":
+                return double.class;
+            case "short":
+                return short.class;
+            case "char":
+                return char.class;
+            case "boolean":
+                return boolean.class;
+            case "byte":
+                return byte.class;
+            default:
+                return Class.forName(className);
         }
-        return null;
     }
 
     @NonNull

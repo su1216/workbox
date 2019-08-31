@@ -1,6 +1,7 @@
 package com.su.workbox.ui.app.activity;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -26,9 +27,17 @@ public class ActivityExtrasCollector extends SimpleActivityLifecycleCallbacks {
         if (clazz.getName().startsWith(GeneralInfoHelper.LIB_PACKAGE_NAME)) {
             return;
         }
-        Intent intent  = activity.getIntent();
-        ActivityExtras activityExtras = ActivityExtras.intent2ActivityExtras(activity, intent);
-        Runnable runnable = () -> mActivityExtrasDao.insertActivityExtras(activityExtras);
-        mAppExecutors.diskIO().execute(runnable);
+        Intent intent = activity.getIntent();
+        ComponentName componentName = activity.getComponentName();
+        String componentPackageName = componentName.getPackageName();
+        String componentClassName = componentName.getClassName();
+        mAppExecutors.diskIO().execute(() -> {
+            ActivityExtras record = mActivityExtrasDao.getActivityExtras(componentPackageName, componentClassName);
+            ActivityExtras activityExtras = ActivityExtras.intent2ActivityExtras(activity, intent);
+            if (record != null) {
+                return;
+            }
+            mActivityExtrasDao.insertActivityExtras(activityExtras);
+        });
     }
 }
