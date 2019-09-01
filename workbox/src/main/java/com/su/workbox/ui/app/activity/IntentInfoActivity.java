@@ -157,7 +157,7 @@ public class IntentInfoActivity extends BaseAppCompatActivity implements View.On
             if (intent.getCategories() != null) {
                 mActivityExtras.setCategories(JSON.toJSONString(new ArrayList<>(intent.getCategories())));
             }
-            ActivityExtras.copyFromBundle(mActivityExtras, intent.getExtras());
+            ActivityExtrasCollector.copyFromBundle(mActivityExtras, intent.getExtras());
             mActivityExtras.setExtras(JSON.toJSONString(mActivityExtras.getExtraList()));
             mActivityExtrasDao.insertActivityExtras(mActivityExtras);
         });

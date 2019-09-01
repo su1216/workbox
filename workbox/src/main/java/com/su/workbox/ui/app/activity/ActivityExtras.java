@@ -1,26 +1,19 @@
 package com.su.workbox.ui.app.activity;
 
-import android.app.Activity;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
-import com.su.workbox.utils.ReflectUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity(tableName = "activity_extras", indices = {@Index(value = {"componentPackageName", "componentClassName"}, unique = true)})
 public class ActivityExtras implements Parcelable, Cloneable {
@@ -189,77 +182,12 @@ public class ActivityExtras implements Parcelable, Cloneable {
         return categoryList;
     }
 
-    @NonNull
-    public static ActivityExtras intent2ActivityExtras(Activity activity, Intent intent) {
-        ComponentName componentName = activity.getComponentName();
-        ActivityExtras activityExtras = new ActivityExtras();
-        activityExtras.componentPackageName = componentName.getPackageName();
-        activityExtras.componentClassName = componentName.getClassName();
-        activityExtras.action = intent.getAction();
-        activityExtras.data = intent.getDataString();
-        activityExtras.type = intent.getType();
-        activityExtras.flags = intent.getFlags();
-        if (intent.getCategories() != null) {
-            activityExtras.categoryList = new ArrayList<>(intent.getCategories());
-            activityExtras.categories = JSON.toJSONString(activityExtras.categoryList);
-        }
-
-        Bundle extras = intent.getExtras();
-        if (extras == null) {
-            return activityExtras;
-        }
-
-        Set<String> keySet = extras.keySet();
-        if (keySet == null || keySet.isEmpty()) {
-            return activityExtras;
-        }
-        copyFromBundle(activityExtras, extras);
-        activityExtras.extras = JSON.toJSONString(activityExtras.extraList);
-        return activityExtras;
+    public void setExtraList(List<ActivityExtra> extraList) {
+        this.extraList = extraList;
     }
 
-    static void copyFromBundle(@NonNull ActivityExtras activityExtras, @NonNull Bundle extras) {
-        activityExtras.extraList.clear();
-        Set<String> keySet = extras.keySet();
-        for (String key : keySet) {
-            Object value = extras.get(key);
-            if (value == null) {
-                continue;
-            }
-            ActivityExtra activityExtra = new ActivityExtra();
-            activityExtra.setName(key);
-            Class<?> valueClass = value.getClass();
-            if (valueClass.isArray()) {
-                activityExtra.setArrayClassName(valueClass.getName());
-                //如果是数组，并且数组中有元素，则取第一个元素类型
-                //无法直接使用Parcelable
-                Object[] objects = (Object[]) value;
-                Class<?> componentType;
-                if (objects.length > 0) {
-                    componentType = objects[0].getClass();
-                } else {
-                    componentType = valueClass.getComponentType();
-                }
-                activityExtra.setValueClassName(componentType.getName());
-            } else if (ReflectUtil.isPrimitiveClass(valueClass) || ReflectUtil.isPrimitiveWrapperClass(valueClass)) {
-                activityExtra.setValueClassName(valueClass.getName());
-            } else if (valueClass == ArrayList.class) {
-                activityExtra.setValueClassName(valueClass.getName());
-                ArrayList<?> objects = (ArrayList) value;
-                Class<?> componentType;
-                if (objects.isEmpty()) {
-                    componentType = valueClass.getComponentType();
-                } else {
-                    componentType = objects.get(0).getClass();
-                }
-                activityExtra.setListClassName(componentType.getName());
-            } else {
-                activityExtra.setValueClassName(valueClass.getName());
-            }
-            activityExtra.setValue(JSON.toJSONString(value));
-
-            activityExtras.extraList.add(activityExtra);
-        }
+    public void setCategoryList(List<String> categoryList) {
+        this.categoryList = categoryList;
     }
 
     void initExtrasAndCategories() {
