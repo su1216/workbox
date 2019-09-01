@@ -142,6 +142,7 @@ public class ExecJsActivity extends BaseAppCompatActivity implements View.OnClic
     }
 
     private void initViews() {
+        mTabLayout = findViewById(R.id.tab_layout);
         if (mFunction.getParameters().isEmpty()) {
             findViewById(R.id.parameters_layout).setVisibility(View.GONE);
             mTabLayout.setVisibility(View.GONE);
@@ -149,7 +150,6 @@ public class ExecJsActivity extends BaseAppCompatActivity implements View.OnClic
             mPager = findViewById(R.id.pager);
             mPager.setOffscreenPageLimit(CACHE_SIZE);
             mPager.setAdapter(new ParametersPagerAdapter());
-            mTabLayout = findViewById(R.id.tab_layout);
             mTabLayout.setVisibility(View.VISIBLE);
             mTabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mPager));
             List<String> parameters = mFunction.getParameters();
