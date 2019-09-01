@@ -96,7 +96,7 @@ public class SearchableHelper {
                 endPointer = startPointer + c.length();
                 colorLengthIndex[i] = c.length();
                 colorIndex[i] = startPointer;
-                source = source.substring(index + c.length(), source.length());
+                source = source.substring(index + c.length());
             } else {
                 find = false;
                 break;
@@ -153,7 +153,7 @@ public class SearchableHelper {
                     endPointer = startPointer + c.length();
                     colorLengthIndex[j] = c.length();
                     colorIndex[j] = startPointer;
-                    source = source.substring(index + c.length(), source.length());
+                    source = source.substring(index + c.length());
                 } else {
                     findStatus[i] = false;
                     break;

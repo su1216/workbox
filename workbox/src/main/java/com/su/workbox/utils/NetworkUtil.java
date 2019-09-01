@@ -25,19 +25,19 @@ public final class NetworkUtil {
     /**
      * the constants below are all from
      * @see android.telephony.TelephonyManager
-     * Unknown network class. {@hide}
+     * Unknown network class.
      */
     public static final int NETWORK_CLASS_UNKNOWN = 0;
     /**
-     * Class of broadly defined "2G" networks. {@hide}
+     * Class of broadly defined "2G" networks.
      */
     public static final int NETWORK_CLASS_2_G = 1;
     /**
-     * Class of broadly defined "3G" networks. {@hide}
+     * Class of broadly defined "3G" networks.
      */
     public static final int NETWORK_CLASS_3_G = 2;
     /**
-     * Class of broadly defined "4G" networks. {@hide}
+     * Class of broadly defined "4G" networks.
      */
     public static final int NETWORK_CLASS_4_G = 3;
     /*
@@ -83,7 +83,7 @@ public final class NetworkUtil {
     public static final int NETWORK_TYPE_TD_SCDMA = 17;
     /** Current network is IWLAN */
     public static final int NETWORK_TYPE_IWLAN = 18;
-    /** Current network is LTE_CA {@hide} */
+    /** Current network is LTE_CA */
     public static final int NETWORK_TYPE_LTE_CA = 19;
 
     private NetworkUtil() {
@@ -216,7 +216,6 @@ public final class NetworkUtil {
      * @param type the type needing naming
      * @return a String for the given type, or a string version of the type ("87")
      * if no name is known.
-     * {@hide}
      */
     public static String getNetworkTypeName(int type) {
         switch (type) {

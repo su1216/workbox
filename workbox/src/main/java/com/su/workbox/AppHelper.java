@@ -89,7 +89,7 @@ public final class AppHelper {
                     FeatureInfo fi = list.get(i);
                     if (TextUtils.equals(fi.name, featureInfo.name)) {
                         find = true;
-                        continue;
+                        break;
                     }
                 }
                 if (!find) {
@@ -157,9 +157,6 @@ public final class AppHelper {
             arrayOfClass[1] = int.class;
             arrayOfClass[2] = String.class;
             Method method = localClass.getMethod("checkOp", arrayOfClass);
-            if (method == null) {
-                return false;
-            }
             Object[] arrayOfObject1 = new Object[3];
             arrayOfObject1[0] = 24;
             arrayOfObject1[1] = Binder.getCallingUid();
@@ -306,10 +303,9 @@ public final class AppHelper {
      */
     public static boolean isFlyme() {
         try {
-            // Invoke Build.hasSmartBar()
-            final Method method = Build.class.getMethod("hasSmartBar");
-            return method != null;
-        } catch (final Exception e) {
+            Build.class.getMethod("hasSmartBar");
+            return true;
+        } catch (NoSuchMethodException e) {
             return false;
         }
     }

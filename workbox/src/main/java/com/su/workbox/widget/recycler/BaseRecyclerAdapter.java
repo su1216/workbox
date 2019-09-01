@@ -57,8 +57,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     public void onBindViewHolder(@NonNull BaseRecyclerAdapter.BaseViewHolder holder, int position) {
         int type = getItemViewType(position);
         if (type == ITEM_TYPE_HEADER || getItemViewType(position) == ITEM_TYPE_FOOTER) {
-            // 不做处理
-            return;
+            // ignore
         } else {
             position -= isHasHeader ? 1 : 0;
             bindData(holder, position, getItemType(position));
