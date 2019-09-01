@@ -126,9 +126,9 @@ public class IntentFragment extends IntentBaseInfoFragment implements View.OnCli
         }
     }
 
-    public static IntentFragment newInstance(ActivityExtras activityExtras) {
+    public static IntentFragment newInstance(IntentData intentData) {
         Bundle args = new Bundle();
-        args.putParcelable("activityExtras", activityExtras);
+        args.putParcelable("intentData", intentData);
         IntentFragment fragment = new IntentFragment();
         fragment.setArguments(args);
         return fragment;

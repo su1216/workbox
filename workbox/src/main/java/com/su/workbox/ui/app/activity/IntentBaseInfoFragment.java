@@ -19,8 +19,8 @@ public abstract class IntentBaseInfoFragment extends BaseFragment {
     static final int TYPE_FLAGS = 3;
 
     protected Activity mActivity;
-    protected ActivityExtras mActivityExtras;
-    protected ActivityExtras mCloneExtras;
+    protected IntentData mIntentData;
+    protected IntentData mCloneExtras;
 
     protected int type;
 
@@ -30,21 +30,21 @@ public abstract class IntentBaseInfoFragment extends BaseFragment {
         mActivity = getActivity();
         if (savedInstanceState == null) {
             Bundle arguments = getArguments();
-            mActivityExtras = arguments.getParcelable("activityExtras");
-            mCloneExtras = mActivityExtras.clone();
+            mIntentData = arguments.getParcelable("intentData");
+            mCloneExtras = mIntentData.clone();
         }
     }
 
     @Nullable
-    public ActivityExtra findActivityExtraByName(@NonNull String extraName) {
-        if (mActivityExtras == null) {
+    public IntentExtra findActivityExtraByName(@NonNull String extraName) {
+        if (mIntentData == null) {
             return null;
         }
-        List<ActivityExtra> activityExtras = mActivityExtras.getExtraList();
-        if (activityExtras == null) {
+        List<IntentExtra> extras = mIntentData.getExtraList();
+        if (extras == null) {
             return null;
         }
-        for (ActivityExtra extra : activityExtras) {
+        for (IntentExtra extra : extras) {
             if (TextUtils.equals(extraName, extra.getName())) {
                 return extra;
             }
@@ -60,14 +60,14 @@ public abstract class IntentBaseInfoFragment extends BaseFragment {
         return true;
     }
 
-    public ActivityExtras getCloneExtras() {
+    public IntentData getCloneExtras() {
         return mCloneExtras;
     }
 
     public abstract void collectIntentData(Intent intent);
 
     public final void resetIntentData() {
-        mCloneExtras = mActivityExtras.clone();
+        mCloneExtras = mIntentData.clone();
         initViews();
     }
 

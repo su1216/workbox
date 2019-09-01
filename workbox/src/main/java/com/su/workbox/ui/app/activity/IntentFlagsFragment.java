@@ -50,7 +50,7 @@ public class IntentFlagsFragment extends IntentBaseInfoFragment {
     @Override
     protected void initViews() {
         List<Flag> data = getFlagList();
-        initFlagStates(data, mActivityExtras.getFlags());
+        initFlagStates(data, mIntentData.getFlags());
         initOriginFlags(data);
         mFlagAdapter = new FlagAdapter(this, data);
         mRecyclerView.setAdapter(mFlagAdapter);
@@ -149,9 +149,9 @@ public class IntentFlagsFragment extends IntentBaseInfoFragment {
         }
     }
 
-    public static IntentFlagsFragment newInstance(ActivityExtras activityExtras) {
+    public static IntentFlagsFragment newInstance(IntentData intentData) {
         Bundle args = new Bundle();
-        args.putParcelable("activityExtras", activityExtras);
+        args.putParcelable("intentData", intentData);
         IntentFlagsFragment fragment = new IntentFlagsFragment();
         fragment.setArguments(args);
         return fragment;

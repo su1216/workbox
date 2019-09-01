@@ -53,7 +53,7 @@ public class IntentCategoriesFragment extends IntentBaseInfoFragment {
 
     @Override
     protected void initViews() {
-        mCategoryList = mActivityExtras.getCategoryList();
+        mCategoryList = mIntentData.getCategoryList();
         List<String> categoryList = mCloneExtras.getCategoryList();
         List<Category> systemCategoryList = getSystemCategoryList();
         initCategoryStates(systemCategoryList, categoryList);
@@ -193,9 +193,9 @@ public class IntentCategoriesFragment extends IntentBaseInfoFragment {
         }
     }
 
-    public static IntentCategoriesFragment newInstance(ActivityExtras activityExtras) {
+    public static IntentCategoriesFragment newInstance(IntentData intentData) {
         Bundle args = new Bundle();
-        args.putParcelable("activityExtras", activityExtras);
+        args.putParcelable("intentData", intentData);
         IntentCategoriesFragment fragment = new IntentCategoriesFragment();
         fragment.setArguments(args);
         return fragment;

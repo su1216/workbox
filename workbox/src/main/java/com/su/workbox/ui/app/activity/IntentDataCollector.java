@@ -17,47 +17,47 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ActivityExtrasCollector extends SimpleActivityLifecycleCallbacks {
+public class IntentDataCollector extends SimpleActivityLifecycleCallbacks {
 
     private AppExecutors mAppExecutors = AppExecutors.getInstance();
-    private ActivityExtrasDao mActivityExtrasDao;
+    private IntentDataDao mIntentDataDao;
 
-    public ActivityExtrasCollector() {
+    public IntentDataCollector() {
         HttpDataDatabase dataDatabase = HttpDataDatabase.getInstance(GeneralInfoHelper.getContext());
-        mActivityExtrasDao = dataDatabase.activityExtrasDao();
+        mIntentDataDao = dataDatabase.intentDataDao();
     }
 
     @NonNull
-    private static ActivityExtras intent2ActivityExtras(Activity activity, Intent intent) {
+    private static IntentData intent2ActivityExtras(Activity activity, Intent intent) {
         ComponentName componentName = activity.getComponentName();
-        ActivityExtras activityExtras = new ActivityExtras();
-        activityExtras.setComponentPackageName(componentName.getPackageName());
-        activityExtras.setComponentClassName(componentName.getClassName());
-        activityExtras.setAction(intent.getAction());
-        activityExtras.setData(intent.getDataString());
-        activityExtras.setType(intent.getType());
-        activityExtras.setFlags(intent.getFlags());
+        IntentData intentData = new IntentData();
+        intentData.setComponentPackageName(componentName.getPackageName());
+        intentData.setComponentClassName(componentName.getClassName());
+        intentData.setAction(intent.getAction());
+        intentData.setData(intent.getDataString());
+        intentData.setType(intent.getType());
+        intentData.setFlags(intent.getFlags());
         if (intent.getCategories() != null) {
-            activityExtras.setCategoryList(new ArrayList<>(intent.getCategories()));
-            activityExtras.setCategories(JSON.toJSONString(activityExtras.getCategoryList()));
+            intentData.setCategoryList(new ArrayList<>(intent.getCategories()));
+            intentData.setCategories(JSON.toJSONString(intentData.getCategoryList()));
         }
 
         Bundle extras = intent.getExtras();
         if (extras == null) {
-            return activityExtras;
+            return intentData;
         }
 
         Set<String> keySet = extras.keySet();
         if (keySet == null || keySet.isEmpty()) {
-            return activityExtras;
+            return intentData;
         }
-        copyFromBundle(activityExtras, extras);
-        activityExtras.setExtras(JSON.toJSONString(activityExtras.getExtraList()));
-        return activityExtras;
+        copyFromBundle(intentData, extras);
+        intentData.setExtras(JSON.toJSONString(intentData.getExtraList()));
+        return intentData;
     }
 
-    static void copyFromBundle(@NonNull ActivityExtras activityExtras, @NonNull Bundle extras) {
-        List<ActivityExtra> extraList = activityExtras.getExtraList();
+    static void copyFromBundle(@NonNull IntentData intentData, @NonNull Bundle extras) {
+        List<IntentExtra> extraList = intentData.getExtraList();
         extraList.clear();
         Set<String> keySet = extras.keySet();
         for (String key : keySet) {
@@ -65,11 +65,11 @@ public class ActivityExtrasCollector extends SimpleActivityLifecycleCallbacks {
             if (value == null) {
                 continue;
             }
-            ActivityExtra activityExtra = new ActivityExtra();
-            activityExtra.setName(key);
+            IntentExtra intentExtra = new IntentExtra();
+            intentExtra.setName(key);
             Class<?> valueClass = value.getClass();
             if (valueClass.isArray()) {
-                activityExtra.setArrayClassName(valueClass.getName());
+                intentExtra.setArrayClassName(valueClass.getName());
                 //如果是数组，并且数组中有元素，则取第一个元素类型
                 //无法直接使用Parcelable
                 Object[] objects = (Object[]) value;
@@ -79,11 +79,11 @@ public class ActivityExtrasCollector extends SimpleActivityLifecycleCallbacks {
                 } else {
                     componentType = valueClass.getComponentType();
                 }
-                activityExtra.setValueClassName(componentType.getName());
+                intentExtra.setValueClassName(componentType.getName());
             } else if (ReflectUtil.isPrimitiveClass(valueClass) || ReflectUtil.isPrimitiveWrapperClass(valueClass)) {
-                activityExtra.setValueClassName(valueClass.getName());
+                intentExtra.setValueClassName(valueClass.getName());
             } else if (valueClass == ArrayList.class) {
-                activityExtra.setValueClassName(valueClass.getName());
+                intentExtra.setValueClassName(valueClass.getName());
                 ArrayList<?> objects = (ArrayList) value;
                 Class<?> componentType;
                 if (objects.isEmpty()) {
@@ -91,12 +91,12 @@ public class ActivityExtrasCollector extends SimpleActivityLifecycleCallbacks {
                 } else {
                     componentType = objects.get(0).getClass();
                 }
-                activityExtra.setListClassName(componentType.getName());
+                intentExtra.setListClassName(componentType.getName());
             } else {
-                activityExtra.setValueClassName(valueClass.getName());
+                intentExtra.setValueClassName(valueClass.getName());
             }
-            activityExtra.setValue(JSON.toJSONString(value));
-            extraList.add(activityExtra);
+            intentExtra.setValue(JSON.toJSONString(value));
+            extraList.add(intentExtra);
         }
     }
 
@@ -112,12 +112,12 @@ public class ActivityExtrasCollector extends SimpleActivityLifecycleCallbacks {
         String componentPackageName = componentName.getPackageName();
         String componentClassName = componentName.getClassName();
         mAppExecutors.diskIO().execute(() -> {
-            ActivityExtras record = mActivityExtrasDao.getActivityExtras(componentPackageName, componentClassName);
-            ActivityExtras activityExtras = intent2ActivityExtras(activity, intent);
+            IntentData record = mIntentDataDao.getActivityExtras(componentPackageName, componentClassName);
+            IntentData intentData = intent2ActivityExtras(activity, intent);
             if (record != null) {
                 return;
             }
-            mActivityExtrasDao.insertActivityExtras(activityExtras);
+            mIntentDataDao.insertActivityExtras(intentData);
         });
     }
 }

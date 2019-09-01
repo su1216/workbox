@@ -110,8 +110,8 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
     }
 
     boolean checkRequired() {
-        List<ActivityExtra> extras = mCloneExtras.getExtraList();
-        for (ActivityExtra extra : extras) {
+        List<IntentExtra> extras = mCloneExtras.getExtraList();
+        for (IntentExtra extra : extras) {
             String parameterValue = extra.getValue();
             if (extra.isRequired() && TextUtils.isEmpty(parameterValue)) {
                 new ToastBuilder(extra.getName() + " 是必填参数").show();
@@ -122,8 +122,8 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
     }
 
     public void collectIntentData(Intent intent) {
-        List<ActivityExtra> extras = mCloneExtras.getExtraList();
-        for (ActivityExtra extra : extras) {
+        List<IntentExtra> extras = mCloneExtras.getExtraList();
+        for (IntentExtra extra : extras) {
             if (!TextUtils.isEmpty(extra.getName())) {
                 try {
                     makeParameter(intent, extra);
@@ -138,7 +138,7 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
 
     @Override
     protected void initViews() {
-        mParameterAdapter = new ParameterViewAdapter(this, mActivityExtras.getExtraList(), mCloneExtras.getExtraList());
+        mParameterAdapter = new ParameterViewAdapter(this, mIntentData.getExtraList(), mCloneExtras.getExtraList());
         mRecyclerView.setAdapter(mParameterAdapter);
     }
 
@@ -154,7 +154,7 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
                     try {
                         String className = mResources.getStringArray(R.array.workbox_intent_extra_type_class_names)[mSelected];
                         Class<?> clazz;
-                        ActivityExtra extra = new ActivityExtra();
+                        IntentExtra extra = new IntentExtra();
                         int _index = className.indexOf("_");
                         if (_index >= 0) {
                             clazz = ReflectUtil.forName(className.substring(0, _index));
@@ -176,7 +176,7 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
                 .show();
     }
 
-    private void showKeyDialog(ActivityExtra extra) {
+    private void showKeyDialog(IntentExtra extra) {
         final EditText inputView = new EditText(mActivity);
         new AlertDialog.Builder(mActivity)
                 .setTitle("key")
@@ -190,7 +190,7 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
                     }
                     extra.setName(key);
                     newInstance(extra);
-                    List<ActivityExtra> data = mParameterAdapter.getData();
+                    List<IntentExtra> data = mParameterAdapter.getData();
                     data.add(0, extra);
                     mParameterAdapter.notifyItemInserted(0);
                 })
@@ -198,7 +198,7 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
                 .show();
     }
 
-    private void makeParameter(@NonNull Intent intent, @NonNull ActivityExtra extra) throws ClassNotFoundException {
+    private void makeParameter(@NonNull Intent intent, @NonNull IntentExtra extra) throws ClassNotFoundException {
         String parameterName = extra.getName();
         String parameterValue = extra.getValue();
         if (TextUtils.isEmpty(parameterValue)) {
@@ -276,14 +276,14 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
         }
     }
 
-    private static class ParameterViewAdapter extends BaseRecyclerAdapter<ActivityExtra> {
+    private static class ParameterViewAdapter extends BaseRecyclerAdapter<IntentExtra> {
 
         private IntentExtrasFragment mFragment;
         private int mNormalColor;
         private int mRequiredColor;
-        private List<ActivityExtra> mOrigin;
+        private List<IntentExtra> mOrigin;
 
-        private ParameterViewAdapter(@NonNull IntentExtrasFragment fragment, @NonNull List<ActivityExtra> origin, @NonNull List<ActivityExtra> data) {
+        private ParameterViewAdapter(@NonNull IntentExtrasFragment fragment, @NonNull List<IntentExtra> origin, @NonNull List<IntentExtra> data) {
             super(data);
             mFragment = fragment;
             Resources resources = fragment.getResources();
@@ -299,7 +299,7 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
 
         @Override
         protected void bindData(@NonNull final BaseViewHolder holder, final int position, int itemType) {
-            ActivityExtra extra = getData().get(position);
+            IntentExtra extra = getData().get(position);
             Log.w(TAG, "extra: " + extra);
             TextView classNameView = holder.getView(R.id.class_name);
             TextView elementClassView = holder.getView(R.id.element_class);
@@ -368,9 +368,9 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
     }
 
     private void reset(@NonNull MenuItem item, int position) {
-        ActivityExtra extra = mParameterAdapter.getData().get(position);
+        IntentExtra extra = mParameterAdapter.getData().get(position);
         String name = extra.getName();
-        ActivityExtra origin = findActivityExtraByName(name);
+        IntentExtra origin = findActivityExtraByName(name);
         if (origin == null) {
             return;
         }
@@ -379,7 +379,7 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
     }
 
     private void format(@NonNull MenuItem item, int position) {
-        ActivityExtra extra = mParameterAdapter.getData().get(position);
+        IntentExtra extra = mParameterAdapter.getData().get(position);
         String value = extra.getValue();
         if (TextUtils.isEmpty(value)) {
             return;
@@ -398,12 +398,12 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
     }
 
     private void instance(@NonNull MenuItem item, int position) {
-        ActivityExtra extra = mParameterAdapter.getData().get(position);
+        IntentExtra extra = mParameterAdapter.getData().get(position);
         newInstance(extra);
         mParameterAdapter.notifyItemChanged(position);
     }
 
-    private void newInstance(ActivityExtra extra) {
+    private void newInstance(IntentExtra extra) {
         final Class<?> clazz = extra.getClass(extra.getValueClassName());
         final boolean isArray = !TextUtils.isEmpty(extra.getArrayClassName());
         final boolean isList = !TextUtils.isEmpty(extra.getListClassName());
@@ -463,15 +463,15 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
             return;
         }
 
-        menu.add(0, R.id.reset, 0, "reset");
-        menu.add(0, R.id.format, 1, "format");
-        menu.add(0, R.id.instance, 2, "instance");
-        menu.add(0, R.id.delete, 3, "delete");
+        menu.add(0, 0, 0, "reset");
+        menu.add(0, 1, 1, "format");
+        menu.add(0, 2, 2, "instance");
+        menu.add(0, 3, 3, "delete");
 
-        ActivityExtra extra = mParameterAdapter.getData().get(info.position);
+        IntentExtra extra = mParameterAdapter.getData().get(info.position);
         final Class<?> clazz = extra.getClass(extra.getValueClassName());
         if (!ReflectUtil.hasDefaultConstructor(clazz) || ReflectUtil.isPrimitiveClass(clazz)) {
-            menu.findItem(R.id.instance).setVisible(false);
+            menu.findItem(2).setVisible(false);
         }
     }
 
@@ -480,13 +480,13 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
         ContextMenuRecyclerView.RecyclerViewContextMenuInfo info = (ContextMenuRecyclerView.RecyclerViewContextMenuInfo) item.getMenuInfo();
         int menuId = item.getItemId();
         int position = info.position;
-        if (menuId == R.id.reset) {
+        if (menuId == 0) {
             reset(item, position);
-        } else if (menuId == R.id.format) {
+        } else if (menuId == 1) {
             format(item, position);
-        } else if (menuId == R.id.instance) {
+        } else if (menuId == 2) {
             instance(item, position);
-        } else if (menuId == R.id.delete) {
+        } else if (menuId == 3) {
             delete(item, position);
         } else {
             return super.onContextItemSelected(item);
@@ -494,9 +494,9 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
         return true;
     }
 
-    public static IntentExtrasFragment newInstance(ActivityExtras activityExtras) {
+    public static IntentExtrasFragment newInstance(IntentData intentData) {
         Bundle args = new Bundle();
-        args.putParcelable("activityExtras", activityExtras);
+        args.putParcelable("intentData", intentData);
         IntentExtrasFragment fragment = new IntentExtrasFragment();
         fragment.setArguments(args);
         return fragment;

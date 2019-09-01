@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.su.workbox.utils.ReflectUtil;
 
-public class ActivityExtra implements Parcelable, Cloneable {
+public class IntentExtra implements Parcelable, Cloneable {
 
     private String name;
     private String value;
@@ -17,9 +17,9 @@ public class ActivityExtra implements Parcelable, Cloneable {
     private String listClassName;
     private boolean required;
 
-    public ActivityExtra() {}
+    public IntentExtra() {}
 
-    protected ActivityExtra(Parcel in) {
+    protected IntentExtra(Parcel in) {
         name = in.readString();
         value = in.readString();
         valueClassName = in.readString();
@@ -43,15 +43,15 @@ public class ActivityExtra implements Parcelable, Cloneable {
         return 0;
     }
 
-    public static final Creator<ActivityExtra> CREATOR = new Creator<ActivityExtra>() {
+    public static final Creator<IntentExtra> CREATOR = new Creator<IntentExtra>() {
         @Override
-        public ActivityExtra createFromParcel(Parcel in) {
-            return new ActivityExtra(in);
+        public IntentExtra createFromParcel(Parcel in) {
+            return new IntentExtra(in);
         }
 
         @Override
-        public ActivityExtra[] newArray(int size) {
-            return new ActivityExtra[size];
+        public IntentExtra[] newArray(int size) {
+            return new IntentExtra[size];
         }
     };
 
@@ -118,10 +118,10 @@ public class ActivityExtra implements Parcelable, Cloneable {
     }
 
     @Override
-    protected ActivityExtra clone() {
-        ActivityExtra o = null;
+    protected IntentExtra clone() {
+        IntentExtra o = null;
         try {
-            o = (ActivityExtra) super.clone();
+            o = (IntentExtra) super.clone();
         } catch (CloneNotSupportedException e) {
             Log.w("CLONE", e);
         }
@@ -130,7 +130,7 @@ public class ActivityExtra implements Parcelable, Cloneable {
 
     @Override
     public String toString() {
-        return "ActivityExtra{" +
+        return "IntentExtra{" +
                 "name='" + name + '\'' +
                 ", value='" + value + '\'' +
                 ", valueClassName='" + valueClassName + '\'' +

@@ -15,8 +15,8 @@ import com.alibaba.fastjson.JSON;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(tableName = "activity_extras", indices = {@Index(value = {"componentPackageName", "componentClassName"}, unique = true)})
-public class ActivityExtras implements Parcelable, Cloneable {
+@Entity(tableName = "intent_data", indices = {@Index(value = {"componentPackageName", "componentClassName"}, unique = true)})
+public class IntentData implements Parcelable, Cloneable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
@@ -40,13 +40,13 @@ public class ActivityExtras implements Parcelable, Cloneable {
     @ColumnInfo(name = "auto")
     private boolean auto = true;
     @Ignore
-    private List<ActivityExtra> extraList = new ArrayList<>();
+    private List<IntentExtra> extraList = new ArrayList<>();
     @Ignore
     private List<String> categoryList = new ArrayList<>();
 
-    public ActivityExtras() {}
+    public IntentData() {}
 
-    protected ActivityExtras(Parcel in) {
+    protected IntentData(Parcel in) {
         id = in.readLong();
         componentPackageName = in.readString();
         componentClassName = in.readString();
@@ -57,7 +57,7 @@ public class ActivityExtras implements Parcelable, Cloneable {
         categories = in.readString();
         flags = in.readInt();
         auto = in.readByte() != 0;
-        extraList = in.createTypedArrayList(ActivityExtra.CREATOR);
+        extraList = in.createTypedArrayList(IntentExtra.CREATOR);
         categoryList = in.createStringArrayList();
     }
 
@@ -82,15 +82,15 @@ public class ActivityExtras implements Parcelable, Cloneable {
         return 0;
     }
 
-    public static final Creator<ActivityExtras> CREATOR = new Creator<ActivityExtras>() {
+    public static final Creator<IntentData> CREATOR = new Creator<IntentData>() {
         @Override
-        public ActivityExtras createFromParcel(Parcel in) {
-            return new ActivityExtras(in);
+        public IntentData createFromParcel(Parcel in) {
+            return new IntentData(in);
         }
 
         @Override
-        public ActivityExtras[] newArray(int size) {
-            return new ActivityExtras[size];
+        public IntentData[] newArray(int size) {
+            return new IntentData[size];
         }
     };
 
@@ -174,7 +174,7 @@ public class ActivityExtras implements Parcelable, Cloneable {
         this.flags = flags;
     }
 
-    public List<ActivityExtra> getExtraList() {
+    public List<IntentExtra> getExtraList() {
         return extraList;
     }
 
@@ -182,7 +182,7 @@ public class ActivityExtras implements Parcelable, Cloneable {
         return categoryList;
     }
 
-    public void setExtraList(List<ActivityExtra> extraList) {
+    public void setExtraList(List<IntentExtra> extraList) {
         this.extraList = extraList;
     }
 
@@ -192,7 +192,7 @@ public class ActivityExtras implements Parcelable, Cloneable {
 
     void initExtrasAndCategories() {
         if (!TextUtils.isEmpty(extras)) {
-            extraList = JSON.parseArray(extras, ActivityExtra.class);
+            extraList = JSON.parseArray(extras, IntentExtra.class);
         }
         if (!TextUtils.isEmpty(categories)) {
             categoryList = JSON.parseArray(categories, String.class);
@@ -200,12 +200,12 @@ public class ActivityExtras implements Parcelable, Cloneable {
     }
 
     @Override
-    public ActivityExtras clone() {
-        ActivityExtras o = null;
+    public IntentData clone() {
+        IntentData o = null;
         try {
-            o = (ActivityExtras) super.clone();
+            o = (IntentData) super.clone();
             o.extraList = new ArrayList<>();
-            for (ActivityExtra extra : extraList) {
+            for (IntentExtra extra : extraList) {
                 o.extraList.add(extra.clone());
             }
             o.categoryList = new ArrayList<>(categoryList);
@@ -217,7 +217,7 @@ public class ActivityExtras implements Parcelable, Cloneable {
 
     @Override
     public String toString() {
-        return "ActivityExtras{" +
+        return "IntentData{" +
                 "id=" + id +
                 ", componentPackageName='" + componentPackageName + '\'' +
                 ", componentClassName='" + componentClassName + '\'' +

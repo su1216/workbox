@@ -36,10 +36,10 @@ public class IntentInfoActivity extends BaseAppCompatActivity implements View.On
     private static final String TAG = IntentInfoActivity.class.getSimpleName();
     private AppExecutors mAppExecutors = AppExecutors.getInstance();
     private ComponentInfo mComponentInfo;
-    private ActivityExtras mActivityExtras;
+    private IntentData mIntentData;
     private ViewPager mPager;
     private TabLayout mTabLayout;
-    private ActivityExtrasDao mActivityExtrasDao;
+    private IntentDataDao mIntentDataDao;
     private InfoPagerAdapter mAdapter;
 
     @Override
@@ -47,7 +47,7 @@ public class IntentInfoActivity extends BaseAppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.workbox_templete_pager);
         HttpDataDatabase database = HttpDataDatabase.getInstance(this);
-        mActivityExtrasDao = database.activityExtrasDao();
+        mIntentDataDao = database.intentDataDao();
         Intent intent = getIntent();
         mComponentInfo = intent.getParcelableExtra("info");
         mTabLayout = findViewById(R.id.tab_layout);
@@ -78,11 +78,13 @@ public class IntentInfoActivity extends BaseAppCompatActivity implements View.On
         mPager.setOffscreenPageLimit(3);
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
         mAppExecutors.diskIO().execute(() -> {
-            mActivityExtras = mActivityExtrasDao.getActivityExtras(mComponentInfo.packageName, mComponentInfo.name);
-            if (mActivityExtras == null) {
-                mActivityExtras = new ActivityExtras();
+            mIntentData = mIntentDataDao.getActivityExtras(mComponentInfo.packageName, mComponentInfo.name);
+            if (mIntentData == null) {
+                mIntentData = new IntentData();
+                mIntentData.setComponentPackageName(mComponentInfo.packageName);
+                mIntentData.setComponentClassName(mComponentInfo.name);
             }
-            mActivityExtras.initExtrasAndCategories();
+            mIntentData.initExtrasAndCategories();
             runOnUiThread(() -> {
                 mAdapter = new InfoPagerAdapter(getSupportFragmentManager());
                 mPager.setAdapter(mAdapter);
@@ -150,16 +152,16 @@ public class IntentInfoActivity extends BaseAppCompatActivity implements View.On
         }
 
         mAppExecutors.diskIO().execute(() -> {
-            mActivityExtras.setAction(intent.getAction());
-            mActivityExtras.setData(intent.getDataString());
-            mActivityExtras.setType(intent.getType());
-            mActivityExtras.setFlags(intent.getFlags());
+            mIntentData.setAction(intent.getAction());
+            mIntentData.setData(intent.getDataString());
+            mIntentData.setType(intent.getType());
+            mIntentData.setFlags(intent.getFlags());
             if (intent.getCategories() != null) {
-                mActivityExtras.setCategories(JSON.toJSONString(new ArrayList<>(intent.getCategories())));
+                mIntentData.setCategories(JSON.toJSONString(new ArrayList<>(intent.getCategories())));
             }
-            ActivityExtrasCollector.copyFromBundle(mActivityExtras, intent.getExtras());
-            mActivityExtras.setExtras(JSON.toJSONString(mActivityExtras.getExtraList()));
-            mActivityExtrasDao.insertActivityExtras(mActivityExtras);
+            IntentDataCollector.copyFromBundle(mIntentData, intent.getExtras());
+            mIntentData.setExtras(JSON.toJSONString(mIntentData.getExtraList()));
+            mIntentDataDao.insertActivityExtras(mIntentData);
         });
     }
 
@@ -181,13 +183,13 @@ public class IntentInfoActivity extends BaseAppCompatActivity implements View.On
         public Fragment getItem(int position) {
             IntentBaseInfoFragment fragment;
             if (position == 0) {
-                fragment = IntentFragment.newInstance(mActivityExtras);
+                fragment = IntentFragment.newInstance(mIntentData);
             } else if (position == 1) {
-                fragment = IntentExtrasFragment.newInstance(mActivityExtras);
+                fragment = IntentExtrasFragment.newInstance(mIntentData);
             } else if (position == 2) {
-                fragment = IntentCategoriesFragment.newInstance(mActivityExtras);
+                fragment = IntentCategoriesFragment.newInstance(mIntentData);
             } else {
-                fragment = IntentFlagsFragment.newInstance(mActivityExtras);
+                fragment = IntentFlagsFragment.newInstance(mIntentData);
             }
             mFragmentList.put(position, fragment);
             return fragment;
