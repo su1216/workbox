@@ -121,8 +121,9 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
         return true;
     }
 
-    public void collectIntentData(Intent intent) {
+    public void collectIntentData(Intent intent, IntentData intentData) {
         List<IntentExtra> extras = mCloneExtras.getExtraList();
+        intentData.setExtraList(extras);
         for (IntentExtra extra : extras) {
             if (!TextUtils.isEmpty(extra.getName())) {
                 try {
@@ -450,6 +451,12 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
         }
     }
 
+    private void required(@NonNull MenuItem item, int position) {
+        IntentExtra extra = mParameterAdapter.getData().get(position);
+        extra.setRequired(!extra.isRequired());
+        mParameterAdapter.notifyItemChanged(position);
+    }
+
     private void delete(@NonNull MenuItem item, int position) {
         mParameterAdapter.getData().remove(position);
         mParameterAdapter.notifyItemRemoved(position);
@@ -463,12 +470,17 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
             return;
         }
 
+        IntentExtra extra = mParameterAdapter.getData().get(info.position);
         menu.add(0, 0, 0, "reset");
         menu.add(0, 1, 1, "format");
         menu.add(0, 2, 2, "instance");
-        menu.add(0, 3, 3, "delete");
+        if (extra.isRequired()) {
+            menu.add(0, 3, 3, "optional");
+        } else {
+            menu.add(0, 3, 3, "required");
+        }
+        menu.add(0, 4, 4, "delete");
 
-        IntentExtra extra = mParameterAdapter.getData().get(info.position);
         final Class<?> clazz = extra.getClass(extra.getValueClassName());
         if (!ReflectUtil.hasDefaultConstructor(clazz) || ReflectUtil.isPrimitiveClass(clazz)) {
             menu.findItem(2).setVisible(false);
@@ -487,6 +499,8 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
         } else if (menuId == 2) {
             instance(item, position);
         } else if (menuId == 3) {
+            required(item, position);
+        } else if (menuId == 4) {
             delete(item, position);
         } else {
             return super.onContextItemSelected(item);

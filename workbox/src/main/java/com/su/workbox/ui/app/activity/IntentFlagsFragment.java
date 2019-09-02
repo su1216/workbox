@@ -95,8 +95,9 @@ public class IntentFlagsFragment extends IntentBaseInfoFragment {
         }
     }
 
-    public void collectIntentData(Intent intent) {
+    public void collectIntentData(Intent intent, IntentData intentData) {
         intent.setFlags(mFlags);
+        intentData.setFlags(mFlags);
     }
 
     private static class FlagAdapter extends BaseRecyclerAdapter<Flag> {
@@ -129,6 +130,8 @@ public class IntentFlagsFragment extends IntentBaseInfoFragment {
                 }
                 Log.d(TAG, "flags: " + mFragment.mFlags);
             });
+
+            holder.itemView.setOnClickListener(v -> checkBox.performClick());
         }
     }
 

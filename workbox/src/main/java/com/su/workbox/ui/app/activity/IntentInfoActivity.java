@@ -1,6 +1,7 @@
 package com.su.workbox.ui.app.activity;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.ComponentInfo;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.su.workbox.R;
@@ -24,8 +26,9 @@ import com.su.workbox.database.HttpDataDatabase;
 import com.su.workbox.ui.BaseAppCompatActivity;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.widget.SimpleOnTabSelectedListener;
+import com.su.workbox.widget.ToastBuilder;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by su on 19-7-21.
@@ -67,15 +70,17 @@ public class IntentInfoActivity extends BaseAppCompatActivity implements View.On
         mToolbar.setNavigationOnClickListener(v -> showSaveDialog());
         Menu menu = mToolbar.getMenu();
         MenuItem addMenu = menu.findItem(R.id.add);
-        addMenu.setVisible(false);
+        MenuItem deleteMenu = menu.findItem(R.id.delete);
         findViewById(R.id.reset).setOnClickListener(this);
         findViewById(R.id.launch).setOnClickListener(this);
         mPager = findViewById(R.id.pager);
+        mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         mTabLayout.addTab(makeTab("Base"));
+        mTabLayout.addTab(makeTab("Action"));
         mTabLayout.addTab(makeTab("Extras"));
         mTabLayout.addTab(makeTab("Categories"));
         mTabLayout.addTab(makeTab("Flags"));
-        mPager.setOffscreenPageLimit(3);
+        mPager.setOffscreenPageLimit(4);
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
         mAppExecutors.diskIO().execute(() -> {
             mIntentData = mIntentDataDao.getActivityExtras(mComponentInfo.packageName, mComponentInfo.name);
@@ -88,6 +93,7 @@ public class IntentInfoActivity extends BaseAppCompatActivity implements View.On
             runOnUiThread(() -> {
                 mAdapter = new InfoPagerAdapter(getSupportFragmentManager());
                 mPager.setAdapter(mAdapter);
+                deleteMenu.setVisible(mIntentData.getId() > 0);
 
                 mTabLayout.addOnTabSelectedListener(new SimpleOnTabSelectedListener() {
                     @Override
@@ -96,7 +102,9 @@ public class IntentInfoActivity extends BaseAppCompatActivity implements View.On
                         mPager.setCurrentItem(position);
                         IntentBaseInfoFragment fragment = mAdapter.mFragmentList.get(position);
                         int type = fragment.getType();
-                        addMenu.setVisible(type == IntentBaseInfoFragment.TYPE_CATEGORIES || type == IntentBaseInfoFragment.TYPE_EXTRAS);
+                        addMenu.setVisible(type == IntentBaseInfoFragment.TYPE_ACTION
+                                || type == IntentBaseInfoFragment.TYPE_CATEGORIES
+                                || type == IntentBaseInfoFragment.TYPE_EXTRAS);
                     }
                 });
                 findViewById(R.id.button_layout).setVisibility(View.VISIBLE);
@@ -116,8 +124,13 @@ public class IntentInfoActivity extends BaseAppCompatActivity implements View.On
 
     private void launch() {
         Intent intent = makeLaunchIntent();
-        if (intent != null) {
+        if (intent == null) {
+            return;
+        }
+        try {
             startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            new ToastBuilder(e.getMessage()).setDuration(Toast.LENGTH_LONG).show();
         }
     }
 
@@ -140,7 +153,7 @@ public class IntentInfoActivity extends BaseAppCompatActivity implements View.On
                 return null;
             }
 
-            fragment.collectIntentData(intent);
+            fragment.collectIntentData(intent, mIntentData);
         }
         return intent;
     }
@@ -152,15 +165,14 @@ public class IntentInfoActivity extends BaseAppCompatActivity implements View.On
         }
 
         mAppExecutors.diskIO().execute(() -> {
-            mIntentData.setAction(intent.getAction());
-            mIntentData.setData(intent.getDataString());
-            mIntentData.setType(intent.getType());
-            mIntentData.setFlags(intent.getFlags());
-            if (intent.getCategories() != null) {
-                mIntentData.setCategories(JSON.toJSONString(new ArrayList<>(intent.getCategories())));
+            List<IntentExtra> extraList = mIntentData.getExtraList();
+            if (extraList != null) {
+                mIntentData.setExtras(JSON.toJSONString(extraList));
             }
-            IntentDataCollector.copyFromBundle(mIntentData, intent.getExtras());
-            mIntentData.setExtras(JSON.toJSONString(mIntentData.getExtraList()));
+            List<String> categoryList = mIntentData.getCategoryList();
+            if (categoryList != null) {
+                mIntentData.setCategories(JSON.toJSONString(categoryList));
+            }
             mIntentDataDao.insertActivityExtras(mIntentData);
         });
     }
@@ -185,8 +197,10 @@ public class IntentInfoActivity extends BaseAppCompatActivity implements View.On
             if (position == 0) {
                 fragment = IntentFragment.newInstance(mIntentData);
             } else if (position == 1) {
-                fragment = IntentExtrasFragment.newInstance(mIntentData);
+                fragment = IntentActionFragment.newInstance(mIntentData);
             } else if (position == 2) {
+                fragment = IntentExtrasFragment.newInstance(mIntentData);
+            } else if (position == 3) {
                 fragment = IntentCategoriesFragment.newInstance(mIntentData);
             } else {
                 fragment = IntentFlagsFragment.newInstance(mIntentData);
@@ -197,14 +211,14 @@ public class IntentInfoActivity extends BaseAppCompatActivity implements View.On
 
         @Override
         public int getCount() {
-            return 4;
+            return 5;
         }
     }
 
     @MenuRes
     @Override
     public int menuRes() {
-        return R.menu.workbox_add_menu;
+        return R.menu.workbox_intent_menu;
     }
 
     public void add(@NonNull MenuItem item) {
@@ -216,7 +230,23 @@ public class IntentInfoActivity extends BaseAppCompatActivity implements View.On
         } else if (type == IntentBaseInfoFragment.TYPE_EXTRAS) {
             IntentExtrasFragment extrasFragment = (IntentExtrasFragment) fragment;
             extrasFragment.showAddDialog();
+        } else if (type == IntentBaseInfoFragment.TYPE_ACTION) {
+            IntentActionFragment actionFragment = (IntentActionFragment) fragment;
+            actionFragment.showAddDialog();
         }
+    }
+
+    public void delete(@NonNull MenuItem item) {
+        new AlertDialog.Builder(this)
+                .setMessage("确认删除此条数据？")
+                .setPositiveButton(R.string.workbox_delete, (dialog, which) -> delete())
+                .setNegativeButton(R.string.workbox_cancel, null)
+                .show();
+    }
+
+    private void delete() {
+        mAppExecutors.diskIO().execute(() -> mIntentDataDao.deleteActivityExtrasById(mIntentData.getId()));
+        finish();
     }
 
     private void showSaveDialog() {

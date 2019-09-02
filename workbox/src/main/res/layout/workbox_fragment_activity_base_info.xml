@@ -9,56 +9,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="6dip"
-        android:paddingBottom="6dip">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="package:"
-            android:textColor="@color/workbox_first_text"
-            android:textSize="18sp"/>
-        <TextView
-            android:id="@+id/package_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:ellipsize="end"
-            android:lines="1"
-            android:textColor="@color/workbox_second_text"
-            android:textSize="18sp"
-            tools:text="com.su.workbox.sample"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="6dip"
-        android:paddingBottom="6dip">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="class:"
-            android:textColor="@color/workbox_first_text"
-            android:textSize="18sp"/>
-        <TextView
-            android:id="@+id/class_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:ellipsize="end"
-            android:lines="1"
-            android:textColor="@color/workbox_second_text"
-            android:textSize="18sp"
-            tools:text="http"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingTop="6dip"
-        android:paddingBottom="6dip">
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,36 +25,58 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/action_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="6dip"
-        android:paddingBottom="6dip">
+        android:orientation="vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="action:"
+            android:text="package:"
             android:textColor="@color/workbox_first_text"
             android:textSize="18sp"/>
         <TextView
-            android:id="@+id/action"
+            android:id="@+id/package_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
             android:ellipsize="end"
-            android:maxLines="3"
+            android:lines="1"
             android:textColor="@color/workbox_second_text"
             android:textSize="18sp"
-            tools:text="www.baidu.com"/>
+            tools:text="com.su.workbox.sample"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="class:"
+            android:textColor="@color/workbox_first_text"
+            android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/class_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@color/workbox_second_text"
+            android:textSize="18sp"
+            tools:text="http"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/data_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="6dip"
-        android:paddingBottom="6dip">
+        android:orientation="vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -111,7 +87,7 @@
             android:id="@+id/data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
             android:ellipsize="end"
             android:maxLines="3"
             android:textColor="@color/workbox_second_text"
@@ -122,9 +98,9 @@
         android:id="@+id/type_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="6dip"
-        android:paddingBottom="6dip">
+        android:orientation="vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -135,7 +111,7 @@
             android:id="@+id/type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
             android:ellipsize="end"
             android:lines="1"
             android:textColor="@color/workbox_second_text"

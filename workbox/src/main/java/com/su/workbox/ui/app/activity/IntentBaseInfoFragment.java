@@ -14,9 +14,10 @@ import java.util.List;
 public abstract class IntentBaseInfoFragment extends BaseFragment {
 
     static final int TYPE_BASE = 0;
-    static final int TYPE_EXTRAS = 1;
-    static final int TYPE_CATEGORIES = 2;
-    static final int TYPE_FLAGS = 3;
+    static final int TYPE_ACTION = 1;
+    static final int TYPE_EXTRAS = 2;
+    static final int TYPE_CATEGORIES = 3;
+    static final int TYPE_FLAGS = 4;
 
     protected Activity mActivity;
     protected IntentData mIntentData;
@@ -64,7 +65,7 @@ public abstract class IntentBaseInfoFragment extends BaseFragment {
         return mCloneExtras;
     }
 
-    public abstract void collectIntentData(Intent intent);
+    public abstract void collectIntentData(Intent intent, IntentData intentData);
 
     public final void resetIntentData() {
         mCloneExtras = mIntentData.clone();

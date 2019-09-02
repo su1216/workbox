@@ -3,7 +3,6 @@ package com.su.sample;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -20,6 +19,7 @@ import com.su.annotations.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static com.su.sample.ObjectParameterActivity.EXTRA_KEY_PARAMETER_INT;
 import static com.su.sample.ObjectParameterActivity.EXTRA_KEY_PARAMETER_LONG;
@@ -64,21 +64,19 @@ public class ObjectParameterActivity extends BaseAppCompatActivity {
     private void initParameters() {
         Intent intent = getIntent();
         try {
-            Parcelable object = intent.getParcelableExtra(EXTRA_KEY_PARAMETER_OBJECT);
-            Parcelable[] objects = intent.getParcelableArrayExtra(EXTRA_KEY_PARAMETER_OBJECTS);
             if (intent.getExtras() == null || !intent.getExtras().containsKey(EXTRA_KEY_PARAMETER_INT)) {
                 Toast.makeText(this, EXTRA_KEY_PARAMETER_INT + "为必传参数", Toast.LENGTH_LONG).show();
                 finish();
                 return;
             }
-            int intParameter = intent.getIntExtra(EXTRA_KEY_PARAMETER_INT, 0);
-            ArrayList<Integer> intListParameter = intent.getIntegerArrayListExtra(EXTRA_KEY_PARAMETER_INT_LIST);
-            long longParameter = intent.getLongExtra(EXTRA_KEY_PARAMETER_LONG, 0L);
-            mData.add(makeParameters(EXTRA_KEY_PARAMETER_OBJECT, object));
-            mData.add(makeParameters(EXTRA_KEY_PARAMETER_OBJECTS, objects));
-            mData.add(makeParameters(EXTRA_KEY_PARAMETER_INT, intParameter));
-            mData.add(makeParameters(EXTRA_KEY_PARAMETER_INT_LIST, intListParameter));
-            mData.add(makeParameters(EXTRA_KEY_PARAMETER_LONG, longParameter));
+            Bundle extras = intent.getExtras();
+            if (extras == null || extras.isEmpty()) {
+                return;
+            }
+            Set<String> keySet = extras.keySet();
+            for (String key : keySet) {
+                mData.add(makeParameters(key, extras.get(key)));
+            }
             mAdapter.notifyDataSetChanged();
         } catch (RuntimeException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();

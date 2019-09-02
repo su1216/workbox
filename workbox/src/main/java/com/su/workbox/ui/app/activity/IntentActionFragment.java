@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.su.workbox.R;
@@ -27,16 +28,16 @@ import java.util.List;
  * Created by su on 17-12-25.
  */
 
-public class IntentCategoriesFragment extends IntentBaseInfoFragment {
+public class IntentActionFragment extends IntentBaseInfoFragment {
 
-    private static final String TAG = IntentCategoriesFragment.class.getSimpleName();
+    private static final String TAG = IntentActionFragment.class.getSimpleName();
     private RecyclerView mRecyclerView;
-    private CategoryAdapter mCategoryAdapter;
-    private List<String> mCategoryList = new ArrayList<>();
-    private List<Category> mCloneCategoryList = new ArrayList<>();
+    private ActionAdapter mActionAdapter;
+    private String mAction;
+    private List<Action> mCloneActionList = new ArrayList<>();
 
-    public IntentCategoriesFragment() {
-        type = TYPE_CATEGORIES;
+    public IntentActionFragment() {
+        type = TYPE_ACTION;
     }
 
     @NonNull
@@ -53,50 +54,50 @@ public class IntentCategoriesFragment extends IntentBaseInfoFragment {
 
     @Override
     protected void initViews() {
-        mCategoryList = mIntentData.getCategoryList();
-        List<String> categoryList = mCloneExtras.getCategoryList();
-        List<Category> systemCategoryList = getSystemCategoryList();
-        initCategoryStates(systemCategoryList, categoryList);
+        mAction = mIntentData.getAction();
+        List<Action> systemActionList = getSystemActionList();
+        initActionStates(systemActionList);
 
-        mCategoryAdapter = new CategoryAdapter(mCloneCategoryList);
-        mRecyclerView.setAdapter(mCategoryAdapter);
+        mActionAdapter = new ActionAdapter(mCloneActionList);
+        mRecyclerView.setAdapter(mActionAdapter);
     }
 
-    private void initCategoryStates(@NonNull List<Category> data, List<String> categoryList) {
-        mCloneCategoryList.clear();
-        List<String> list = new ArrayList<>();
-        for (Category category : data) {
-            for (String value : categoryList) {
-                if (TextUtils.equals(category.value, value)) {
-                    category.checked = true;
-                    list.add(value);
-                    break;
-                }
+    private void initActionStates(@NonNull List<Action> systemActions) {
+        mCloneActionList.clear();
+        if (TextUtils.isEmpty(mAction)) {
+            mCloneActionList.addAll(systemActions);
+            return;
+        }
+        boolean inSystem = false;
+        for (Action action : systemActions) {
+            if (TextUtils.equals(action.value, mAction)) {
+                action.checked = true;
+                inSystem = true;
+                mCloneActionList.add(action);
+                systemActions.remove(action);
+                break;
             }
         }
-        categoryList.removeAll(list);
-        for (String value : categoryList) {
-            Category category = new Category(value, value);
-            category.custom = true;
-            mCloneCategoryList.add(category);
+        if (!inSystem) {
+            mCloneActionList.add(new Action(mAction, mAction));
         }
-        mCloneCategoryList.addAll(data);
+        mCloneActionList.addAll(systemActions);
     }
 
-    private static List<Category> getSystemCategoryList() {
-        List<Category> list = new ArrayList<>();
+    private static List<Action> getSystemActionList() {
+        List<Action> list = new ArrayList<>();
         Class<Intent> clazz = Intent.class;
         Field[] fields = clazz.getDeclaredFields();
         try {
             for (Field field : fields) {
-                if (!field.getName().startsWith("CATEGORY_")) {
+                if (!field.getName().startsWith("ACTION_")) {
                     continue;
                 }
                 String value = (String) field.get(null);
                 if (value == null) {
                     continue;
                 }
-                list.add(new Category(field.getName(), value));
+                list.add(new Action(field.getName(), value));
             }
         } catch (IllegalAccessException e) {
             Log.w(TAG, e);
@@ -108,19 +109,19 @@ public class IntentCategoriesFragment extends IntentBaseInfoFragment {
         EditText inputView = new EditText(mActivity);
         inputView.setMaxLines(1);
         new AlertDialog.Builder(mActivity)
-                .setTitle("Custom Category")
+                .setTitle("Custom Action")
                 .setView(inputView)
                 .setPositiveButton(R.string.workbox_confirm, (dialog, which) -> {
                     String value = inputView.getText().toString().trim();
                     if (TextUtils.isEmpty(value)) {
-                        new ToastBuilder("请输入category").show();
+                        new ToastBuilder("请输入action").show();
                         return;
                     }
-                    Category category = new Category(value, value);
-                    category.custom = true;
-                    category.checked = true;
-                    mCloneCategoryList.add(0, category);
-                    mCategoryAdapter.notifyItemInserted(0);
+                    Action action = new Action(value, value);
+                    action.custom = true;
+                    action.checked = true;
+                    mCloneActionList.add(0, action);
+                    mActionAdapter.notifyItemInserted(0);
                     mRecyclerView.scrollToPosition(0);
                 })
                 .setNegativeButton(R.string.workbox_cancel, null)
@@ -128,28 +129,27 @@ public class IntentCategoriesFragment extends IntentBaseInfoFragment {
     }
 
     public void collectIntentData(Intent intent, IntentData intentData) {
-        List<Category> categories = mCategoryAdapter.getData();
-        List<String> categoryList = new ArrayList<>();
-        for (Category category : categories) {
-            if (category.checked) {
-                intent.addCategory(category.value);
-                categoryList.add(category.value);
+        List<Action> actions = mActionAdapter.getData();
+        for (Action action : actions) {
+            if (action.checked) {
+                intent.setAction(action.value);
+                intentData.setAction(intent.getAction());
+                return;
             }
         }
-        intentData.setCategoryList(categoryList);
     }
 
-    private static class CategoryAdapter extends BaseRecyclerAdapter<Category> {
+    private static class ActionAdapter extends BaseRecyclerAdapter<Action> {
         private static final int TYPE_SYSTEM = 0;
         private static final int TYPE_CUSTOM = 1;
 
-        private CategoryAdapter(@NonNull List<Category> data) {
+        private ActionAdapter(@NonNull List<Action> data) {
             super(data);
         }
 
         @Override
         public int getLayoutId(int itemType) {
-            return R.layout.workbox_item_intent_category;
+            return R.layout.workbox_item_intent_action;
         }
 
         @Override
@@ -159,27 +159,40 @@ public class IntentCategoriesFragment extends IntentBaseInfoFragment {
 
         @Override
         protected void bindData(@NonNull final BaseViewHolder holder, final int position, int itemType) {
-            final Category category = getData().get(position);
-            TextView categoryView = holder.getView(R.id.category);
-            final CheckBox checkBox = holder.getView(R.id.check_box);
-            categoryView.setText(category.name);
-            checkBox.setVisibility(View.VISIBLE);
-            checkBox.setChecked(category.checked);
+            final Action action = getData().get(position);
+            TextView actionView = holder.getView(R.id.action);
+            final RadioButton radioButton = holder.getView(R.id.radio);
+            actionView.setText(action.name);
+            radioButton.setVisibility(View.VISIBLE);
+            radioButton.setChecked(action.checked);
             holder.itemView.setOnClickListener(v -> {
-                boolean result = !checkBox.isChecked();
-                checkBox.setChecked(result);
-                category.checked = result;
+                boolean result = !radioButton.isChecked();
+                if (result) {
+                    List<Action> data = getData();
+                    int size = data.size();
+                    for (int i = 0; i < size; i++) {
+                        Action a = data.get(i);
+                        if (a.checked) {
+                            a.checked = false;
+                            notifyItemChanged(i);
+                            break;
+                        }
+                    }
+                }
+
+                radioButton.setChecked(result);
+                action.checked = result;
             });
         }
     }
 
-    private static class Category {
+    private static class Action {
         private String name;
         private String value;
         private boolean custom;
         private boolean checked;
 
-        private Category(@NonNull String name, String value) {
+        private Action(@NonNull String name, String value) {
             this.name = name;
             this.value = value;
         }
@@ -187,7 +200,7 @@ public class IntentCategoriesFragment extends IntentBaseInfoFragment {
         @NonNull
         @Override
         public String toString() {
-            return "Category{" +
+            return "Action{" +
                     "name='" + name + '\'' +
                     ", value='" + value + '\'' +
                     ", custom=" + custom +
@@ -196,10 +209,10 @@ public class IntentCategoriesFragment extends IntentBaseInfoFragment {
         }
     }
 
-    public static IntentCategoriesFragment newInstance(IntentData intentData) {
+    public static IntentActionFragment newInstance(IntentData intentData) {
         Bundle args = new Bundle();
         args.putParcelable("intentData", intentData);
-        IntentCategoriesFragment fragment = new IntentCategoriesFragment();
+        IntentActionFragment fragment = new IntentActionFragment();
         fragment.setArguments(args);
         return fragment;
     }

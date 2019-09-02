@@ -3,6 +3,7 @@ package com.su.workbox.ui.app.activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,9 +22,8 @@ public class IntentFragment extends IntentBaseInfoFragment implements View.OnCli
 
     private TextView mPackageNameView;
     private TextView mClassNameView;
+    private boolean mUseComponent = true;
     private SwitchCompat mAutoSwitch;
-    private View mActionLayout;
-    private TextView mActionView;
     private View mDataLayout;
     private TextView mDataView;
     private View mTypeLayout;
@@ -40,14 +40,13 @@ public class IntentFragment extends IntentBaseInfoFragment implements View.OnCli
         mPackageNameView = view.findViewById(R.id.package_name);
         mClassNameView = view.findViewById(R.id.class_name);
         mAutoSwitch = view.findViewById(R.id.auto);
-        mActionLayout = view.findViewById(R.id.action_layout);
-        mActionView = view.findViewById(R.id.action);
         mDataLayout = view.findViewById(R.id.data_layout);
         mDataView = view.findViewById(R.id.data);
         mTypeLayout = view.findViewById(R.id.type_layout);
         mTypeView = view.findViewById(R.id.type);
 
-        mActionLayout.setOnClickListener(this);
+        mPackageNameView.setOnClickListener(this);
+        mClassNameView.setOnClickListener(this);
         mDataLayout.setOnClickListener(this);
         mTypeLayout.setOnClickListener(this);
         return view;
@@ -63,7 +62,6 @@ public class IntentFragment extends IntentBaseInfoFragment implements View.OnCli
         mPackageNameView.setText(mCloneExtras.getComponentPackageName());
         mClassNameView.setText(mCloneExtras.getComponentClassName());
         mAutoSwitch.setChecked(mCloneExtras.isAuto());
-        mActionView.setText(mCloneExtras.getAction());
         mDataView.setText(mCloneExtras.getData());
         mTypeView.setText(mCloneExtras.getType());
     }
@@ -84,10 +82,6 @@ public class IntentFragment extends IntentBaseInfoFragment implements View.OnCli
 
     private void action(String content, @NonNull String action, TextView textView) {
         switch (action) {
-            case "updateAction":
-                mCloneExtras.setAction(content);
-                textView.setText(content);
-                break;
             case "updateData":
                 mCloneExtras.setData(content);
                 textView.setText(content);
@@ -101,12 +95,17 @@ public class IntentFragment extends IntentBaseInfoFragment implements View.OnCli
         }
     }
 
-    public void collectIntentData(Intent intent) {
-        ComponentName componentName = new ComponentName(mCloneExtras.getComponentPackageName(), mCloneExtras.getComponentClassName());
-        intent.setComponent(componentName);
-        intent.setAction(mCloneExtras.getAction());
+    public void collectIntentData(Intent intent, IntentData intentData) {
+        if (mUseComponent) {
+            ComponentName componentName = new ComponentName(mCloneExtras.getComponentPackageName(), mCloneExtras.getComponentClassName());
+            intent.setComponent(componentName);
+            intentData.setComponentPackageName(mCloneExtras.getComponentPackageName());
+            intentData.setComponentClassName(mCloneExtras.getComponentClassName());
+        }
         String data = mCloneExtras.getData();
         String type = mCloneExtras.getType();
+        intentData.setType(type);
+        intentData.setData(data);
         if (TextUtils.isEmpty(data)) {
             intent.setType(type);
         } else {
@@ -117,13 +116,31 @@ public class IntentFragment extends IntentBaseInfoFragment implements View.OnCli
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.action_layout) {
-            textDialog("action", mCloneExtras.getAction(), "updateAction", mActionView);
-        } else if (id == R.id.data_layout) {
+        if (id == R.id.data_layout) {
             textDialog("data", mCloneExtras.getData(), "updateData", mDataView);
         } else if (id == R.id.type_layout) {
             textDialog("type", mCloneExtras.getType(), "updateType", mTypeView);
+        } else if (id == R.id.package_name) {
+            mUseComponent = !mUseComponent;
+            useComponent();
+        } else if (id == R.id.class_name) {
+            mUseComponent = !mUseComponent;
+            useComponent();
         }
+    }
+
+    private void useComponent() {
+        Paint packageNamePaint = mPackageNameView.getPaint();
+        Paint classNamePaint = mClassNameView.getPaint();
+        if (mUseComponent) {
+            packageNamePaint.setFlags(packageNamePaint.getFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+            classNamePaint.setFlags(packageNamePaint.getFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            packageNamePaint.setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            classNamePaint.setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+        mPackageNameView.setText(mPackageNameView.getText());
+        mClassNameView.setText(mClassNameView.getText());
     }
 
     public static IntentFragment newInstance(IntentData intentData) {
