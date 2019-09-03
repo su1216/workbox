@@ -13,6 +13,7 @@ import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.ReflectUtil;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -72,7 +73,11 @@ public class IntentDataCollector extends SimpleActivityLifecycleCallbacks {
                 intentExtra.setArrayClassName(valueClass.getName());
                 //如果是数组，并且数组中有元素，则取第一个元素类型
                 //无法直接使用Parcelable
-                Object[] objects = (Object[]) value;
+                int length = Array.getLength(value);
+                Object[] objects = new Object[length];
+                for (int i = 0; i < length; i ++) {
+                    objects[i] = Array.get(value, i);
+                }
                 Class<?> componentType;
                 if (objects.length > 0) {
                     componentType = objects[0].getClass();
