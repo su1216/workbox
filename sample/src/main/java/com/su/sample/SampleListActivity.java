@@ -32,17 +32,18 @@ public class SampleListActivity extends BaseAppCompatActivity implements View.On
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle("Sample");
-        mToolbar.setOnClickListener(this);
+        mToolbar.setNavigationIcon(null);
+        mToolbar.setOnLongClickListener(v -> {
+            if (BuildConfig.DEBUG) {
+                debug();
+            }
+            return false;
+        });
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.id_toolbar:
-                if (BuildConfig.DEBUG) {
-                    debug();
-                }
-                break;
             case R.id.history:
                 startActivity(new Intent(this, LifecycleActivity.class));
                 break;
