@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import com.su.workbox.WorkboxSupplier;
 import com.su.sample.web.JsCommunication;
+import com.su.workbox.WorkboxSupplier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,14 +22,6 @@ public class MySupplier extends WorkboxSupplier {
     @Override
     public boolean isLogin() {
         return Math.random() * 3.0d > 1.0d;
-    }
-
-    @Override
-    public String downtimeResponse(@NonNull String url) {
-        return "{\n" +
-                "  \"errorCode\": -100,\n" +
-                "  \"errorMessage\": \"假装停机维护～～\"\n" +
-                "}";
     }
 
     @Nullable

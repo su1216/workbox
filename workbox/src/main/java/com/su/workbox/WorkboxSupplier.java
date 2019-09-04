@@ -28,14 +28,6 @@ public class WorkboxSupplier {
     }
 
     /**
-     * 停机维护时，返回统一的数据
-     * */
-    @Nullable
-    public String downtimeResponse(@NonNull String url) {
-        return "";
-    }
-
-    /**
      * 返回所有在通过 {@link android.webkit.WebView#addJavascriptInterface(Object, String)} 注入到WebView的Objects<br/>
      * 以便在WebView调试功能中使用这些Objects
      * */

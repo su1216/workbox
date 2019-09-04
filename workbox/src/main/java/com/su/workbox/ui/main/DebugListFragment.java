@@ -166,7 +166,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         dataUsagePreference.setOnPreferenceChangeListener(this);
         dataUsagePreference.setVisible(okHttp3);
 
-        findPreference("debug_downtime").setVisible(okHttp3);
         mMockPolicyPreference = (ListPreference) findPreference(SpHelper.COLUMN_MOCK_POLICY);
         mMockPolicyPreference.setVisible(okHttp3);
         mMockPolicyPreference.setOnPreferenceChangeListener(this);

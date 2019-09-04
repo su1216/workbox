@@ -88,13 +88,6 @@
         <com.su.workbox.widget.preference.SwitchPreference
             android:key="data_usage"
             android:title="流量监控" />
-        <android.support.v7.preference.SwitchPreferenceCompat
-            android:defaultValue="false"
-            android:key="debug_downtime"
-            android:summary="模拟停机维护状态"
-            android:thumb="@drawable/workbox_switch_button"
-            android:title="停机维护"
-            android:track="@drawable/workbox_switch_track_selector" />
         <android.support.v7.preference.ListPreference
             android:key="mock_policy"
             android:title="数据模拟策略"

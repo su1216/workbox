@@ -16,7 +16,6 @@ import java.util.List;
 public class SpHelper {
     public static final String SHARED_PREFERENCE_BASE_DIRNAME = "shared_prefs";
     public static final String NAME = "workbox";
-    public static final String COLUMN_DEBUG_DOWNTIME = "debug_downtime";
     public static final String COLUMN_MOCK_POLICY = "mock_policy";
     public static final String COLUMN_HOST = "host";
     public static final String COLUMN_WEB_VIEW_HOST = "web_view_host";

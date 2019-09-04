@@ -9,7 +9,6 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.database.HttpDataDatabase;
 import com.su.workbox.ui.mock.MockUtil;
 import com.su.workbox.ui.mock.RequestResponseRecord;
@@ -51,12 +50,6 @@ public class MockInterceptor implements Interceptor {
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
         Request request = chain.request();
-        if (isDowntime()) {
-            Response downtimeResponse = getDowntimeResponse(request);
-            if (downtimeResponse != null) {
-                return downtimeResponse;
-            }
-        }
         Response fakeResponse = fakeResponse(request);
         if (fakeResponse != null) {
             return fakeResponse;
@@ -229,42 +222,6 @@ public class MockInterceptor implements Interceptor {
     private static String parseBody(@NonNull String bodyString) {
         String cleanUpBody = MockUtil.removeKeysFromString(bodyString);
         return MockUtil.sortStringBody(cleanUpBody);
-    }
-
-    private Response getDowntimeResponse(Request request) {
-        WorkboxSupplier supplier = WorkboxSupplier.getInstance();
-        Buffer buffer = null;
-        try {
-            String body = supplier.downtimeResponse(request.url().toString());
-            if (body == null) {
-                body = "";
-            }
-            buffer = new Buffer().writeUtf8(body);
-            Headers.Builder builder = new Headers.Builder()
-                    .add("content-type", "application/json; charset=UTF-8")
-                    .add("Content-Length", String.valueOf(buffer.size()));
-            Headers headers = builder.build();
-            return new Response.Builder()
-                    .protocol(Protocol.HTTP_2)
-                    .code(200)
-                    .message("FAKE")
-                    .request(request)
-                    .headers(headers)
-                    .body(new RealResponseBody(body, buffer.size(), buffer))
-                    .build();
-        } catch (RuntimeException e) {
-            Log.w(TAG, e);
-        } finally {
-            if (buffer != null) {
-                buffer.close();
-            }
-        }
-        return null;
-    }
-
-    private static boolean isDowntime() {
-        SharedPreferences sp = SpHelper.getWorkboxSharedPreferences();
-        return sp.getBoolean(SpHelper.COLUMN_DEBUG_DOWNTIME, false);
     }
 
     public static void debug(boolean debug) {
