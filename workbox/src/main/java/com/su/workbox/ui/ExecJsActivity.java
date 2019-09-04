@@ -36,6 +36,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.Undefined;
 
 import java.io.File;
 import java.net.URI;
@@ -217,10 +218,14 @@ public class ExecJsActivity extends BaseAppCompatActivity implements View.OnClic
                 objectParameters[i] = JSON.parseObject(parameter.getParameter(), clazz);
             }
             Object result = function.call(rhino, scope, scope, objectParameters);
-            String resultString = JSON.toJSONString(result, SerializerFeature.DisableCircularReferenceDetect, SerializerFeature.PrettyFormat);
-            Object resultObject = JSON.parseObject(resultString, mFinalJsFunction.getResultClass());
-            mResultString = "Java Class: " + resultObject.getClass().getName() + "\n\n" + resultString;
-            Log.w(TAG, "resultObject: " + resultObject);
+            if (Undefined.isUndefined(result)) {
+                mResultString = "Java Class: " + Undefined.class.getName();
+            } else {
+                String resultString = JSON.toJSONString(result, SerializerFeature.DisableCircularReferenceDetect, SerializerFeature.PrettyFormat);
+                Object resultObject = JSON.parseObject(resultString, mFinalJsFunction.getResultClass());
+                mResultString = "Java Class: " + resultObject.getClass().getName() + "\n\n" + resultString;
+                Log.w(TAG, "resultObject: " + resultObject);
+            }
         } catch (RhinoException e) {
             mResultString = e.getScriptStackTrace();
             Log.w(TAG, "functionName: " + mFunction.getName(), e);
