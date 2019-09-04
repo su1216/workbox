@@ -12,6 +12,7 @@ import com.su.workbox.ui.base.SimpleActivityLifecycleCallbacks;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.ReflectUtil;
+import com.su.workbox.utils.SpHelper;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -107,6 +108,10 @@ public class IntentDataCollector extends SimpleActivityLifecycleCallbacks {
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+        if (!SpHelper.getWorkboxSharedPreferences().getBoolean("app_component_info", true)) {
+            return;
+        }
+
         //不收集workbox信息
         Class<?> clazz = activity.getClass();
         if (clazz.getName().startsWith(GeneralInfoHelper.LIB_PACKAGE_NAME)) {
