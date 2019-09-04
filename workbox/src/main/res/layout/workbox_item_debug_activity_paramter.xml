@@ -24,7 +24,7 @@
             android:textSize="14sp"
             tools:text="String"/>
         <TextView
-            android:id="@+id/element_class"
+            android:id="@+id/collection_class"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.alibaba.fastjson.JSON;
 import com.su.workbox.database.HttpDataDatabase;
@@ -58,6 +59,18 @@ public class IntentDataCollector extends SimpleActivityLifecycleCallbacks {
         return intentData;
     }
 
+    private static Class<?> getArrayElementClass(@Nullable Object[] objects) {
+        if (objects == null) {
+            return null;
+        }
+        for (Object object: objects) {
+            if (object != null) {
+                return object.getClass();
+            }
+        }
+        return null;
+    }
+
     static void copyFromBundle(@NonNull IntentData intentData, @NonNull Bundle extras) {
         List<IntentExtra> extraList = intentData.getExtraList();
         extraList.clear();
@@ -79,17 +92,19 @@ public class IntentDataCollector extends SimpleActivityLifecycleCallbacks {
                 for (int i = 0; i < length; i ++) {
                     objects[i] = Array.get(value, i);
                 }
-                Class<?> componentType;
-                if (objects.length > 0) {
-                    componentType = objects[0].getClass();
-                } else {
+                Class<?> componentType = getArrayElementClass(objects);
+                if (componentType == null) {
                     componentType = valueClass.getComponentType();
                 }
                 intentExtra.setValueClassName(componentType.getName());
+                if (!ExcludeTypes.exclude(componentType)) {
+                    intentExtra.setValue(JSON.toJSONString(value));
+                }
             } else if (ReflectUtil.isPrimitiveClass(valueClass) || ReflectUtil.isPrimitiveWrapperClass(valueClass)) {
                 intentExtra.setValueClassName(valueClass.getName());
+                intentExtra.setValue(JSON.toJSONString(value));
             } else if (valueClass == ArrayList.class) {
-                intentExtra.setValueClassName(valueClass.getName());
+                intentExtra.setListClassName(valueClass.getName());
                 ArrayList<?> objects = (ArrayList) value;
                 Class<?> componentType;
                 if (objects.isEmpty()) {
@@ -97,11 +112,16 @@ public class IntentDataCollector extends SimpleActivityLifecycleCallbacks {
                 } else {
                     componentType = objects.get(0).getClass();
                 }
-                intentExtra.setListClassName(componentType.getName());
+                intentExtra.setValueClassName(componentType.getName());
+                if (!ExcludeTypes.exclude(componentType)) {
+                    intentExtra.setValue(JSON.toJSONString(value));
+                }
             } else {
                 intentExtra.setValueClassName(valueClass.getName());
+                if (!ExcludeTypes.exclude(valueClass)) {
+                    intentExtra.setValue(JSON.toJSONString(value));
+                }
             }
-            intentExtra.setValue(JSON.toJSONString(value));
             extraList.add(intentExtra);
         }
     }

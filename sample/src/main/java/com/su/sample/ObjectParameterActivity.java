@@ -37,6 +37,7 @@ import static com.su.sample.ObjectParameterActivity.EXTRA_KEY_PARAMETER_OBJECTS;
                 @Parameter(parameterName = EXTRA_KEY_PARAMETER_LONG, parameterClass = long.class, parameterRequired = false)})
 public class ObjectParameterActivity extends BaseAppCompatActivity {
 
+    public static final String EXTRA_KEY_PARAMETER_BITMAP = "bitmap";
     public static final String EXTRA_KEY_PARAMETER_OBJECT = "object";
     public static final String EXTRA_KEY_PARAMETER_OBJECTS = "objects";
     public static final String EXTRA_KEY_PARAMETER_INT = "int";

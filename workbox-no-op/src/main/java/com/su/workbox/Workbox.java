@@ -76,4 +76,8 @@ public class Workbox {
     public static String urlMapping(@NonNull String url, @NonNull String newHost) {
         return url;
     }
+
+    public static void addIntentExcludeType(Class<?> clazz) {}
+
+    public static void intentIncludeSubType(boolean include) {}
 }

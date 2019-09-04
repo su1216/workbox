@@ -18,6 +18,7 @@ import com.su.workbox.net.interceptor.MockInterceptor;
 import com.su.workbox.ui.JsInterfaceListActivity;
 import com.su.workbox.ui.app.AppInfoListActivity;
 import com.su.workbox.ui.app.ComponentListActivity;
+import com.su.workbox.ui.app.activity.ExcludeTypes;
 import com.su.workbox.ui.app.record.LifecycleRecordListActivity;
 import com.su.workbox.ui.app.activity.IntentDataCollector;
 import com.su.workbox.ui.base.FragmentListenerManager;
@@ -165,5 +166,13 @@ public class Workbox {
     @NonNull
     public static String urlMapping(@NonNull String url, @NonNull String newHost) {
         return WorkboxSupplier.getInstance().urlMapping(url, newHost);
+    }
+
+    public static void addIntentExcludeType(Class<?> clazz) {
+        ExcludeTypes.addExcludeType(clazz);
+    }
+
+    public static void intentIncludeSubType(boolean include) {
+        ExcludeTypes.includeSubType(include);
     }
 }

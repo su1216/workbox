@@ -2,6 +2,8 @@ package com.su.sample;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 
@@ -53,6 +55,7 @@ public class SampleListActivity extends BaseAppCompatActivity implements View.On
                 startActivity(webViewIntent);
                 break;
             case R.id.activity_test:
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_ab_back);
                 ObjectParameter p = new ObjectParameter();
                 p.setId(0);
                 p.setProvince("北京");
@@ -70,6 +73,7 @@ public class SampleListActivity extends BaseAppCompatActivity implements View.On
                 intList.add(20);
                 intList.add(30);
                 Intent intent = new Intent(this, ObjectParameterActivity.class);
+                intent.putExtra(ObjectParameterActivity.EXTRA_KEY_PARAMETER_BITMAP, bitmap);
                 intent.putExtra(ObjectParameterActivity.EXTRA_KEY_PARAMETER_INT, 1024);
                 intent.putIntegerArrayListExtra(ObjectParameterActivity.EXTRA_KEY_PARAMETER_INT_LIST, intList);
                 intent.putExtra(ObjectParameterActivity.EXTRA_KEY_PARAMETER_LONG, 2048L);

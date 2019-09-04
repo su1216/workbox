@@ -139,7 +139,7 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
 
     @Override
     protected void initViews() {
-        mParameterAdapter = new ParameterViewAdapter(this, mIntentData.getExtraList(), mCloneExtras.getExtraList());
+        mParameterAdapter = new ParameterViewAdapter(this, mCloneExtras.getExtraList());
         mRecyclerView.setAdapter(mParameterAdapter);
     }
 
@@ -217,7 +217,7 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
                 intent.putExtra(parameterName, (Serializable[]) JSON.parseObject(parameterValue, arrayClass));
             }
         } else if (isList) {
-            Class<?> elementClass = Class.forName(extra.getListClassName());
+            Class<?> elementClass = Class.forName(extra.getValueClassName());
             if (elementClass == Integer.class) {
                 intent.putIntegerArrayListExtra(parameterName, new ArrayList<>(JSON.parseArray(parameterValue, Integer.class)));
             } else if (elementClass == String.class) {
@@ -282,15 +282,13 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
         private IntentExtrasFragment mFragment;
         private int mNormalColor;
         private int mRequiredColor;
-        private List<IntentExtra> mOrigin;
 
-        private ParameterViewAdapter(@NonNull IntentExtrasFragment fragment, @NonNull List<IntentExtra> origin, @NonNull List<IntentExtra> data) {
+        private ParameterViewAdapter(@NonNull IntentExtrasFragment fragment, @NonNull List<IntentExtra> data) {
             super(data);
             mFragment = fragment;
             Resources resources = fragment.getResources();
             mRequiredColor = resources.getColor(R.color.workbox_error_hint);
             mNormalColor = resources.getColor(R.color.workbox_second_text);
-            mOrigin = origin;
         }
 
         @Override
@@ -301,18 +299,18 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
         @Override
         protected void bindData(@NonNull final BaseViewHolder holder, final int position, int itemType) {
             IntentExtra extra = getData().get(position);
-            Log.w(TAG, "extra: " + extra);
             TextView classNameView = holder.getView(R.id.class_name);
-            TextView elementClassView = holder.getView(R.id.element_class);
-            classNameView.setText(extra.getClass(extra.getValueClassName()).getName());
+            TextView collectionClassView = holder.getView(R.id.collection_class);
+            Class<?> valueClass = extra.getClass(extra.getValueClassName());
+            classNameView.setText(valueClass.getName());
             String arrayClassName = extra.getArrayClassName();
             String listClassName = extra.getListClassName();
-            String elementClass = TextUtils.isEmpty(arrayClassName) ? listClassName : arrayClassName;
-            if (TextUtils.isEmpty(elementClass)) {
-                elementClassView.setVisibility(View.GONE);
+            String collectionClass = TextUtils.isEmpty(arrayClassName) ? listClassName : arrayClassName;
+            if (TextUtils.isEmpty(collectionClass)) {
+                collectionClassView.setVisibility(View.GONE);
             } else {
-                elementClassView.setText(elementClass);
-                elementClassView.setVisibility(View.VISIBLE);
+                collectionClassView.setText(collectionClass);
+                collectionClassView.setVisibility(View.VISIBLE);
             }
             ((TextView) holder.getView(R.id.field_name)).setText(extra.getName());
             TextView fieldRequiredView = holder.getView(R.id.field_required);
@@ -332,6 +330,11 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             fieldRequiredView.setText(scoreSpannable);
             final EditText valueView = holder.getView(R.id.value);
+            if (ExcludeTypes.exclude(valueClass)) {
+                valueView.setHint("excluded");
+            } else {
+                valueView.setHint("");
+            }
             TextWatcher textWatcher = (TextWatcher) valueView.getTag();
             if (textWatcher != null) {
                 valueView.removeTextChangedListener(textWatcher);
@@ -368,7 +371,7 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
                 SerializerFeature.PrettyFormat);
     }
 
-    private void reset(@NonNull MenuItem item, int position) {
+    private void reset(int position) {
         IntentExtra extra = mParameterAdapter.getData().get(position);
         String name = extra.getName();
         IntentExtra origin = findActivityExtraByName(name);
@@ -379,7 +382,7 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
         mParameterAdapter.notifyItemChanged(position);
     }
 
-    private void format(@NonNull MenuItem item, int position) {
+    private void format(int position) {
         IntentExtra extra = mParameterAdapter.getData().get(position);
         String value = extra.getValue();
         if (TextUtils.isEmpty(value)) {
@@ -398,7 +401,7 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
         mParameterAdapter.notifyItemChanged(position);
     }
 
-    private void instance(@NonNull MenuItem item, int position) {
+    private void instance(int position) {
         IntentExtra extra = mParameterAdapter.getData().get(position);
         newInstance(extra);
         mParameterAdapter.notifyItemChanged(position);
@@ -451,13 +454,13 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
         }
     }
 
-    private void required(@NonNull MenuItem item, int position) {
+    private void required(int position) {
         IntentExtra extra = mParameterAdapter.getData().get(position);
         extra.setRequired(!extra.isRequired());
         mParameterAdapter.notifyItemChanged(position);
     }
 
-    private void delete(@NonNull MenuItem item, int position) {
+    private void delete(int position) {
         mParameterAdapter.getData().remove(position);
         mParameterAdapter.notifyItemRemoved(position);
     }
@@ -473,18 +476,18 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
         IntentExtra extra = mParameterAdapter.getData().get(info.position);
         menu.add(0, 0, 0, "reset");
         menu.add(0, 1, 1, "format");
-        menu.add(0, 2, 2, "instance");
+        final Class<?> clazz = extra.getClass(extra.getValueClassName());
+        if (!ExcludeTypes.exclude(clazz)
+                && ReflectUtil.hasDefaultConstructor(clazz)
+                && !ReflectUtil.isPrimitiveClass(clazz)) {
+            menu.add(0, 2, 2, "instance");
+        }
         if (extra.isRequired()) {
             menu.add(0, 3, 3, "optional");
         } else {
             menu.add(0, 3, 3, "required");
         }
         menu.add(0, 4, 4, "delete");
-
-        final Class<?> clazz = extra.getClass(extra.getValueClassName());
-        if (!ReflectUtil.hasDefaultConstructor(clazz) || ReflectUtil.isPrimitiveClass(clazz)) {
-            menu.findItem(2).setVisible(false);
-        }
     }
 
     @Override
@@ -493,15 +496,15 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
         int menuId = item.getItemId();
         int position = info.position;
         if (menuId == 0) {
-            reset(item, position);
+            reset(position);
         } else if (menuId == 1) {
-            format(item, position);
+            format(position);
         } else if (menuId == 2) {
-            instance(item, position);
+            instance(position);
         } else if (menuId == 3) {
-            required(item, position);
+            required(position);
         } else if (menuId == 4) {
-            delete(item, position);
+            delete(position);
         } else {
             return super.onContextItemSelected(item);
         }
