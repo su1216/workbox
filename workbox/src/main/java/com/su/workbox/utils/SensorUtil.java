@@ -3,6 +3,7 @@ package com.su.workbox.utils;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
@@ -23,7 +24,9 @@ public class SensorUtil {
         usefulSensor.put(Sensor.TYPE_LINEAR_ACCELERATION, "线性加速度");
         usefulSensor.put(Sensor.TYPE_RELATIVE_HUMIDITY, "湿度传感器");
         usefulSensor.put(Sensor.TYPE_AMBIENT_TEMPERATURE, "温度传感器");
-        usefulSensor.put(Sensor.TYPE_HEART_RATE, "心率传感器");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            usefulSensor.put(Sensor.TYPE_HEART_RATE, "心率传感器");
+        }
     }
 
     @NonNull

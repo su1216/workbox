@@ -162,6 +162,7 @@ public class SystemInfoHelper {
             sSystemVersionName.put(26, "Oreo");
             sSystemVersionName.put(27, "Oreo");
             sSystemVersionName.put(28, "Pie");
+            sSystemVersionName.put(29, "Q");
         }
         return sSystemVersionName.get(sdk);
     }
