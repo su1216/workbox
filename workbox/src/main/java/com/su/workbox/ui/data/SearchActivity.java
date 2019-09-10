@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.su.workbox.R;
+import com.su.workbox.Workbox;
 import com.su.workbox.entity.FileResults;
 import com.su.workbox.entity.Line;
 import com.su.workbox.ui.BaseAppCompatActivity;
@@ -140,7 +141,7 @@ public class SearchActivity extends BaseAppCompatActivity {
             searchMenuItem.expandActionView();
 
             mRecyclerView = view.findViewById(R.id.recycler_view);
-            mAdapter = new ResultAdapter(mGroupList, mFileResultsList);
+            mAdapter = new ResultAdapter(this, mGroupList, mFileResultsList);
             mRecyclerView.setAdapter(mAdapter);
         }
 
@@ -220,10 +221,13 @@ public class SearchActivity extends BaseAppCompatActivity {
 
         private static class ResultAdapter extends RecyclerView.Adapter<BaseRecyclerAdapter.BaseViewHolder> {
 
+            private SearchFragment mFragment;
             private List<String> mGroupList;
             private List<FileResults> mFileResultsList;
+            private File mExportedBaseDir = new File(Workbox.getWorkboxSdcardDir(), GeneralInfoHelper.getPackageName());
 
-            ResultAdapter(List<String> groupList, List<FileResults> functionsList) {
+            ResultAdapter(SearchFragment fragment, List<String> groupList, List<FileResults> functionsList) {
+                mFragment = fragment;
                 mGroupList = groupList;
                 mFileResultsList = functionsList;
             }
@@ -243,6 +247,25 @@ public class SearchActivity extends BaseAppCompatActivity {
                 }
             }
 
+            private void export(String filepath) {
+                File file = new File(filepath);
+                String fileDirPath = file.getParent();
+                int index = fileDirPath.indexOf(mFragment.mRoot);
+                String path = fileDirPath.substring(index + mFragment.mRoot.length());
+                if (path.startsWith("/")) {
+                    path = path.substring(1);
+                }
+                File dir = new File(mExportedBaseDir, path);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+
+                File destFile = new File(dir, file.getName());
+                String msg = "已将文件" + file.getName() + "导出到" + dir.getAbsolutePath();
+                IOUtil.copyDirectory(new File(filepath), destFile);
+                mFragment.getActivity().runOnUiThread(() -> new ToastBuilder(msg).setDuration(Toast.LENGTH_LONG).show());
+            }
+
             private void bindGroupData(@NonNull BaseRecyclerAdapter.BaseViewHolder holder, int position) {
                 final String filepath = mGroupList.get(getPositions(position)[0]);
                 TextView filenameView = holder.getView(R.id.filename);
@@ -251,20 +274,11 @@ public class SearchActivity extends BaseAppCompatActivity {
                 final FileResults fileResults = mFileResultsList.get(positions[0]);
                 holder.getView(R.id.arrow).setSelected(!fileResults.isCollapse());
                 //warning 暂时不要改为lambda表达式，com.android.tools.build:gradle:3.2.1编译时会报错
-                View view = holder.getView(R.id.view);
-                view.setVisibility(fileResults.isBinary() ? View.GONE : View.VISIBLE);
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                    }
-                });
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        fileResults.setCollapse(!fileResults.isCollapse());
-                        holder.getView(R.id.arrow).setSelected(!fileResults.isCollapse());
-                        notifyDataSetChanged();
-                    }
+                holder.getView(R.id.view).setOnClickListener(v -> export(filepath));
+                holder.itemView.setOnClickListener(v -> {
+                    fileResults.setCollapse(!fileResults.isCollapse());
+                    holder.getView(R.id.arrow).setSelected(!fileResults.isCollapse());
+                    notifyDataSetChanged();
                 });
             }
 
@@ -277,12 +291,7 @@ public class SearchActivity extends BaseAppCompatActivity {
                 } else {
                     lineView.setText("Binary file");
                 }
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        new ToastBuilder(line.getContent()).setDuration(Toast.LENGTH_LONG).show();
-                    }
-                });
+                holder.itemView.setOnClickListener(v -> new ToastBuilder(line.getContent()).setDuration(Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -415,12 +424,6 @@ public class SearchActivity extends BaseAppCompatActivity {
                 }
             }
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Log.d(TAG, "onBackPressed");
     }
 
     @Override

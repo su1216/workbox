@@ -31,7 +31,7 @@
         android:layout_height="28dip"
         android:layout_marginEnd="13dip"
         android:padding="4dip"
-        android:src="@drawable/workbox_icon_button_file"
+        android:src="@drawable/workbox_icon_export"
         android:scaleType="fitXY"
         android:contentDescription="view"/>
 </LinearLayout>
