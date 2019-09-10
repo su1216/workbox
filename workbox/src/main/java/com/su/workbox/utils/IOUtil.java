@@ -26,10 +26,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Serializable;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -152,55 +150,6 @@ public final class IOUtil {
                 // Ignored
             }
         }
-    }
-
-    public static void writeObject(Serializable s, String filePath) {
-        writeObject(s, new File(filePath));
-    }
-
-    public static void writeObject(Serializable s, File file) {
-        FileOutputStream fos = null;
-        ObjectOutputStream oos = null;
-        try {
-            fos = new FileOutputStream(file);
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject(s);
-            oos.close();
-        } catch (IOException e) {
-            Log.e(TAG, "writeObject", e);
-        } finally {
-            close(oos);
-            close(fos);
-        }
-    }
-
-    public static boolean makeDirIfNotExist(String path) {
-        File rootDirFile = new File(path);
-        if (!rootDirFile.exists()) {
-            return rootDirFile.mkdir();
-        } else {
-            if (!rootDirFile.isDirectory()) {
-                if (rootDirFile.delete()) {
-                    return rootDirFile.mkdir();
-                }
-            } else {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static File createFileIfNotExist(String filepath) {
-        File file = new File(filepath);
-        try {
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            return file;
-        } catch (IOException e) {
-            Log.e(TAG, "filepath: " + filepath, e);
-        }
-        return null;
     }
 
     public static boolean hasFilesInDir(@NonNull File dir) {
