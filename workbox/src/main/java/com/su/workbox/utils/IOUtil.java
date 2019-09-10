@@ -1,5 +1,6 @@
 package com.su.workbox.utils;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -9,8 +10,10 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
+import com.su.workbox.AppHelper;
 import com.su.workbox.widget.ToastBuilder;
 
 import java.io.BufferedReader;
@@ -51,6 +54,37 @@ public final class IOUtil {
     private IOUtil() {
     }
 
+    public static void export(@NonNull Activity activity, @NonNull File baseDir, @NonNull String root, @NonNull String filepath) {
+        File file = new File(filepath);
+        String fileDirPath;
+        if (file.exists() && file.isFile()) {
+            fileDirPath = file.getParent();
+        } else {
+            fileDirPath = filepath;
+        }
+        int index = fileDirPath.indexOf(root);
+        String path = fileDirPath.substring(index + root.length());
+        if (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+        File dir = new File(baseDir, path);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        File destFile;
+        String msg;
+        if (file.isFile()) {
+            destFile = new File(dir, file.getName());
+            msg = "已将文件" + file.getName() + "导出到" + dir.getAbsolutePath();
+        } else {
+            destFile = dir;
+            msg = "已将目录" + file.getName() + "导出到" + dir.getAbsolutePath();
+        }
+        IOUtil.copyDirectory(new File(filepath), destFile);
+        activity.runOnUiThread(() -> new ToastBuilder(msg).setDuration(Toast.LENGTH_LONG).show());
+    }
+
     public static String getFileBrief(@NonNull File file) {
         String details;
         if (file.isDirectory()) {
@@ -61,6 +95,33 @@ public final class IOUtil {
         details += "    ";
         details += ThreadUtil.getSimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(file.lastModified()));
         return details;
+    }
+
+    public static String getFileType(String filepath) {
+        String ext = MimeTypeMap.getFileExtensionFromUrl(filepath);
+        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext);
+    }
+
+    public static String getFileMd5(String filepath) {
+        String md5 = AppHelper.shellExec("md5sum " + filepath);
+        return processDigestResult(md5);
+    }
+
+    public static String getFileSha1(String filepath) {
+        String sha1 = AppHelper.shellExec("sha1sum " + filepath);
+        return processDigestResult(sha1);
+    }
+
+    public static String getFileSha256(String filepath) {
+        String sha256 = AppHelper.shellExec("sha256sum " + filepath);
+        return processDigestResult(sha256);
+    }
+
+    private static String processDigestResult(String result) {
+        if (!TextUtils.isEmpty(result)) {
+            result = result.replace("\n", "").replaceFirst("\\s.+", "");
+        }
+        return result;
     }
 
     /**

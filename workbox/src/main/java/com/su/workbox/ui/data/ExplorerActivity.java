@@ -11,13 +11,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.su.workbox.R;
 import com.su.workbox.ui.base.BaseFragment;
 import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.SpHelper;
-import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 
@@ -79,38 +77,7 @@ public class ExplorerActivity extends DataActivity {
     @Override
     protected void export() {
         ExplorerFragment fragment = (ExplorerFragment) getSupportFragmentManager().findFragmentByTag(TAG);
-        export(fragment.mCurrentPath);
-    }
-
-    private void export(String filepath) {
-        File file = new File(filepath);
-        String fileDirPath;
-        if (file.exists() && file.isFile()) {
-            fileDirPath = file.getParent();
-        } else {
-            fileDirPath = filepath;
-        }
-        int index = fileDirPath.indexOf(mRoot);
-        String path = fileDirPath.substring(index + mRoot.length());
-        if (path.startsWith("/")) {
-            path = path.substring(1);
-        }
-        File dir = new File(mExportedBaseDir, path);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-
-        File destFile;
-        String msg;
-        if (file.isFile()) {
-            destFile = new File(dir, file.getName());
-            msg = "已将文件" + file.getName() + "导出到" + dir.getAbsolutePath();
-        } else {
-            destFile = dir;
-            msg = "已将目录" + file.getName() + "导出到" + dir.getAbsolutePath();
-        }
-        IOUtil.copyDirectory(new File(filepath), destFile);
-        runOnUiThread(() -> new ToastBuilder(msg).setDuration(Toast.LENGTH_LONG).show());
+        IOUtil.export(this, mExportedBaseDir, mRoot, fragment.mCurrentPath);
     }
 
     private void addFragment(@NonNull String path) {
@@ -193,7 +160,7 @@ public class ExplorerActivity extends DataActivity {
                 setOnClickListenerForDir(file, holder.itemView);
                 arrowView.setVisibility(View.VISIBLE);
             } else {
-                holder.itemView.setOnClickListener(v -> mActivity.export(file.getAbsolutePath()));
+                holder.itemView.setOnClickListener(v -> FileActivity.startActivity(mActivity, mActivity.mRoot, file.getAbsolutePath()));
                 arrowView.setVisibility(View.GONE);
             }
             detailView.setText(IOUtil.getFileBrief(file));

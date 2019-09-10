@@ -76,6 +76,12 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxSearchViewToolbar"/>
+        <!--文件信息-->
+        <activity
+            android:name=".ui.data.FileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxListTheme"/>
         <!--切换host弹窗-->
         <activity
             android:name=".ui.HostsActivity"

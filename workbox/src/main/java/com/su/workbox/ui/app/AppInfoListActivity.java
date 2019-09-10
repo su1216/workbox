@@ -117,17 +117,17 @@ public class AppInfoListActivity extends DataActivity implements ExpandableListV
         File apkFile = new File(apkFilePath);
         String sizeContent = Formatter.formatShortFileSize(this, apkFile.length()) + " (" + df.format(apkFile.length()) + "B)";
         group3.add(new Pair<>("Apk大小", sizeContent));
-        String md5 = AppHelper.shellExec("md5sum " + apkFilePath);
+        String md5 = IOUtil.getFileMd5(apkFilePath);
         if (!TextUtils.isEmpty(md5)) {
-            group3.add(new Pair<>("Apk MD5", md5.replaceFirst("\\s.+$", "")));
+            group3.add(new Pair<>("Apk MD5", md5));
         }
-        String sha1 = AppHelper.shellExec("sha1sum " + apkFilePath);
+        String sha1 = IOUtil.getFileSha1(apkFilePath);
         if (!TextUtils.isEmpty(sha1)) {
-            group3.add(new Pair<>("Apk SHA1", sha1.replaceFirst("\\s.+$", "")));
+            group3.add(new Pair<>("Apk SHA1", sha1));
         }
-        String sha256 = AppHelper.shellExec("sha256sum " + apkFilePath);
+        String sha256 = IOUtil.getFileSha256(apkFilePath);
         if (!TextUtils.isEmpty(sha256)) {
-            group3.add(new Pair<>("Apk SHA256", sha256.replaceFirst("\\s.+$", "")));
+            group3.add(new Pair<>("Apk SHA256", sha256));
         }
         group3.add(new Pair<>("Apk路径", apkFilePath));
         group3.add(new Pair<>("Native路径", GeneralInfoHelper.getNativeLibraryDir()));

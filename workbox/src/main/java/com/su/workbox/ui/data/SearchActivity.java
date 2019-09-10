@@ -291,7 +291,10 @@ public class SearchActivity extends BaseAppCompatActivity {
                 } else {
                     lineView.setText("Binary file");
                 }
-                holder.itemView.setOnClickListener(v -> new ToastBuilder(line.getContent()).setDuration(Toast.LENGTH_LONG).show());
+                holder.itemView.setOnClickListener(v -> {
+                    new ToastBuilder(line.getContent()).setDuration(Toast.LENGTH_LONG).show();
+                    FileActivity.startActivity(mFragment.getContext(), mFragment.mRoot, line.getFilePath());
+                });
             }
 
             @Override
