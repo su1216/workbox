@@ -13,6 +13,7 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import com.su.workbox.ui.BaseAppCompatActivity;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.CancelableObserver;
 import com.su.workbox.utils.SearchableHelper;
+import com.su.workbox.widget.SimpleBlockedDialogFragment;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 
@@ -96,9 +98,13 @@ public class MockUrlListActivity extends BaseAppCompatActivity implements Search
         recordListData.observe(this, mRequestResponseObserver);
     }
 
+    public void processImport(@NonNull MenuItem item) {
+        MockUtil.startCollection(this, SimpleBlockedDialogFragment.newInstance());
+    }
+
     @Override
     public int menuRes() {
-        return R.menu.workbox_search_menu;
+        return R.menu.workbox_mock_url_list_menu;
     }
 
     private class RecordAdapter extends BaseRecyclerAdapter<RequestResponseRecord> {

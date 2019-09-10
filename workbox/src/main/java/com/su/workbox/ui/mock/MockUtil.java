@@ -1,5 +1,6 @@
 package com.su.workbox.ui.mock;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteConstraintException;
@@ -7,6 +8,9 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -14,8 +18,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.su.workbox.AppHelper;
 import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.database.HttpDataDatabase;
+import com.su.workbox.ui.app.PermissionListActivity;
+import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;
 import com.su.workbox.widget.ToastBuilder;
@@ -31,7 +38,27 @@ import java.util.Map;
 import java.util.Set;
 
 public class MockUtil {
+
     private static final String TAG = MockUtil.class.getSimpleName();
+
+    static void startCollection(FragmentActivity activity, DialogFragment dialogFragment) {
+        if (!AppHelper.hasPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            File mockCacheDir = activity.getExternalFilesDir("mock");
+            if (mockCacheDir == null) {
+                new ToastBuilder("没有外存读取权限！").show();
+                PermissionListActivity.startActivity(activity);
+                return;
+            }
+            new ToastBuilder("没有外存读取权限只能处理" + mockCacheDir.getAbsolutePath() + "下的json文件").show();
+        }
+        FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
+        dialogFragment.show(ft, "收集中...");
+        AppExecutors.getInstance().diskIO().execute(() -> {
+            MockUtil.process(activity);
+            activity.runOnUiThread(() -> new ToastBuilder("收集完成！").show());
+            dialogFragment.dismissAllowingStateLoss();
+        });
+    }
 
     static String makeQueryContent(Uri uri, @NonNull String separator) {
         Set<String> set = uri.getQueryParameterNames();

@@ -9,12 +9,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.su.workbox.R;
 import com.su.workbox.ui.BaseAppCompatActivity;
 import com.su.workbox.utils.CancelableObserver;
+import com.su.workbox.widget.SimpleBlockedDialogFragment;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 import com.su.workbox.widget.recycler.RecyclerItemClickListener;
@@ -141,6 +143,15 @@ public class MockGroupHostActivity extends BaseAppCompatActivity {
         private void deleteByHost(String host) {
             mModel.deleteByHost(host);
         }
+    }
+
+    public void processImport(@NonNull MenuItem item) {
+        MockUtil.startCollection(this, SimpleBlockedDialogFragment.newInstance());
+    }
+
+    @Override
+    public int menuRes() {
+        return R.menu.workbox_import_menu;
     }
 
     @Override

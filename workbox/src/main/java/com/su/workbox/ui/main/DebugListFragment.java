@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
@@ -52,7 +51,6 @@ import com.su.workbox.ui.data.DatabaseListActivity;
 import com.su.workbox.ui.log.common.CommonLogActivity;
 import com.su.workbox.ui.log.crash.CrashLogActivity;
 import com.su.workbox.ui.mock.MockGroupHostActivity;
-import com.su.workbox.ui.mock.MockUtil;
 import com.su.workbox.ui.ui.GridLineSettingActivity;
 import com.su.workbox.ui.ui.GridLineView;
 import com.su.workbox.ui.ui.RulerSettingActivity;
@@ -68,7 +66,6 @@ import com.su.workbox.widget.SimpleBlockedDialogFragment;
 import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -171,10 +168,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         mMockPolicyPreference.setOnPreferenceChangeListener(this);
         initMockPolicy(mMockPolicyPreference.getValue());
 
-        Preference importMockDataPreference = findPreference("import_mock_data");
-        importMockDataPreference.setVisible(okHttp3);
-        importMockDataPreference.setOnPreferenceClickListener(this);
-
         Preference mockDataListPreference = findPreference("mock_data_list");
         mockDataListPreference.setVisible(okHttp3);
         mockDataListPreference.setOnPreferenceClickListener(this);
@@ -206,25 +199,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         } else {
             mProxyPreference.setSummary(proxySetting[0] + ":" + proxySetting[1]);
         }
-    }
-
-    private void startCollection() {
-        if (!AppHelper.hasPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            File mockCacheDir = mActivity.getExternalFilesDir("mock");
-            if (mockCacheDir == null) {
-                new ToastBuilder("没有外存读取权限！").show();
-                PermissionListActivity.startActivity(mActivity);
-                return;
-            }
-            new ToastBuilder("没有外存读取权限只能处理" + mockCacheDir.getAbsolutePath() + "下的json文件").show();
-        }
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        DIALOG_FRAGMENT.show(ft, "收集中...");
-        mAppExecutors.diskIO().execute(() -> {
-            MockUtil.process(mActivity);
-            mActivity.runOnUiThread(() -> new ToastBuilder("收集完成！").show());
-            DIALOG_FRAGMENT.dismissAllowingStateLoss();
-        });
     }
 
     private void initHostPreference(@NonNull Preference preference, String currentHost, int hostType) {
@@ -503,9 +477,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 return true;
             case "data_usage":
                 startActivity(new Intent(mActivity, RecordListActivity.class));
-                return true;
-            case "import_mock_data":
-                startCollection();
                 return true;
             case "mock_data_list":
                 MockGroupHostActivity.startActivity(mActivity, preference.getTitle());
