@@ -69,7 +69,13 @@
             android:name=".ui.data.ExplorerActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxSearchViewToolbar"/>
+        <!--搜索-->
+        <activity
+            android:name=".ui.data.SearchActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxSearchViewToolbar"/>
         <!--切换host弹窗-->
         <activity
             android:name=".ui.HostsActivity"

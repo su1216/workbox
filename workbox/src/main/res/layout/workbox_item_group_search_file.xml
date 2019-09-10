@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="36dip"
+              android:clickable="true"
+              android:focusable="true"
+              android:gravity="center_vertical"
+              android:orientation="horizontal"
+              android:background="@drawable/workbox_item_selector">
+    <ImageView
+        android:id="@+id/arrow"
+        android:layout_width="16dip"
+        android:layout_height="16dip"
+        android:layout_marginStart="13dip"
+        android:src="@drawable/workbox_expandable_arrow_selector"
+        android:scaleType="fitXY" />
+    <TextView
+        android:id="@+id/filename"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:textColor="@color/workbox_first_text"
+        android:textSize="14sp"
+        tools:text="filename"/>
+    <ImageView
+        android:id="@+id/view"
+        android:layout_width="28dip"
+        android:layout_height="28dip"
+        android:layout_marginEnd="13dip"
+        android:padding="4dip"
+        android:src="@drawable/workbox_icon_button_file"
+        android:scaleType="fitXY"
+        android:contentDescription="view"/>
+</LinearLayout>

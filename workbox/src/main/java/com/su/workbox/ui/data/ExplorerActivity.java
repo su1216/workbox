@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -56,6 +57,23 @@ public class ExplorerActivity extends DataActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, ExplorerFragment.newInstance(mRoot), TAG)
                 .commit();
+        MenuItem menuItem = mToolbar.getMenu().findItem(R.id.search);
+        menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                ExplorerFragment fragment = (ExplorerFragment) getSupportFragmentManager().findFragmentByTag(TAG);
+                Intent intent = new Intent(ExplorerActivity.this, SearchActivity.class);
+                intent.putExtra("root", mRoot);
+                intent.putExtra("current", fragment.mCurrentPath);
+                startActivity(intent);
+                return false;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                return false;
+            }
+        });
     }
 
     @Override
@@ -202,6 +220,11 @@ public class ExplorerActivity extends DataActivity {
             Collections.sort(data);
             super.updateData(data);
         }
+    }
+
+    @Override
+    public int menuRes() {
+        return R.menu.workbox_private_data_menu;
     }
 
     @Override
