@@ -3,7 +3,7 @@ apply plugin: 'com.novoda.bintray-release'
 
 dependencies {
     api project(path: ':annotations')
-    api 'com.google.auto.service:auto-service:1.0-rc5'
+    api 'com.google.auto.service:auto-service:1.0-rc6'
     api 'com.alibaba:fastjson:' + rootProject.ext.fastjson
 }
 
