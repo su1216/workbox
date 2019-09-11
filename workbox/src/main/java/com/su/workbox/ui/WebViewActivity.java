@@ -183,10 +183,6 @@ public class WebViewActivity extends BaseAppCompatActivity implements SwipeRefre
             mSwipeRefreshLayout.setRefreshing(true);
             loadUrl();
         });
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            WebView.setWebContentsDebuggingEnabled(true);
-        }
     }
 
     @Override
