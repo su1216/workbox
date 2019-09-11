@@ -18,10 +18,10 @@ Android 4.4+ (API level 19+)
 ## Workbox
 
 ```groovy
-debugApi 'com.su:workbox.annotations:0.9.2'
-debugAnnotationProcessor 'com.su:workbox.compiler:0.9.2'
-debugImplementation 'com.su:workbox:0.9.2'
-releaseImplementation 'com.su:workbox-no-op:0.9.2'
+debugApi 'com.su:workbox.annotations:0.9.3'
+debugAnnotationProcessor 'com.su:workbox.compiler:0.9.3'
+debugImplementation 'com.su:workbox:0.9.3'
+releaseImplementation 'com.su:workbox-no-op:0.9.3'
 
 ```
 
@@ -174,6 +174,6 @@ if (!TextUtils.isEmpty(host)) {
 
 
 
-![](images/entry.jpg)
+![](images/entry.png)
 
 可以通过上面的开关给调试模块在桌面上添加入口。
