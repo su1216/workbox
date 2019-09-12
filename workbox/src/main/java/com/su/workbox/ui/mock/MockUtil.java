@@ -682,7 +682,10 @@ public class MockUtil {
      * remove指定字段
      * 可以指定层级
      */
-    public static void removeKeysFromJson(JSONObject jsonObject) {
+    public static void removeKeysFromJson(@Nullable JSONObject jsonObject) {
+        if (jsonObject == null) {
+            return;
+        }
         WorkboxSupplier workbox = WorkboxSupplier.getInstance();
         List<List<String>> excludeKeys = workbox.getRequestBodyExcludeKeys();
         if (excludeKeys.isEmpty() || jsonObject.isEmpty()) {
