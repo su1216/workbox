@@ -60,11 +60,14 @@
     <android.support.v7.preference.PreferenceCategory
         android:title="System">
         <android.support.v7.preference.Preference
-            android:dialogTitle="可用代理列表"
             android:key="system_proxy"
             android:title="系统代理">
             <intent android:action="android.settings.WIFI_SETTINGS" />
         </android.support.v7.preference.Preference>
+        <android.support.v7.preference.Preference
+            android:key="lan_devices"
+            android:title="局域网设备"
+            android:summary="查看热点相关信息" />
         <android.support.v7.preference.Preference
             android:key="software_info"
             android:selectable="false"

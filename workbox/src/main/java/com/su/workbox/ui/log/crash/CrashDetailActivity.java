@@ -32,7 +32,7 @@ public class CrashDetailActivity extends BaseAppCompatActivity {
         Intent intent = getIntent();
         mCrashLogRecord = intent.getParcelableExtra("log");
         String apkFilePath = GeneralInfoHelper.getSourceDir();
-        mMd5 = AppHelper.shellExec("md5sum " + apkFilePath);
+        mMd5 = AppHelper.shellExec("/bin/sh", "-c", "md5sum " + apkFilePath);
         if (!TextUtils.isEmpty(mMd5)) {
             mMd5 = mMd5.replaceFirst("\\s[\\s\\S]+", "");
         }

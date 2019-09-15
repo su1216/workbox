@@ -257,7 +257,7 @@ public final class AppHelper {
         }
     }
 
-    public static String shellExec(@NonNull String cmd) {
+    public static String shellExec(@NonNull String... cmd) {
         Runtime runtime = Runtime.getRuntime();
         BufferedReader reader = null;
         try {

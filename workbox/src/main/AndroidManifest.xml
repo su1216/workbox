@@ -3,6 +3,7 @@
           package="com.su.workbox">
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -271,6 +272,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"
             android:windowSoftInputMode="stateHidden"/>
+        <!-- 局域网设备 -->
+        <activity
+            android:name=".ui.wifi.LanDeviceListActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxListTheme"/>
         <!--android 7.0+ status bar快速入口-->
         <service
             android:name=".service.QuickSettingService"

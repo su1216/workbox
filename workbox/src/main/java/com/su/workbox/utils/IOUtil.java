@@ -101,17 +101,17 @@ public final class IOUtil {
     }
 
     public static String getFileMd5(String filepath) {
-        String md5 = AppHelper.shellExec("md5sum " + filepath);
+        String md5 = AppHelper.shellExec("/bin/sh", "-c", "md5sum " + filepath);
         return processDigestResult(md5);
     }
 
     public static String getFileSha1(String filepath) {
-        String sha1 = AppHelper.shellExec("sha1sum " + filepath);
+        String sha1 = AppHelper.shellExec("/bin/sh", "-c", "sha1sum " + filepath);
         return processDigestResult(sha1);
     }
 
     public static String getFileSha256(String filepath) {
-        String sha256 = AppHelper.shellExec("sha256sum " + filepath);
+        String sha256 = AppHelper.shellExec("/bin/sh", "-c", "sha256sum " + filepath);
         return processDigestResult(sha256);
     }
 

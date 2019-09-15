@@ -4,15 +4,20 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.NotificationChannel;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ComponentInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.media.projection.MediaProjectionManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -24,6 +29,7 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.SwitchPreferenceCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 
@@ -56,6 +62,7 @@ import com.su.workbox.ui.ui.GridLineView;
 import com.su.workbox.ui.ui.RulerSettingActivity;
 import com.su.workbox.ui.ui.ScreenColorViewManager;
 import com.su.workbox.ui.usage.RecordListActivity;
+import com.su.workbox.ui.wifi.LanDeviceListActivity;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.NetworkUtil;
@@ -85,6 +92,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     private CurrentActivityView mCurrentActivityView;
     private SwitchPreferenceCompat mCurrentActivityPreference;
     private Preference mProxyPreference;
+    private Preference mLanDevicesPreference;
     private Preference mNotificationPreference;
     private ListPreference mMockPolicyPreference;
     private Preference mHostsPreference;
@@ -98,6 +106,30 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     private SwitchPreferenceCompat mGridLinePreference;
     private SwitchPreferenceCompat mColorPickerPreference;
 
+    private NetworkChangeReceiver mReceiver;
+    private static class NetworkChangeReceiver extends BroadcastReceiver {
+        private DebugListFragment mFragment;
+
+        public NetworkChangeReceiver(DebugListFragment fragment) {
+            mFragment = fragment;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(action)) {
+                Parcelable parcelableExtra = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+                if (parcelableExtra != null) {
+                    NetworkInfo networkInfo = (NetworkInfo) parcelableExtra;
+                    NetworkInfo.State state = networkInfo.getState();
+                    boolean isWifiConnected = state == NetworkInfo.State.CONNECTED;// 当然，这边可以更精确的确定状态
+                    Log.i(TAG, "isConnected: " + isWifiConnected);
+                    mFragment.mLanDevicesPreference.setEnabled(isWifiConnected);
+                }
+            }
+        }
+    }
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         PreferenceManager manager = getPreferenceManager();
@@ -107,6 +139,8 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         findPreference("crash_log").setOnPreferenceClickListener(this);
         findPreference("app_log").setOnPreferenceClickListener(this);
         mProxyPreference = findPreference("system_proxy");
+        mLanDevicesPreference = findPreference("lan_devices");
+        mLanDevicesPreference.setOnPreferenceClickListener(this);
         SwitchPreferenceCompat entryPreference = (SwitchPreferenceCompat) findPreference("debug_entry");
         mEntryClassName = Workbox.class.getPackage().getName() + ".ui.DebugEntryActivity";
         entryPreference.setChecked(isComponentEnabled(mActivity.getPackageManager(), mActivity.getPackageName(), mEntryClassName));
@@ -199,6 +233,17 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         } else {
             mProxyPreference.setSummary(proxySetting[0] + ":" + proxySetting[1]);
         }
+
+        mReceiver = new NetworkChangeReceiver(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        mActivity.registerReceiver(mReceiver, intentFilter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mActivity.unregisterReceiver(mReceiver);
     }
 
     private void initHostPreference(@NonNull Preference preference, String currentHost, int hostType) {
@@ -431,6 +476,10 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 return true;
             case "app_log":
                 startActivity(new Intent(mActivity, CommonLogActivity.class));
+                return true;
+            case "lan_devices":
+                Intent lanDeviceIntent = new Intent(mActivity, LanDeviceListActivity.class);
+                startActivity(lanDeviceIntent);
                 return true;
             case "hosts":
                 Intent hostIntent = new Intent(mActivity, HostsActivity.class);

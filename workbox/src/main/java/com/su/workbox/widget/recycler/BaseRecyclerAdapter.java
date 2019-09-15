@@ -23,8 +23,8 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
 
     // item 的三种类型
     public static final int ITEM_TYPE_NORMAL = 1; // 正常的item类型
-    private static final int ITEM_TYPE_HEADER = 2; // header
-    private static final int ITEM_TYPE_FOOTER = 3; // footer
+    public static final int ITEM_TYPE_HEADER = 2; // header
+    public static final int ITEM_TYPE_FOOTER = 3; // footer
     public static final int ITEM_TYPE_GROUP = 4;// 分组条目的item类型
 
     private boolean isHasHeader = false;
