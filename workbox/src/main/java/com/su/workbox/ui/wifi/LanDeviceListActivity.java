@@ -74,7 +74,6 @@ public class LanDeviceListActivity extends BaseAppCompatActivity {
     private TextView mMaskView;
     private String mIp;
     private String mRouterIp;
-    private RecyclerView mRecyclerView;
     private LanDeviceAdapter mAdapter;
     private boolean mIsWifiConnected;
 
@@ -162,9 +161,9 @@ public class LanDeviceListActivity extends BaseAppCompatActivity {
         mRouterMacView = findViewById(R.id.router_mac);
         mDnsView = findViewById(R.id.dns);
         mMaskView = findViewById(R.id.mask);
-        mRecyclerView = findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         mAdapter = new LanDeviceAdapter(mLanDeviceList);
-        mRecyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(mAdapter);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             findViewById(R.id.dns).setVisibility(View.GONE);
         }

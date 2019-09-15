@@ -79,7 +79,7 @@ public class AppListActivity extends BaseAppCompatActivity implements SearchView
         View progressBar = findViewById(R.id.progress_bar);
         contentLayout.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
-        mAppExecutors.networkIO().execute(() -> {
+        mAppExecutors.diskIO().execute(() -> {
             initAppInfoList();
             runOnUiThread(() -> {
                 contentLayout.setVisibility(View.VISIBLE);
