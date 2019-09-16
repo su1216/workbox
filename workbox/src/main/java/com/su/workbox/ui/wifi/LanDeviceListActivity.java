@@ -196,7 +196,7 @@ public class LanDeviceListActivity extends BaseAppCompatActivity {
             mLanDeviceList.clear();
             mMacMap.clear();
             try {
-                mExecutorService = Executors.newFixedThreadPool(16);
+                mExecutorService = Executors.newFixedThreadPool(48);
                 for (int i = 0; i < 256; i++) {
                     String ip = prefix + i;
                     mExecutorService.execute(new ScannerRunnable(mHandler, mIp, ip));
@@ -212,9 +212,11 @@ public class LanDeviceListActivity extends BaseAppCompatActivity {
                         mRouterMacView.setText(mMacMap.get(mRouterIp));
                     });
                 } else {
-                    mLanDeviceList.clear();
-                    mMacMap.clear();
-                    runOnUiThread(() -> mAdapter.notifyDataSetChanged());
+                    runOnUiThread(() -> {
+                        mLanDeviceList.clear();
+                        mMacMap.clear();
+                        mAdapter.notifyDataSetChanged();
+                    });
                 }
             } catch (Exception e) {
                 Log.w(TAG, e);
@@ -286,8 +288,10 @@ public class LanDeviceListActivity extends BaseAppCompatActivity {
                 device.setIp(results[0]);
                 device.setMac(results[3]);
                 if (!contains(device.getIp())) {
-                    mLanDeviceList.add(device);
-                    runOnUiThread(() -> mAdapter.notifyItemInserted(mLanDeviceList.size() - 1));
+                    runOnUiThread(() -> {
+                        mLanDeviceList.add(device);
+                        mAdapter.notifyItemInserted(mLanDeviceList.size() - 1);
+                    });
                 }
             } else if (!TextUtils.equals("00:00:00:00:00:00", results[3])) {
                 Log.d(TAG, "wrong result: " + line);
@@ -296,9 +300,23 @@ public class LanDeviceListActivity extends BaseAppCompatActivity {
         if (TextUtils.isEmpty(mMacMap.get(mIp))) {
             mMacMap.put(mIp, NetworkUtil.getMacAddress());
         }
-        Collections.sort(mLanDeviceList, (o1, o2) -> o1.getIp().compareTo(o2.getIp()));
-        runOnUiThread(() -> mAdapter.notifyDataSetChanged());
+        runOnUiThread(() -> {
+            Collections.sort(mLanDeviceList, (o1, o2) -> {
+                String ip1 = o1.getIp();
+                String ip2 = o2.getIp();
+                return stringIp2Int(ip1.split("\\.")) - stringIp2Int(ip2.split("\\."));
+            });
+            mAdapter.notifyDataSetChanged();
+        });
         scanner.close();
+    }
+
+    private int stringIp2Int(@NonNull String[] ip) {
+        int ipNumbers = 0;
+        for (int i = 0; i < 4; i++) {
+            ipNumbers += Integer.parseInt(ip[i]) << (24 - (8 * i));
+        }
+        return ipNumbers;
     }
 
     private boolean contains(String ip) {

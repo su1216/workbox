@@ -188,6 +188,10 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         Preference preference = findPreference("js_rhino");
         preference.setVisible(ReflectUtil.isUseRhino());
         preference.setOnPreferenceClickListener(this);
+        mReceiver = new NetworkChangeReceiver(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        mActivity.registerReceiver(mReceiver, intentFilter);
     }
 
     private void initNetworkPreferences() {
@@ -233,16 +237,11 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         } else {
             mProxyPreference.setSummary(proxySetting[0] + ":" + proxySetting[1]);
         }
-
-        mReceiver = new NetworkChangeReceiver(this);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        mActivity.registerReceiver(mReceiver, intentFilter);
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onDestroy() {
+        super.onDestroy();
         mActivity.unregisterReceiver(mReceiver);
     }
 

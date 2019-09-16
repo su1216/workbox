@@ -55,35 +55,38 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="0.6"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
             android:gravity="center"
             android:orientation="vertical">
             <TextView
                 android:id="@+id/ssid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:textColor="@color/workbox_first_text"
-                android:textSize="16sp"
+                android:textSize="12sp"
                 tools:text="hiwifi"/>
             <TextView
                 android:id="@+id/strength"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/workbox_first_text"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 tools:text="-17 dbm"/>
             <TextView
                 android:id="@+id/speed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/workbox_first_text"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 tools:text="72 Mbps"/>
             <TextView
                 android:id="@+id/frequency"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/workbox_first_text"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 tools:text="2432 MHz"/>
         </LinearLayout>
         <View
