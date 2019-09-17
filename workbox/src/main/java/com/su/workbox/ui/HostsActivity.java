@@ -41,7 +41,7 @@ public class HostsActivity extends BaseAppCompatActivity implements RecyclerItem
                                                 "(?::\\d{1,5})?$");
     private Pattern mDomainPattern = Pattern.compile("^\n" +
                                                     "^https?://" +
-                                                    "(?<host>[a-z0-9\\-._~%]+" + //Named or IPv4 host
+                                                    "([a-z0-9\\-._~%]+" + //Named or IPv4 host. vivo 5.0 不支持命名分组
                                                     "|\\[[a-z0-9\\-._~%!$&'()*+,;=:]+\\])"); //IPv6+ host
     private List<Pair<String, String>> mHosts; //name host
     private String mHost;
