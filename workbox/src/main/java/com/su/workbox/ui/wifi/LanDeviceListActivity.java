@@ -70,7 +70,10 @@ public class LanDeviceListActivity extends BaseAppCompatActivity {
     private TextView mRouterView;
     private TextView mRouterIpView;
     private TextView mRouterMacView;
-    private TextView mDnsView;
+    private View mDnsLayout;
+    private TextView mDns1View;
+    private TextView mDns2View;
+    private TextView[] mDnsViews;
     private TextView mMaskView;
     private String mIp;
     private String mRouterIp;
@@ -159,13 +162,16 @@ public class LanDeviceListActivity extends BaseAppCompatActivity {
         mRouterView = findViewById(R.id.router);
         mRouterIpView = findViewById(R.id.router_ip);
         mRouterMacView = findViewById(R.id.router_mac);
-        mDnsView = findViewById(R.id.dns);
+        mDnsLayout = findViewById(R.id.dns_layout);
+        mDns1View = findViewById(R.id.dns1);
+        mDns2View = findViewById(R.id.dns2);
+        mDnsViews = new TextView[]{mDns1View, mDns2View};
         mMaskView = findViewById(R.id.mask);
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         mAdapter = new LanDeviceAdapter(mLanDeviceList);
         recyclerView.setAdapter(mAdapter);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            findViewById(R.id.dns).setVisibility(View.GONE);
+            findViewById(R.id.dns_layout).setVisibility(View.GONE);
         }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             mFrequencyView.setVisibility(View.GONE);
@@ -266,8 +272,20 @@ public class LanDeviceListActivity extends BaseAppCompatActivity {
             }
         }
 
-        for (InetAddress server : servers) {
-            runOnUiThread(() -> mDnsView.setText("DNS: " + server.getHostAddress()));
+        int size = servers.size();
+        if (size == 1) {
+            mDnsLayout.setVisibility(View.VISIBLE);
+            mDns2View.setVisibility(View.GONE);
+        } else if (size > 1) {
+            mDnsLayout.setVisibility(View.VISIBLE);
+            mDns2View.setVisibility(View.VISIBLE);
+        } else {
+            mDnsLayout.setVisibility(View.GONE);
+        }
+        for (int i = 0; i < size; i++) {
+            InetAddress server = servers.get(i);
+            int finalI = i;
+            runOnUiThread(() -> mDnsViews[finalI].setText("DNS" + (finalI + 1) + ": " + server.getHostAddress()));
             Log.d(TAG, "DNS server: " + server.getHostName() + " (" + server.getHostAddress() + ")");
         }
     }
