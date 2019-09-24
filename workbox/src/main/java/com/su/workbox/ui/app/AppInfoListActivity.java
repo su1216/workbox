@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
+import com.su.workbox.entity.PidInfo;
 import com.su.workbox.ui.data.DataActivity;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;
@@ -30,6 +33,8 @@ import com.su.workbox.utils.UiHelper;
 import com.su.workbox.widget.ToastBuilder;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,65 +79,90 @@ public class AppInfoListActivity extends DataActivity implements ExpandableListV
         mDataList.add(makeGroup1Info());
         mDataList.add(makeGroup2Info());
         mDataList.add(makeGroup3Info());
+        mDataList.add(makeGroup4Info());
         mAdapter.notifyDataSetChanged();
     }
 
     private List<Pair<String, String>> makeGroup1Info() {
-        List<Pair<String, String>> group1 = new ArrayList<>();
-        group1.add(new Pair<>("应用名称", GeneralInfoHelper.getAppName()));
-        group1.add(new Pair<>("版本名称", GeneralInfoHelper.getVersionName()));
-        group1.add(new Pair<>("版本号", String.valueOf(GeneralInfoHelper.getVersionCode())));
-        group1.add(new Pair<>("应用包名", GeneralInfoHelper.getPackageName()));
+        List<Pair<String, String>> group = new ArrayList<>();
+        group.add(new Pair<>("应用名称", GeneralInfoHelper.getAppName()));
+        group.add(new Pair<>("版本名称", GeneralInfoHelper.getVersionName()));
+        group.add(new Pair<>("版本号", String.valueOf(GeneralInfoHelper.getVersionCode())));
+        group.add(new Pair<>("应用包名", GeneralInfoHelper.getPackageName()));
 
         int compileSdkVersion = GeneralInfoHelper.getCompileSdkVersion();
         int minSdkVersion = GeneralInfoHelper.getMinSdkVersion();
         int targetSdkVersion = GeneralInfoHelper.getTargetSdkVersion();
         if (compileSdkVersion > 0) {
-            group1.add(new Pair<>("compileSdkVersion", compileSdkVersion + " (Android " + SystemInfoHelper.getSystemVersionCode(compileSdkVersion) + ", " + SystemInfoHelper.getSystemVersionName(compileSdkVersion) + ")"));
+            group.add(new Pair<>("compileSdkVersion", compileSdkVersion + " (Android " + SystemInfoHelper.getSystemVersionCode(compileSdkVersion) + ", " + SystemInfoHelper.getSystemVersionName(compileSdkVersion) + ")"));
         }
         if (minSdkVersion > 0) {
-            group1.add(new Pair<>("minSdkVersion", minSdkVersion + " (Android " + SystemInfoHelper.getSystemVersionCode(minSdkVersion) + ", " + SystemInfoHelper.getSystemVersionName(minSdkVersion) + ")"));
+            group.add(new Pair<>("minSdkVersion", minSdkVersion + " (Android " + SystemInfoHelper.getSystemVersionCode(minSdkVersion) + ", " + SystemInfoHelper.getSystemVersionName(minSdkVersion) + ")"));
         }
         if (targetSdkVersion > 0) {
-            group1.add(new Pair<>("targetSdkVersion", targetSdkVersion + " (Android " + SystemInfoHelper.getSystemVersionCode(targetSdkVersion) + ", " + SystemInfoHelper.getSystemVersionName(targetSdkVersion) + ")"));
+            group.add(new Pair<>("targetSdkVersion", targetSdkVersion + " (Android " + SystemInfoHelper.getSystemVersionCode(targetSdkVersion) + ", " + SystemInfoHelper.getSystemVersionName(targetSdkVersion) + ")"));
         }
-        group1.add(new Pair<>("debuggable", String.valueOf(GeneralInfoHelper.isDebuggable())));
-        group1.add(new Pair<>("Uid", String.valueOf(GeneralInfoHelper.getUid())));
-        group1.add(new Pair<>("Application类名", String.valueOf(GeneralInfoHelper.getApplicationClassName())));
-        return group1;
+        group.add(new Pair<>("debuggable", String.valueOf(GeneralInfoHelper.isDebuggable())));
+        group.add(new Pair<>("ProgressName", String.valueOf(GeneralInfoHelper.getProcessName())));
+        group.add(new Pair<>("Application", String.valueOf(GeneralInfoHelper.getApplicationClassName())));
+        return group;
     }
 
     private List<Pair<String, String>> makeGroup2Info() {
-        List<Pair<String, String>> group2 = new ArrayList<>();
-        group2.add(new Pair<>("应用安装时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getInstallTime()))));
-        group2.add(new Pair<>("应用最近更新时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getUpdateTime()))));
-        group2.add(new Pair<>("本次应用启动时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getLaunchTime()))));
-        return group2;
+        List<Pair<String, String>> group = new ArrayList<>();
+        PidInfo pidInfo = IOUtil.getProcessInfo(GeneralInfoHelper.getProcessId());
+        group.add(new Pair<>("ProcessName", pidInfo.getName()));
+        group.add(new Pair<>("PPid", String.valueOf(pidInfo.getPpid())));
+        group.add(new Pair<>("Pid", String.valueOf(pidInfo.getPid())));
+        group.add(new Pair<>("Uid", pidInfo.getUid() + " / " + pidInfo.getFormatUid()));
+//        int uid = GeneralInfoHelper.getUid();
+//        String formatUid = "";
+//        try {
+//            Method method = UserHandle.class.getMethod("formatUid", int.class);
+//            method.setAccessible(true);
+//            formatUid = (String) method.invoke(null, uid);
+//        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+//            Log.w(TAG, e);
+//        }
+//        if (TextUtils.isEmpty(formatUid)) {
+//            group.add(new Pair<>("Uid", String.valueOf(uid)));
+//        } else {
+//            group.add(new Pair<>("Uid", uid + " / " + formatUid));
+//        }
+        return group;
     }
 
     private List<Pair<String, String>> makeGroup3Info() {
+        List<Pair<String, String>> group = new ArrayList<>();
+        group.add(new Pair<>("应用安装时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getInstallTime()))));
+        group.add(new Pair<>("应用最近更新时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getUpdateTime()))));
+        group.add(new Pair<>("本次应用启动时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getLaunchTime()))));
+        return group;
+    }
+
+    private List<Pair<String, String>> makeGroup4Info() {
         DecimalFormat df = new DecimalFormat("#,###");
-        List<Pair<String, String>> group3 = new ArrayList<>();
+        List<Pair<String, String>> group = new ArrayList<>();
         String apkFilePath = GeneralInfoHelper.getSourceDir();
         File apkFile = new File(apkFilePath);
         String sizeContent = Formatter.formatShortFileSize(this, apkFile.length()) + " (" + df.format(apkFile.length()) + "B)";
-        group3.add(new Pair<>("Apk大小", sizeContent));
+        group.add(new Pair<>("Apk大小", sizeContent));
         String md5 = IOUtil.getFileMd5(apkFilePath);
         if (!TextUtils.isEmpty(md5)) {
-            group3.add(new Pair<>("Apk MD5", md5));
+            group.add(new Pair<>("Apk MD5", md5));
         }
         String sha1 = IOUtil.getFileSha1(apkFilePath);
         if (!TextUtils.isEmpty(sha1)) {
-            group3.add(new Pair<>("Apk SHA1", sha1));
+            group.add(new Pair<>("Apk SHA1", sha1));
         }
         String sha256 = IOUtil.getFileSha256(apkFilePath);
         if (!TextUtils.isEmpty(sha256)) {
-            group3.add(new Pair<>("Apk SHA256", sha256));
+            group.add(new Pair<>("Apk SHA256", sha256));
         }
-        group3.add(new Pair<>("Apk路径", apkFilePath));
-        group3.add(new Pair<>("Native路径", GeneralInfoHelper.getNativeLibraryDir()));
-        group3.add(new Pair<>("应用私有数据路径", GeneralInfoHelper.getDataDir()));
-        return group3;
+        group.add(new Pair<>("Apk路径", apkFilePath));
+        group.add(new Pair<>("Native路径", GeneralInfoHelper.getNativeLibraryDir()));
+        group.add(new Pair<>("应用私有数据路径", GeneralInfoHelper.getDataDir()));
+        return group;
     }
 
     @Override

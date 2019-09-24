@@ -8,12 +8,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import com.su.workbox.AppHelper;
+import com.su.workbox.entity.PidInfo;
 import com.su.workbox.widget.ToastBuilder;
 
 import java.io.BufferedReader;
@@ -30,6 +32,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -113,6 +116,34 @@ public final class IOUtil {
     public static String getFileSha256(String filepath) {
         String sha256 = AppHelper.shellExec("/bin/sh", "-c", "sha256sum " + filepath);
         return processDigestResult(sha256);
+    }
+
+    @Nullable
+    public static PidInfo getProcessInfo(int pid) {
+        String result = AppHelper.shellExec("/bin/sh", "-c", "ps " + pid);
+        String[] lines = result.split("\n");
+        int length = lines.length;
+        if (length < 2) {
+            return null;
+        }
+        PidInfo pidInfo = PidInfo.fromShellLine(lines[1]);
+
+        String userProcessResult = AppHelper.shellExec("/bin/sh", "-c", "ps -U " + pidInfo.getFormatUid());
+        String[] userProcessLines = userProcessResult.split("\n");
+        int userProcessLength = userProcessLines.length;
+        if (userProcessLength < 2) {
+            return pidInfo;
+        }
+        List<PidInfo> userProcessList = new ArrayList<>();
+        for (int i = 1; i < userProcessLength; i++) {
+            PidInfo userProcessPidInfo = PidInfo.fromShellLine(userProcessLines[i]);
+            if (pidInfo.equals(userProcessPidInfo)) {
+                continue;
+            }
+            userProcessList.add(userProcessPidInfo);
+        }
+        pidInfo.setUserPidInfo(userProcessList);
+        return pidInfo;
     }
 
     private static String processDigestResult(String result) {
