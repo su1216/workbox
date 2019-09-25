@@ -4,12 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.util.Log;
+import android.text.style.ForegroundColorSpan;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,8 +34,6 @@ import com.su.workbox.utils.UiHelper;
 import com.su.workbox.widget.ToastBuilder;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ public class AppInfoListActivity extends DataActivity implements ExpandableListV
     private static final String TAG = AppInfoListActivity.class.getSimpleName();
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = ThreadUtil.getSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private ExpandableListView mListView;
-    private List<List<Pair<String, String>>> mDataList = new ArrayList<>();
+    private List<List<Pair<String, CharSequence>>> mDataList = new ArrayList<>();
     private AppInfoAdapter mAdapter;
     private File mExportedApkFile;
 
@@ -83,8 +82,8 @@ public class AppInfoListActivity extends DataActivity implements ExpandableListV
         mAdapter.notifyDataSetChanged();
     }
 
-    private List<Pair<String, String>> makeGroup1Info() {
-        List<Pair<String, String>> group = new ArrayList<>();
+    private List<Pair<String, CharSequence>> makeGroup1Info() {
+        List<Pair<String, CharSequence>> group = new ArrayList<>();
         group.add(new Pair<>("应用名称", GeneralInfoHelper.getAppName()));
         group.add(new Pair<>("版本名称", GeneralInfoHelper.getVersionName()));
         group.add(new Pair<>("版本号", String.valueOf(GeneralInfoHelper.getVersionCode())));
@@ -108,41 +107,68 @@ public class AppInfoListActivity extends DataActivity implements ExpandableListV
         return group;
     }
 
-    private List<Pair<String, String>> makeGroup2Info() {
-        List<Pair<String, String>> group = new ArrayList<>();
+    private List<Pair<String, CharSequence>> makeGroup2Info() {
+        List<Pair<String, CharSequence>> group = new ArrayList<>();
         PidInfo pidInfo = IOUtil.getProcessInfo(GeneralInfoHelper.getProcessId());
-        group.add(new Pair<>("ProcessName", pidInfo.getName()));
+        List<PidInfo> list = pidInfo.getUserPidInfo();
+        if (justShowSelfProcess(list)) {
+            group.add(new Pair<>("ProcessName", pidInfo.getName()));
+        }
         group.add(new Pair<>("PPid", String.valueOf(pidInfo.getPpid())));
-        group.add(new Pair<>("Pid", String.valueOf(pidInfo.getPid())));
-        group.add(new Pair<>("Uid", pidInfo.getUid() + " / " + pidInfo.getFormatUid()));
-//        int uid = GeneralInfoHelper.getUid();
-//        String formatUid = "";
-//        try {
-//            Method method = UserHandle.class.getMethod("formatUid", int.class);
-//            method.setAccessible(true);
-//            formatUid = (String) method.invoke(null, uid);
-//        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-//            Log.w(TAG, e);
-//        }
-//        if (TextUtils.isEmpty(formatUid)) {
-//            group.add(new Pair<>("Uid", String.valueOf(uid)));
-//        } else {
-//            group.add(new Pair<>("Uid", uid + " / " + formatUid));
-//        }
+        if (justShowSelfProcess(list)) {
+            group.add(new Pair<>("Pid", String.valueOf(pidInfo.getPid())));
+            group.add(new Pair<>("Uid", pidInfo.getFormatUid() + " / " + pidInfo.getUid()));
+        } else {
+            group.add(new Pair<>("Uid", pidInfo.getFormatUid() + " / " + pidInfo.getUid()));
+            StringBuilder sb = new StringBuilder();
+            int start = 0;
+            int length = 0;
+            for (PidInfo info : list) {
+                if (TextUtils.equals(info.getName(), "ps")) {
+                    continue;
+                }
+                if (info.getPid() == pidInfo.getPid()) {
+                    start = sb.length();
+                    length = info.getName().length() + 3 + String.valueOf(info.getPid()).length();
+                }
+                sb.append(info.getName());
+                sb.append(" / ");
+                sb.append(info.getPid());
+                sb.append("\n");
+            }
+            sb.deleteCharAt(sb.length() - 1);
+            SpannableString ss = new SpannableString(sb.toString());
+            ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.workbox_color_primary)), start, start + length, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            group.add(new Pair<>("User's Process(es)", ss));
+        }
         return group;
     }
 
-    private List<Pair<String, String>> makeGroup3Info() {
-        List<Pair<String, String>> group = new ArrayList<>();
+    private boolean justShowSelfProcess(List<PidInfo> list) {
+        if (list.size() < 2) {
+            return true;
+        }
+        if (list.size() == 2) {
+            for (PidInfo info : list) {
+                if (TextUtils.equals(info.getName(), "ps")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private List<Pair<String, CharSequence>> makeGroup3Info() {
+        List<Pair<String, CharSequence>> group = new ArrayList<>();
         group.add(new Pair<>("应用安装时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getInstallTime()))));
         group.add(new Pair<>("应用最近更新时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getUpdateTime()))));
         group.add(new Pair<>("本次应用启动时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getLaunchTime()))));
         return group;
     }
 
-    private List<Pair<String, String>> makeGroup4Info() {
+    private List<Pair<String, CharSequence>> makeGroup4Info() {
         DecimalFormat df = new DecimalFormat("#,###");
-        List<Pair<String, String>> group = new ArrayList<>();
+        List<Pair<String, CharSequence>> group = new ArrayList<>();
         String apkFilePath = GeneralInfoHelper.getSourceDir();
         File apkFile = new File(apkFilePath);
         String sizeContent = Formatter.formatShortFileSize(this, apkFile.length()) + " (" + df.format(apkFile.length()) + "B)";
@@ -189,8 +215,8 @@ public class AppInfoListActivity extends DataActivity implements ExpandableListV
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-        Pair<String, String> pair = mDataList.get(groupPosition).get(childPosition);
-        AppHelper.copyToClipboard(this, pair.first, pair.second);
+        Pair<String, CharSequence> pair = mDataList.get(groupPosition).get(childPosition);
+        AppHelper.copyToClipboard(this, pair.first, pair.second.toString());
         new ToastBuilder("已将" + pair.first + "复制到粘贴板中").show();
         return true;
     }
@@ -218,7 +244,7 @@ public class AppInfoListActivity extends DataActivity implements ExpandableListV
 
         @Override
         public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-            Pair<String, String> pair = mDataList.get(groupPosition).get(childPosition);
+            Pair<String, CharSequence> pair = mDataList.get(groupPosition).get(childPosition);
             ItemViewHolder viewHolder;
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.workbox_item_app_info, parent, false);

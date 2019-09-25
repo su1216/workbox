@@ -138,9 +138,10 @@ public final class IOUtil {
         for (int i = 1; i < userProcessLength; i++) {
             PidInfo userProcessPidInfo = PidInfo.fromShellLine(userProcessLines[i]);
             if (pidInfo.equals(userProcessPidInfo)) {
-                continue;
+                userProcessList.add(0, userProcessPidInfo);
+            } else {
+                userProcessList.add(userProcessPidInfo);
             }
-            userProcessList.add(userProcessPidInfo);
         }
         pidInfo.setUserPidInfo(userProcessList);
         return pidInfo;
