@@ -121,6 +121,9 @@ public final class IOUtil {
     @Nullable
     public static PidInfo getProcessInfo(int pid) {
         String result = AppHelper.shellExec("/bin/sh", "-c", "ps " + pid);
+        if (TextUtils.isEmpty(result)) {
+            return null;
+        }
         String[] lines = result.split("\n");
         int length = lines.length;
         if (length < 2) {

@@ -1,9 +1,12 @@
 package com.su.workbox.ui.app;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Spannable;
@@ -11,6 +14,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +38,8 @@ import com.su.workbox.utils.UiHelper;
 import com.su.workbox.widget.ToastBuilder;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -102,7 +108,6 @@ public class AppInfoListActivity extends DataActivity implements ExpandableListV
             group.add(new Pair<>("targetSdkVersion", targetSdkVersion + " (Android " + SystemInfoHelper.getSystemVersionCode(targetSdkVersion) + ", " + SystemInfoHelper.getSystemVersionName(targetSdkVersion) + ")"));
         }
         group.add(new Pair<>("debuggable", String.valueOf(GeneralInfoHelper.isDebuggable())));
-        group.add(new Pair<>("ProgressName", String.valueOf(GeneralInfoHelper.getProcessName())));
         group.add(new Pair<>("Application", String.valueOf(GeneralInfoHelper.getApplicationClassName())));
         return group;
     }
@@ -110,16 +115,87 @@ public class AppInfoListActivity extends DataActivity implements ExpandableListV
     private List<Pair<String, CharSequence>> makeGroup2Info() {
         List<Pair<String, CharSequence>> group = new ArrayList<>();
         PidInfo pidInfo = IOUtil.getProcessInfo(GeneralInfoHelper.getProcessId());
-        List<PidInfo> list = pidInfo.getUserPidInfo();
-        if (justShowSelfProcess(list)) {
-            group.add(new Pair<>("ProcessName", pidInfo.getName()));
-        }
-        group.add(new Pair<>("PPid", String.valueOf(pidInfo.getPpid())));
-        if (justShowSelfProcess(list)) {
-            group.add(new Pair<>("Pid", String.valueOf(pidInfo.getPid())));
-            group.add(new Pair<>("Uid", pidInfo.getFormatUid() + " / " + pidInfo.getUid()));
+        if (pidInfo == null) {
+            getProcessInfoWithReflect(group);
         } else {
-            group.add(new Pair<>("Uid", pidInfo.getFormatUid() + " / " + pidInfo.getUid()));
+            getProcessInfoWithCommandPs(group, pidInfo);
+        }
+        return group;
+    }
+
+    private void getProcessInfoWithReflect(List<Pair<String, CharSequence>> group) {
+        String processName = GeneralInfoHelper.getProcessName();
+        int pid = GeneralInfoHelper.getProcessId();
+        group.add(new Pair<>("ProcessName", processName));
+        group.add(new Pair<>("Pid", String.valueOf(pid)));
+        int ppid = -1;
+        try {
+            Method method = android.os.Process.class.getMethod("myPpid");
+            method.setAccessible(true);
+            ppid = (int) method.invoke(null);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            Log.w(TAG, e);
+        }
+
+        group.add(new Pair<>("PPid", String.valueOf(ppid)));
+        int uid = GeneralInfoHelper.getUid();
+        String formatUid = "";
+        try {
+            StringBuilder sb = new StringBuilder();
+            //android 4.4 没有UserHandle#formatUid(int) 方法
+            Method method = UserHandle.class.getMethod("formatUid", StringBuilder.class, int.class);
+            method.setAccessible(true);
+            method.invoke(null, sb, uid);
+            formatUid = sb.toString();
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            Log.w(TAG, e);
+        }
+        if (TextUtils.isEmpty(formatUid)) {
+            group.add(new Pair<>("Uid", String.valueOf(uid)));
+        } else {
+            group.add(new Pair<>("Uid", formatUid + " / " + uid));
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            StringBuilder sb = new StringBuilder();
+            int length = 0;
+            ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+            List<ActivityManager.RunningServiceInfo> runningServices = am.getRunningServices(Integer.MAX_VALUE);
+            Log.d(TAG, "process------------------------------------------");
+            for (ActivityManager.RunningServiceInfo service : runningServices) {
+                Log.d(TAG, service.process);
+                if (service.uid == uid) {
+                    if (pid == service.pid) {
+                        length = service.process.length() + 3 + String.valueOf(service.pid).length();
+                        sb.insert(0, "\n");
+                        sb.insert(0, service.pid);
+                        sb.insert(0, " / ");
+                        sb.insert(0, service.process);
+                    } else {
+                        sb.append(service.process);
+                        sb.append(" / ");
+                        sb.append(service.pid);
+                        sb.append("\n");
+                    }
+                }
+            }
+            if (sb.length() == 0) {
+                return;
+            }
+            sb.deleteCharAt(sb.length() - 1);
+            SpannableString ss = new SpannableString(sb.toString());
+            ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.workbox_color_primary)), 0, length, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            group.add(new Pair<>("User's Process(es)", ss));
+        }
+    }
+
+    private void getProcessInfoWithCommandPs(List<Pair<String, CharSequence>> group, @NonNull PidInfo pidInfo) {
+        List<PidInfo> list = pidInfo.getUserPidInfo();
+        group.add(new Pair<>("ProcessName", pidInfo.getName()));
+        group.add(new Pair<>("Pid", String.valueOf(pidInfo.getPid())));
+        group.add(new Pair<>("PPid", String.valueOf(pidInfo.getPpid())));
+        group.add(new Pair<>("Uid", pidInfo.getFormatUid() + " / " + pidInfo.getUid()));
+        if (!justShowSelfProcess(list)) {
             StringBuilder sb = new StringBuilder();
             int start = 0;
             int length = 0;
@@ -136,12 +212,14 @@ public class AppInfoListActivity extends DataActivity implements ExpandableListV
                 sb.append(info.getPid());
                 sb.append("\n");
             }
+            if (sb.length() == 0) {
+                return;
+            }
             sb.deleteCharAt(sb.length() - 1);
             SpannableString ss = new SpannableString(sb.toString());
             ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.workbox_color_primary)), start, start + length, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
             group.add(new Pair<>("User's Process(es)", ss));
         }
-        return group;
     }
 
     private boolean justShowSelfProcess(List<PidInfo> list) {
