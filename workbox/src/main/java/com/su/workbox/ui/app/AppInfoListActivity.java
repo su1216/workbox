@@ -161,9 +161,7 @@ public class AppInfoListActivity extends DataActivity implements ExpandableListV
             int length = 0;
             ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
             List<ActivityManager.RunningServiceInfo> runningServices = am.getRunningServices(Integer.MAX_VALUE);
-            Log.d(TAG, "process------------------------------------------");
             for (ActivityManager.RunningServiceInfo service : runningServices) {
-                Log.d(TAG, service.process);
                 if (service.uid == uid) {
                     if (pid == service.pid) {
                         length = service.process.length() + 3 + String.valueOf(service.pid).length();

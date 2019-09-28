@@ -1,7 +1,6 @@
 package com.su.workbox.utils;
 
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.net.Uri;
@@ -22,7 +21,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -36,9 +34,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import static android.content.ContentResolver.SCHEME_FILE;
 
@@ -86,6 +81,7 @@ public final class IOUtil {
         activity.runOnUiThread(() -> new ToastBuilder(msg).setDuration(Toast.LENGTH_LONG).show());
     }
 
+    @NonNull
     public static String getFileBrief(@NonNull File file) {
         String details;
         if (file.isDirectory()) {
@@ -98,6 +94,7 @@ public final class IOUtil {
         return details;
     }
 
+    @Nullable
     public static String getFileType(String filepath) {
         String ext = MimeTypeMap.getFileExtensionFromUrl(filepath);
         return MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext);
@@ -294,11 +291,6 @@ public final class IOUtil {
         return uri.substring(ASSET_PREFIX_LENGTH);
     }
 
-    public static InputStream getInputStreamWithUri(Context context, Uri uri) throws FileNotFoundException {
-        ContentResolver contentResolver = context.getContentResolver();
-        return contentResolver.openInputStream(uri);
-    }
-
     @NonNull
     public static String streamToString(@NonNull InputStream input) throws IOException {
         final BufferedReader reader = new BufferedReader(new InputStreamReader(input), 8192);
@@ -312,31 +304,6 @@ public final class IOUtil {
         } finally {
             closeQuietly(reader);
         }
-    }
-
-    public static String convertStreamToString(InputStream is) {
-        return new Scanner(is).useDelimiter("\\A").next();
-    }
-
-    public static void writeExtractedFileToDisk(InputStream in, OutputStream outs) throws IOException {
-        byte[] buffer = new byte[1024];
-        int length;
-        while ((length = in.read(buffer)) > 0) {
-            outs.write(buffer, 0, length);
-        }
-        outs.flush();
-        outs.close();
-        in.close();
-    }
-
-    public static ZipInputStream getFileFromZip(InputStream zipFileStream) throws IOException {
-        ZipInputStream zis = new ZipInputStream(zipFileStream);
-        ZipEntry ze;
-        while ((ze = zis.getNextEntry()) != null) {
-            Log.w(TAG, "extracting file: '" + ze.getName() + "'...");
-            return zis;
-        }
-        return null;
     }
 
     public static void copyFile(@NonNull File sourceFile, @NonNull File destinationFile) {

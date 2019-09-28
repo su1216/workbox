@@ -63,13 +63,11 @@ import com.su.workbox.ui.ui.RulerSettingActivity;
 import com.su.workbox.ui.ui.ScreenColorViewManager;
 import com.su.workbox.ui.usage.RecordListActivity;
 import com.su.workbox.ui.wifi.LanDeviceListActivity;
-import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.NetworkUtil;
 import com.su.workbox.utils.ReflectUtil;
 import com.su.workbox.utils.SpHelper;
 import com.su.workbox.utils.SystemInfoHelper;
-import com.su.workbox.widget.SimpleBlockedDialogFragment;
 import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 
@@ -84,11 +82,9 @@ import java.util.List;
 public class DebugListFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
     public static final String TAG = DebugListFragment.class.getSimpleName();
-    private static final SimpleBlockedDialogFragment DIALOG_FRAGMENT = SimpleBlockedDialogFragment.newInstance();
     private static final int REQUEST_HOST = 1;
     private static final int REQUEST_WEB_VIEW_HOST = 2;
     private static final int REQUEST_MEDIA_PROJECTION = 3;
-    private AppExecutors mAppExecutors = AppExecutors.getInstance();
     private CurrentActivityView mCurrentActivityView;
     private SwitchPreferenceCompat mCurrentActivityPreference;
     private Preference mProxyPreference;
