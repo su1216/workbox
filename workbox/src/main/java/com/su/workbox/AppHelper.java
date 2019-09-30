@@ -271,7 +271,7 @@ public final class AppHelper {
             }
             return stringBuilder.toString();
         } catch (IOException e) {
-            Log.e(TAG, "cmd: " + cmd, e);
+            Log.e(TAG, "cmd: " + Arrays.toString(cmd), e);
         } finally {
             IOUtil.closeQuietly(reader);
         }

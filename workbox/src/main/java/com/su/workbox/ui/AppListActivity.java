@@ -16,6 +16,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,7 @@ import com.su.workbox.entity.AppInfo;
 import com.su.workbox.ui.base.BaseFragment;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
+import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.SearchableHelper;
 import com.su.workbox.widget.SimpleOnTabSelectedListener;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
@@ -80,7 +83,9 @@ public class AppListActivity extends BaseAppCompatActivity implements SearchView
         contentLayout.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         mAppExecutors.diskIO().execute(() -> {
-            initAppInfoList();
+            if (mAppInfoList.isEmpty()) {
+                initAppInfoList();
+            }
             runOnUiThread(() -> {
                 contentLayout.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
@@ -140,31 +145,67 @@ public class AppListActivity extends BaseAppCompatActivity implements SearchView
     }
 
     private void initAppInfoList() {
-        if (!mAppInfoList.isEmpty()) {
-            return;
-        }
+        List<AppInfo> appInfoList = new ArrayList<>();
         PackageManager pm = getPackageManager();
         List<PackageInfo> packageInfoList = pm.getInstalledPackages(0);
+        List<AppInfo> installedList = new ArrayList<>();
         for (int i = 0; i < packageInfoList.size(); i++) {
             PackageInfo packageInfo = packageInfoList.get(i);
-            AppInfo appInfo = new AppInfo();
-            appInfo.setAppName(packageInfo.applicationInfo.loadLabel(pm).toString());
-            if (packageInfo.applicationInfo.loadIcon(pm) == null) {
-                continue;
+            AppInfo appInfo = makeAppInfo(packageInfo);
+            if ((ApplicationInfo.FLAG_SYSTEM & appInfo.getFlags()) == 0) {
+                installedList.add(appInfo);
             }
-            appInfo.setIconDrawable(packageInfo.applicationInfo.loadIcon(pm));
-            appInfo.setPackageName(packageInfo.packageName);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                appInfo.setVersionCode(packageInfo.getLongVersionCode());
-            } else {
-                appInfo.setVersionCode(packageInfo.versionCode);
+            appInfoList.add(appInfo);
+        }
+
+        if (installedList.isEmpty()) {
+            initAppInfoListWithCommandPm();
+            return;
+        }else if (installedList.size() == 1) {
+            AppInfo appInfo = installedList.get(0);
+            if (TextUtils.equals(appInfo.getPackageName(), getPackageName())) {
+                initAppInfoListWithCommandPm();
+                return;
             }
-            appInfo.setVersionName(packageInfo.versionName);
-            appInfo.setFlags(packageInfo.applicationInfo.flags);
-            appInfo.setLaunchIntent(pm.getLaunchIntentForPackage(packageInfo.packageName));
-            mAppInfoList.add(appInfo);
+        }
+
+        if (mAppInfoList.isEmpty()) {
+            mAppInfoList.addAll(appInfoList);
         }
         Collections.sort(mAppInfoList);
+    }
+
+    private void initAppInfoListWithCommandPm() {
+        List<String> packageList = IOUtil.getInstalledApp();
+        PackageManager pm = getPackageManager();
+        for (String packageName : packageList) {
+            try {
+                PackageInfo packageInfo = pm.getPackageInfo(packageName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT);
+                AppInfo appInfo = makeAppInfo(packageInfo);
+                mAppInfoList.add(appInfo);
+            } catch (PackageManager.NameNotFoundException e) {
+                Log.w(TAG, e);
+            }
+        }
+    }
+
+    private AppInfo makeAppInfo(PackageInfo packageInfo) {
+        PackageManager pm = getPackageManager();
+        AppInfo appInfo = new AppInfo();
+        appInfo.setAppName(packageInfo.applicationInfo.loadLabel(pm).toString());
+        if (packageInfo.applicationInfo.loadIcon(pm) != null) {
+            appInfo.setIconDrawable(packageInfo.applicationInfo.loadIcon(pm));
+        }
+        appInfo.setPackageName(packageInfo.packageName);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            appInfo.setVersionCode(packageInfo.getLongVersionCode());
+        } else {
+            appInfo.setVersionCode(packageInfo.versionCode);
+        }
+        appInfo.setVersionName(packageInfo.versionName);
+        appInfo.setFlags(packageInfo.applicationInfo.flags);
+        appInfo.setLaunchIntent(pm.getLaunchIntentForPackage(packageInfo.packageName));
+        return appInfo;
     }
 
     @Override

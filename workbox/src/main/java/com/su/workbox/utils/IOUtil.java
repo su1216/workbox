@@ -1,5 +1,7 @@
 package com.su.workbox.utils;
 
+import static android.content.ContentResolver.SCHEME_FILE;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -31,11 +33,10 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
-import static android.content.ContentResolver.SCHEME_FILE;
 
 /**
  * Created by su on 15-11-10.
@@ -108,6 +109,14 @@ public final class IOUtil {
     public static String getFileSha1(String filepath) {
         String sha1 = AppHelper.shellExec("/bin/sh", "-c", "sha1sum " + filepath);
         return processDigestResult(sha1);
+    }
+
+    public static List<String> getInstalledApp() {
+        String packagesString = AppHelper.shellExec("/bin/sh", "-c", "pm list packages | cut -d ':' -f 2");
+        if (TextUtils.isEmpty(packagesString)) {
+            return new ArrayList<>();
+        }
+        return Arrays.asList(packagesString.split("\n"));
     }
 
     public static String getFileSha256(String filepath) {
