@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
 import android.net.LinkProperties;
 import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -170,10 +171,8 @@ public class LanDeviceListActivity extends BaseAppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         mAdapter = new LanDeviceAdapter(mLanDeviceList);
         recyclerView.setAdapter(mAdapter);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            findViewById(R.id.dns_layout).setVisibility(View.GONE);
-        }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            findViewById(R.id.dns_layout).setVisibility(View.GONE);
             mFrequencyView.setVisibility(View.GONE);
         }
     }
@@ -181,7 +180,7 @@ public class LanDeviceListActivity extends BaseAppCompatActivity {
     private void refresh() {
         getRouterIp();
         AppExecutors.getInstance().networkIO().execute(() -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getDnsServers();
             }
 
@@ -256,17 +255,23 @@ public class LanDeviceListActivity extends BaseAppCompatActivity {
         Log.d(TAG, "route address: " + mRouterIp);
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void getDnsServers() {
         List<InetAddress> servers = new ArrayList<>();
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        Network[] networks = connectivityManager == null ? null : new Network[]{connectivityManager.getActiveNetwork()};
+        Network[] networks = connectivityManager == null ? null : connectivityManager.getAllNetworks();
         if (networks == null) {
             return;
         }
         int length = networks.length;
         for (int i = 0; i < length; ++i) {
-            LinkProperties linkProperties = connectivityManager.getLinkProperties(networks[i]);
+            Network network = networks[i];
+            NetworkCapabilities networkCapabilities = connectivityManager.getNetworkCapabilities(network);
+            NetworkInfo networkInfo = connectivityManager.getNetworkInfo(network);
+            if (!networkInfo.isConnected() || !networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                continue;
+            }
+            LinkProperties linkProperties = connectivityManager.getLinkProperties(network);
             if (linkProperties != null) {
                 servers.addAll(linkProperties.getDnsServers());
             }
