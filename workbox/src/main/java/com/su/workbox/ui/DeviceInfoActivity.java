@@ -18,6 +18,7 @@ import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -44,6 +45,7 @@ import com.su.workbox.utils.ReflectUtil;
 import com.su.workbox.utils.SensorUtil;
 import com.su.workbox.utils.SystemInfoHelper;
 import com.su.workbox.utils.TelephonyManagerWrapper;
+import com.su.workbox.utils.ThreadUtil;
 import com.su.workbox.utils.UiHelper;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.GridItemSpaceDecoration;
@@ -51,8 +53,10 @@ import com.su.workbox.widget.recycler.GridItemSpaceDecoration;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -381,11 +385,15 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         }
 
         private String getSystemInfo() {
+            long time = System.currentTimeMillis() - SystemClock.elapsedRealtime();
+            Locale locale = Locale.getDefault();
             String desc = "Android " + Build.VERSION.RELEASE + " / " + SystemInfoHelper.getSystemVersionName(Build.VERSION.SDK_INT) + " / " + "API " + Build.VERSION.SDK_INT;
             desc += "\n\n" + "系统类型: " + Build.TYPE;
             desc += "\n\n" + "基带版本: " + Build.getRadioVersion();
             desc += "\n\n" + "Linux 内核版本: " + System.getProperty("os.version");
             desc += "\n\n" + "Http User Agent: " + System.getProperty("http.agent");
+            desc += "\n\n" + "开机时间: " + ThreadUtil.getSimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(time));
+            desc += "\n\n" + "当前语言: " + locale;
             return desc;
         }
 
