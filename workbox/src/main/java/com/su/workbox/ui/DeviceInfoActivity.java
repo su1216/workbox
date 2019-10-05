@@ -78,6 +78,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
     private static final String KEY_PHONE = "phone";
     private static final String KEY_SENSOR = "sensor";
     private static final String KEY_BATTERY = "battery";
+    private static final String KEY_VM = "vm";
     private static final String KEY_INPUT_METHOD = "input_method";
     private List<SystemInfo> mData = new ArrayList<>();
 
@@ -158,7 +159,6 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         }
     };
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -206,6 +206,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
             mData.add(new SystemInfo(KEY_SENSOR, "传感器"));
         }
         mData.add(new SystemInfo(KEY_BATTERY, "电池"));
+        mData.add(new SystemInfo(KEY_VM, "虚拟机"));
         mData.add(new SystemInfo(KEY_INPUT_METHOD, "输入法"));
     }
 
@@ -326,6 +327,8 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                     return getSensorInfo();
                 case KEY_BATTERY:
                     return getBatteryInfo();
+                case KEY_VM:
+                    return getVmInfo();
                 case KEY_INPUT_METHOD:
                     return getInstalledInputMethod();
                 default:
@@ -538,6 +541,28 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                 }
             }
             return builder.toString();
+        }
+
+        private String getVmInfo() {
+            final String vmVersion = System.getProperty("java.vm.version");
+            String vm;
+            if (TextUtils.isEmpty(vmVersion)) {
+                vm = "unknown";
+            } else if (vmVersion.startsWith("2")) {
+                vm = "ART";
+            } else {
+                vm = "Dalvik";
+            }
+            String desc = "虚拟机: " + vm;
+            desc += "\n" + "虚拟机版本: " + vmVersion;
+            desc += "\n" + "Java Home: " + System.getProperty("java.home");
+            desc += "\n" + "Java Class Path: " + System.getProperty("java.class.path");
+            desc += "\n\n" + "Java Coot Class Path:";
+            String[] paths = System.getProperty("java.boot.class.path").split(":");
+            for (String path : paths) {
+                desc += "\n" + path;
+            }
+            return desc;
         }
 
         private String getBatteryInfo() {
