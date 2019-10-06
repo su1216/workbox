@@ -2,13 +2,9 @@ package com.su.workbox.utils;
 
 import android.app.ActivityManager;
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Proxy;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
@@ -30,34 +26,6 @@ public class SystemInfoHelper {
 
     private static SparseArray<String> sSystemVersionName;
     private static SparseArray<String> sSystemVersionCode;
-
-    public static String getNetworkType(Context context) {
-        ConnectivityManager mgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (mgr == null) {
-            return "disconnect";
-        }
-
-        NetworkInfo info = mgr.getActiveNetworkInfo();
-        if (info == null || !info.isConnected()) {
-            return "disconnect";
-        }
-
-        String name = info.getTypeName();
-        if ("WIFI".equalsIgnoreCase(name)) {
-            return "Wifi";
-        }
-        if ("MOBILE".equalsIgnoreCase(name)) {
-            if (TextUtils.isEmpty(Proxy.getDefaultHost())) {
-                TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-                if (NetworkUtil.is3g4g(NetworkUtil.getNetworkClass(tm.getNetworkType()))) {
-                    return "Mobile 3g/4g";
-                }
-                return "Mobile 2.5g";
-            }
-            return "Wap";
-        }
-        return "unknown";
-    }
 
     public static String getCpuBit() {
         String bits;

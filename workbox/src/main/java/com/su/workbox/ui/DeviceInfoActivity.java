@@ -12,6 +12,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.hardware.Sensor;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -235,11 +236,6 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
             in = new BufferedReader(new InputStreamReader(url.openStream()));
             mIp = in.readLine();
             Log.d(TAG, "ip: " + mIp);
-            if (!TextUtils.isEmpty(mIp)
-                    && TextUtils.equals(mAdapter.mType, KEY_NETWORK)
-                    && mAdapter.mAlertDialog != null) {
-                runOnUiThread(() -> mAdapter.mAlertDialog.setMessage(mAdapter.mMessage + "\n\n公网IP: " + mIp));
-            }
         } catch (IOException e) {
             Log.w(TAG, e);
         } finally {
@@ -291,9 +287,6 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
 
         private DeviceInfoActivity mActivity;
         private PackageManager mPackageManager;
-        private AlertDialog mAlertDialog;
-        private String mType;
-        private String mMessage;
 
         private MyAdapter(DeviceInfoActivity activity, List<SystemInfo> data) {
             super(data);
@@ -334,32 +327,27 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         }
 
         private void showInfoDialog(SystemInfo systemInfo) {
-            if (mAlertDialog == null) {
-                mAlertDialog = new AlertDialog.Builder(mActivity)
-                        .setNegativeButton(R.string.workbox_close, null)
-                        .setPositiveButton(R.string.workbox_share, (dialog, which) -> {
-                            Intent intent = new Intent(Intent.ACTION_SEND);
-                            intent.putExtra(Intent.EXTRA_TEXT, systemInfo.getDesc());
-                            intent.setType("text/plain");
-                            mActivity.startActivity(Intent.createChooser(intent, mActivity.getString(R.string.workbox_share_to)));
-                        })
-                        .create();
-            }
-            mAlertDialog.setTitle(systemInfo.getTitle());
-            mMessage = getMsg(systemInfo.getKey());
-            mAlertDialog.setMessage(mMessage);
-            mAlertDialog.show();
+            new AlertDialog.Builder(mActivity)
+                    .setNegativeButton(R.string.workbox_close, null)
+                    .setPositiveButton(R.string.workbox_share, (dialog, which) -> {
+                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.putExtra(Intent.EXTRA_TEXT, systemInfo.getDesc());
+                        intent.setType("text/plain");
+                        mActivity.startActivity(Intent.createChooser(intent, mActivity.getString(R.string.workbox_share_to)));
+                    })
+                    .setTitle(systemInfo.getTitle())
+                    .setMessage(getMsg(systemInfo.getKey()))
+                    .show();
         }
 
         private String getMsg(@NonNull String key) {
-            mType = key;
             switch (key) {
                 case KEY_SCREEN:
                     return getScreenInfo();
                 case KEY_SYSTEM:
                     return getSystemInfo();
                 case KEY_NETWORK:
-                    return getNetWorkInfo();
+                    return getNetworkInfo();
                 case KEY_HARDWARE:
                     return getHardwareInfo();
                 case KEY_IDS:
@@ -414,18 +402,29 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
             return desc;
         }
 
-        private String getNetWorkInfo() {
-            String networkType = SystemInfoHelper.getNetworkType(mActivity);
-            String ssid = "";
-            String desc = mActivity.getString(R.string.workbox_type) + ": " + networkType;
-            if ("Wifi".equals(networkType)) {
+        private String getNetworkInfo() {
+            int connectedType = NetworkUtil.getConnectedType(mActivity);
+            String networkTypeName = NetworkUtil.getNetworkTypeName();
+            if (connectedType == ConnectivityManager.TYPE_MOBILE) {
+                TelephonyManager tm = (TelephonyManager) mActivity.getSystemService(Context.TELEPHONY_SERVICE);
+                int telephonyNetworkType = tm.getNetworkType();
+                int networkClass = NetworkUtil.getNetworkClass(telephonyNetworkType);
+                String networkClassName = NetworkUtil.getNetworkClassName(networkClass);
+                String telephonyNetworkTypeName = NetworkUtil.getTelephonyNetworkTypeName(telephonyNetworkType);
+                networkTypeName += " " + networkClassName;
+                if (!TextUtils.isEmpty(telephonyNetworkTypeName)) {
+                    networkTypeName += " (" + telephonyNetworkTypeName + ")";
+                }
+            }
+            String desc = mActivity.getString(R.string.workbox_type) + ": " + networkTypeName;
+            if (connectedType == ConnectivityManager.TYPE_WIFI) {
                 WifiManager mgr = (WifiManager) mActivity.getApplicationContext().getSystemService(WIFI_SERVICE);
                 if (mgr != null) {
                     WifiInfo wifiInfo = mgr.getConnectionInfo();
-                    ssid = wifiInfo.getSSID();
+                    String ssid = wifiInfo.getSSID();
+                    desc += "\n\n" + "Wifi SSID: " + ssid;
                 }
             }
-            desc += "\n\n" + "Wifi SSID: " + ssid;
             desc += "\n\n" + "IPv4: " + NetworkUtil.getIpv4Address();
             desc += "\n\n" + "IPv6: " + NetworkUtil.getIpv6Address();
             desc += "\n\n" + "Mac地址: " + NetworkUtil.getMacAddress();
