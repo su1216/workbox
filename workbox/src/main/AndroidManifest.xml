@@ -275,7 +275,7 @@
         <!-- 局域网设备 -->
         <activity
             android:name=".ui.wifi.LanDeviceListActivity"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"/>
         <!--android 7.0+ status bar快速入口-->

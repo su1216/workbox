@@ -7,6 +7,7 @@
     <string name="workbox_known">知道了</string>
     <string name="workbox_close">关闭</string>
     <string name="workbox_share">分享</string>
+    <string name="workbox_share_to">分享到</string>
     <string name="workbox_save_failed">保存失败</string>
     <string name="workbox_spec">说明</string>
     <string name="workbox_modify">修改</string>
@@ -19,4 +20,13 @@
     <string name="workbox_save">保存</string>
     <string name="workbox_edit">编辑</string>
     <string name="workbox_cancel">取消</string>
+    <string name="workbox_type">类型</string>
+    <string name="workbox_status">状态</string>
+    <string name="workbox_health">健康</string>
+    <string name="workbox_remaining_power">电量</string>
+    <string name="workbox_voltage">电压</string>
+    <string name="workbox_temperature">温度</string>
+    <string name="workbox_capacity">容量</string>
+    <string name="workbox_plugged_usb">充电中 (USB)</string>
+    <string name="workbox_plugged_ac">充电中 (AC)</string>
 </resources>

@@ -149,7 +149,7 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
 
     private void showTypeDialog() {
         new AlertDialog.Builder(mActivity)
-                .setTitle("类型")
+                .setTitle(R.string.workbox_type)
                 .setSingleChoiceItems(R.array.workbox_intent_extra_types, 0, (dialog, which) -> mSelected = which)
                 .setPositiveButton(R.string.workbox_confirm, (dialog, which) -> {
                     try {

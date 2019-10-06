@@ -129,7 +129,7 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
 
     private void classDialog() {
         new AlertDialog.Builder(this)
-                .setTitle("类型")
+                .setTitle(R.string.workbox_type)
                 .setSingleChoiceItems(R.array.workbox_sp_class, 0, (dialog, which) -> mSelected = which)
                 .setPositiveButton(R.string.workbox_confirm, (dialog, which) -> {
                     Item item = new Item();

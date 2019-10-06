@@ -102,9 +102,9 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                     case BatteryManager.BATTERY_STATUS_CHARGING:
                         int chargePlug = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
                         if (chargePlug == BatteryManager.BATTERY_PLUGGED_USB) {
-                            statusString = "充电中 (USB)";
+                            statusString = getString(R.string.workbox_plugged_usb);
                         } else {
-                            statusString = "充电中 (AC)";
+                            statusString = getString(R.string.workbox_plugged_ac);
                         }
                         break;
                     case BatteryManager.BATTERY_STATUS_DISCHARGING:
@@ -155,13 +155,13 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                 }
                 float temperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) / 10.0f;
                 String technology = intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY);
-                mBatteryInfo = "状态: " + statusString + "\n"
-                        + "类型: " + technology + "\n"
-                        + "健康: " + healthString + "\n"
-                        + "电量: " + level * 100 / scale + "%\n"
-                        + "电压: " + voltage + " V\n"
-                        + "温度: " + temperature + " °C\n"
-                        + "容量: " + ReflectUtil.getBatteryCapacity(context) + " mA";
+                mBatteryInfo = getString(R.string.workbox_status) + ": " + statusString + "\n"
+                        + getString(R.string.workbox_type) + ": " + technology + "\n"
+                        + getString(R.string.workbox_health) + ": " + healthString + "\n"
+                        + getString(R.string.workbox_remaining_power) + ": " + level * 100 / scale + "%\n"
+                        + getString(R.string.workbox_voltage) + ": " + voltage + " V\n"
+                        + getString(R.string.workbox_temperature) + ": " + temperature + " °C\n"
+                        + getString(R.string.workbox_capacity) + ": " + ReflectUtil.getBatteryCapacity(context) + " mA";
             }
         }
     };
@@ -341,7 +341,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                             Intent intent = new Intent(Intent.ACTION_SEND);
                             intent.putExtra(Intent.EXTRA_TEXT, systemInfo.getDesc());
                             intent.setType("text/plain");
-                            mActivity.startActivity(Intent.createChooser(intent, "分享到"));
+                            mActivity.startActivity(Intent.createChooser(intent, mActivity.getString(R.string.workbox_share_to)));
                         })
                         .create();
             }
@@ -417,7 +417,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         private String getNetWorkInfo() {
             String networkType = SystemInfoHelper.getNetworkType(mActivity);
             String ssid = "";
-            String desc = "类型: " + networkType;
+            String desc = mActivity.getString(R.string.workbox_type) + ": " + networkType;
             if ("Wifi".equals(networkType)) {
                 WifiManager mgr = (WifiManager) mActivity.getApplicationContext().getSystemService(WIFI_SERVICE);
                 if (mgr != null) {
