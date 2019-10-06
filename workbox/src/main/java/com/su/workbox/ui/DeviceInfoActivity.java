@@ -28,6 +28,7 @@ import android.support.v7.widget.RecyclerView;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Pair;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -39,7 +40,9 @@ import android.widget.TextView;
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.entity.SystemInfo;
+import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
+import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.NetworkUtil;
 import com.su.workbox.utils.ReflectUtil;
 import com.su.workbox.utils.SensorUtil;
@@ -50,6 +53,10 @@ import com.su.workbox.utils.UiHelper;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.GridItemSpaceDecoration;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -158,6 +165,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
             }
         }
     };
+    private String mIp;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -187,6 +195,12 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        AppExecutors.getInstance().networkIO().execute(this::getPublicIp);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mBatteryInfoReceiver);
@@ -208,6 +222,29 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         mData.add(new SystemInfo(KEY_BATTERY, "电池"));
         mData.add(new SystemInfo(KEY_VM, "虚拟机"));
         mData.add(new SystemInfo(KEY_INPUT_METHOD, "输入法"));
+    }
+
+    private void getPublicIp() {
+        if (!NetworkUtil.isNetworkAvailable()) {
+            Log.w(TAG, "network is not available.");
+            return;
+        }
+        BufferedReader in = null;
+        try {
+            URL url = new URL("http://checkip.amazonaws.com");
+            in = new BufferedReader(new InputStreamReader(url.openStream()));
+            mIp = in.readLine();
+            Log.d(TAG, "ip: " + mIp);
+            if (!TextUtils.isEmpty(mIp)
+                    && TextUtils.equals(mAdapter.mType, KEY_NETWORK)
+                    && mAdapter.mAlertDialog != null) {
+                runOnUiThread(() -> mAdapter.mAlertDialog.setMessage(mAdapter.mMessage + "\n\n公网IP: " + mIp));
+            }
+        } catch (IOException e) {
+            Log.w(TAG, e);
+        } finally {
+            IOUtil.closeQuietly(in);
+        }
     }
 
     @Override
@@ -254,6 +291,9 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
 
         private DeviceInfoActivity mActivity;
         private PackageManager mPackageManager;
+        private AlertDialog mAlertDialog;
+        private String mType;
+        private String mMessage;
 
         private MyAdapter(DeviceInfoActivity activity, List<SystemInfo> data) {
             super(data);
@@ -294,20 +334,25 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         }
 
         private void showInfoDialog(SystemInfo systemInfo) {
-            new AlertDialog.Builder(mActivity)
-                    .setTitle(systemInfo.getTitle())
-                    .setMessage(getMsg(systemInfo.getKey()))
-                    .setNegativeButton(R.string.workbox_close, null)
-                    .setPositiveButton(R.string.workbox_share, (dialog, which) -> {
-                        Intent intent = new Intent(Intent.ACTION_SEND);
-                        intent.putExtra(Intent.EXTRA_TEXT, systemInfo.getDesc());
-                        intent.setType("text/plain");
-                        mActivity.startActivity(Intent.createChooser(intent, "分享到"));
-                    })
-                    .show();
+            if (mAlertDialog == null) {
+                mAlertDialog = new AlertDialog.Builder(mActivity)
+                        .setNegativeButton(R.string.workbox_close, null)
+                        .setPositiveButton(R.string.workbox_share, (dialog, which) -> {
+                            Intent intent = new Intent(Intent.ACTION_SEND);
+                            intent.putExtra(Intent.EXTRA_TEXT, systemInfo.getDesc());
+                            intent.setType("text/plain");
+                            mActivity.startActivity(Intent.createChooser(intent, "分享到"));
+                        })
+                        .create();
+            }
+            mAlertDialog.setTitle(systemInfo.getTitle());
+            mMessage = getMsg(systemInfo.getKey());
+            mAlertDialog.setMessage(mMessage);
+            mAlertDialog.show();
         }
 
         private String getMsg(@NonNull String key) {
+            mType = key;
             switch (key) {
                 case KEY_SCREEN:
                     return getScreenInfo();
@@ -372,7 +417,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         private String getNetWorkInfo() {
             String networkType = SystemInfoHelper.getNetworkType(mActivity);
             String ssid = "";
-            String desc = "网络: " + networkType;
+            String desc = "类型: " + networkType;
             if ("Wifi".equals(networkType)) {
                 WifiManager mgr = (WifiManager) mActivity.getApplicationContext().getSystemService(WIFI_SERVICE);
                 if (mgr != null) {
@@ -384,6 +429,9 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
             desc += "\n\n" + "IPv4: " + NetworkUtil.getIpv4Address();
             desc += "\n\n" + "IPv6: " + NetworkUtil.getIpv6Address();
             desc += "\n\n" + "Mac地址: " + NetworkUtil.getMacAddress();
+            if (!TextUtils.isEmpty(mActivity.mIp)) {
+                desc += "\n\n公网IP: " + mActivity.mIp;
+            }
             return desc;
         }
 
