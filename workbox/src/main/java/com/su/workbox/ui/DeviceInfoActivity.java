@@ -392,7 +392,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
             desc += "\n\n" + "CPU 核数: " + Runtime.getRuntime().availableProcessors();
             desc += "\n\n" + "CPU 位数: " + SystemInfoHelper.getCpuBit();
             desc += "\n\n" + "CPU 型号: " + SystemInfoHelper.getCpuName();
-            desc += "\n\n" + "ABIs: " + TextUtils.join(", ", new String[]{Build.CPU_ABI, Build.CPU_ABI2});
+            desc += "\n\n" + "ABIs: " + TextUtils.join(", ", Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? Build.SUPPORTED_ABIS : new String[]{Build.CPU_ABI, Build.CPU_ABI2});
             desc += "\n\n" + "存储: 共 "
                     + SystemInfoHelper.formatFileSize(SystemInfoHelper.getTotalExternalMemorySize())
                     + ", 可用 " + SystemInfoHelper.formatFileSize(SystemInfoHelper.getAvailableExternalMemorySize());
