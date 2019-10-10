@@ -27,7 +27,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.TelephonyManager;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.StrikethroughSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
@@ -57,10 +61,14 @@ import com.su.workbox.widget.recycler.GridItemSpaceDecoration;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -88,6 +96,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
     private static final String KEY_BATTERY = "battery";
     private static final String KEY_VM = "vm";
     private static final String KEY_INPUT_METHOD = "input_method";
+    private static final String KEY_BUILD = "android.os.build";
     private List<SystemInfo> mData = new ArrayList<>();
 
     private MyAdapter mAdapter;
@@ -223,6 +232,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         mData.add(new SystemInfo(KEY_BATTERY, "电池"));
         mData.add(new SystemInfo(KEY_VM, "虚拟机"));
         mData.add(new SystemInfo(KEY_INPUT_METHOD, "输入法"));
+        mData.add(new SystemInfo(KEY_BUILD, "Build"));
     }
 
     private void getPublicIp() {
@@ -340,7 +350,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                     .show();
         }
 
-        private String getMsg(@NonNull String key) {
+        private CharSequence getMsg(@NonNull String key) {
             switch (key) {
                 case KEY_SCREEN:
                     return getScreenInfo();
@@ -364,6 +374,8 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                     return getVmInfo();
                 case KEY_INPUT_METHOD:
                     return getInstalledInputMethod();
+                case KEY_BUILD:
+                    return getBuildInfo();
                 default:
                     throw new IllegalArgumentException("can not find any info about key: " + key);
             }
@@ -636,6 +648,79 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                 builder.append("\n");
             }
             return builder.toString();
+        }
+
+        private CharSequence getBuildInfo() {
+            Class<Build> clazz = Build.class;
+            Field[] fields = clazz.getDeclaredFields();
+            List<FieldWrapper> fieldList = new ArrayList<>();
+            for (Field field : fields) {
+                Deprecated annotation = field.getAnnotation(Deprecated.class);
+                fieldList.add(new FieldWrapper(field, annotation != null));
+            }
+            Collections.sort(fieldList, mFieldComparator);
+            Log.d(TAG, "fieldList: " + fieldList);
+            return makeBuildString(fieldList);
+        }
+
+        private Spannable makeBuildString(List<FieldWrapper> fieldList) {
+            List<Pair<Integer, Integer>> spanIndexList = new ArrayList<>();
+            StringBuilder sb = new StringBuilder();
+            for (FieldWrapper wrapper : fieldList) {
+                Field field = wrapper.field;
+                field.setAccessible(true);
+                try {
+                    String fieldName = field.getName();
+                    Object value = field.get(null);
+                    String stringValue;
+                    if (value == null) {
+                        stringValue = "null";
+                    } else if (value.getClass().isArray()) {
+                        int length = Array.getLength(value);
+                        Object[] objects = new Object[length];
+                        for (int i = 0; i < length; i++) {
+                            objects[i] = Array.get(value, i);
+                        }
+                        stringValue = Arrays.toString(objects);
+                    } else {
+                        stringValue = value.toString();
+                    }
+
+                    if (wrapper.deprecated) {
+                        int start = sb.length();
+                        int end = start + fieldName.length();
+                        spanIndexList.add(new Pair<>(start, end));
+                    }
+
+                    sb.append(fieldName);
+                    sb.append(": ");
+                    sb.append(stringValue);
+                    sb.append("\n");
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            Spannable spannable = new SpannableString(sb.toString());
+            for (Pair<Integer, Integer> pair : spanIndexList) {
+                spannable.setSpan(new StrikethroughSpan(),
+                        pair.first,
+                        pair.second,
+                        Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            }
+            return spannable;
+        }
+
+        private Comparator<FieldWrapper> mFieldComparator = (o1, o2) -> o1.field.getName().compareTo(o2.field.getName());
+
+        private static class FieldWrapper {
+            Field field;
+            boolean deprecated;
+
+            public FieldWrapper(@NonNull Field field, boolean deprecated) {
+                this.field = field;
+                this.deprecated = deprecated;
+            }
         }
     }
 
