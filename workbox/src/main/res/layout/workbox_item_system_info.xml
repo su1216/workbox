@@ -3,7 +3,7 @@
           xmlns:tools="http://schemas.android.com/tools"
           style="@style/WorkboxBottomButton"
           android:layout_width="match_parent"
-          android:layout_height="100dip"
+          android:layout_height="84dip"
           android:gravity="center"
           android:textColor="@android:color/white"
           android:textSize="15sp"

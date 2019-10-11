@@ -185,9 +185,9 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler);
         initData();
         registerReceiver(mBatteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 4);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new GridItemSpaceDecoration(3, 30));
+        recyclerView.addItemDecoration(new GridItemSpaceDecoration(4, 30));
         Animation animation = AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left);
         LayoutAnimationController controller = new LayoutAnimationController(animation);
         //设置控件显示的顺序
