@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.system.Os;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
@@ -31,12 +32,17 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by su on 15-11-10.
@@ -161,6 +167,46 @@ public final class IOUtil {
             result = result.replace("\n", "").replaceFirst("\\s.+", "");
         }
         return result;
+    }
+
+    public static List<String> environmentPathList() {
+        List<String> list = new ArrayList<>();
+        String result = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            result = Os.getenv("PATH");
+        } else {
+            try {
+                Class<?> clazz = Class.forName("libcore.io.Libcore");
+                Field osField = clazz.getDeclaredField("os");
+                Object os = osField.get(null);
+                Class<?> osClazz = Class.forName("libcore.io.Os");
+                Method getenvMethod = osClazz.getDeclaredMethod("getenv", String.class);
+                result = (String) getenvMethod.invoke(os, "PATH");
+            } catch (ClassNotFoundException e) {
+                Log.w(TAG, e);
+            } catch (NoSuchFieldException e) {
+                Log.w(TAG, e);
+            } catch (IllegalAccessException e) {
+                Log.w(TAG, e);
+            } catch (NoSuchMethodException e) {
+                Log.w(TAG, e);
+            } catch (InvocationTargetException e) {
+                Log.w(TAG, e);
+            }
+        }
+        if (TextUtils.isEmpty(result)) {
+            return list;
+        }
+
+        Set<String> pathSet = new HashSet<>();
+        String[] pathArray = result.split(":");
+        for (String path : pathArray) {
+            if (!pathSet.contains(path)) {
+                pathSet.add(path);
+                list.add(path);
+            }
+        }
+        return list;
     }
 
     /**
@@ -327,8 +373,9 @@ public final class IOUtil {
             while ((nread = source.read(buffer)) != -1) {
                 if (nread == 0) {
                     nread = source.read();
-                    if (nread < 0)
+                    if (nread < 0) {
                         break;
+                    }
                     destination.write(nread);
                     continue;
                 }

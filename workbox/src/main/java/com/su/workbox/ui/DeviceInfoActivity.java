@@ -97,6 +97,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
     private static final String KEY_VM = "vm";
     private static final String KEY_INPUT_METHOD = "input_method";
     private static final String KEY_BUILD = "android.os.build";
+    private static final String KEY_ENVIRONMENT_PATH = "environment_path";
     private List<SystemInfo> mData = new ArrayList<>();
 
     private MyAdapter mAdapter;
@@ -192,7 +193,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         //设置控件显示的顺序
         controller.setOrder(LayoutAnimationController.ORDER_NORMAL);
         //设置控件显示间隔时间
-        controller.setDelay(0.35f);
+        controller.setDelay(0.3f);
         recyclerView.setLayoutAnimation(controller);
         mAdapter = new MyAdapter(this, mData);
         recyclerView.setAdapter(mAdapter);
@@ -233,6 +234,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         mData.add(new SystemInfo(KEY_VM, "虚拟机"));
         mData.add(new SystemInfo(KEY_INPUT_METHOD, "输入法"));
         mData.add(new SystemInfo(KEY_BUILD, "Build"));
+        mData.add(new SystemInfo(KEY_ENVIRONMENT_PATH, "PATH"));
     }
 
     private void getPublicIp() {
@@ -376,6 +378,8 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                     return getInstalledInputMethod();
                 case KEY_BUILD:
                     return getBuildInfo();
+                case KEY_ENVIRONMENT_PATH:
+                    return getEnvironmentPathInfo();
                 default:
                     throw new IllegalArgumentException("can not find any info about key: " + key);
             }
@@ -616,7 +620,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
             desc += "\n" + "虚拟机版本: " + vmVersion;
             desc += "\n" + "Java Home: " + System.getProperty("java.home");
             desc += "\n" + "Java Class Path: " + System.getProperty("java.class.path");
-            desc += "\n\n" + "Java Coot Class Path:";
+            desc += "\n\n" + "Java Boot Class Path:";
             String[] paths = System.getProperty("java.boot.class.path").split(":");
             for (String path : paths) {
                 desc += "\n" + path;
@@ -721,6 +725,11 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                 this.field = field;
                 this.deprecated = deprecated;
             }
+        }
+
+        private String getEnvironmentPathInfo() {
+            List<String> pathList = IOUtil.environmentPathList();
+            return TextUtils.join("\n", pathList);
         }
     }
 
