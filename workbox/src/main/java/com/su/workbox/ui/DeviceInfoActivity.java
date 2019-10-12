@@ -70,9 +70,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -98,6 +100,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
     private static final String KEY_INPUT_METHOD = "input_method";
     private static final String KEY_BUILD = "android.os.build";
     private static final String KEY_ENVIRONMENT_PATH = "environment_path";
+    private static final String KEY_PROPERTIES = "system_properties";
     private List<SystemInfo> mData = new ArrayList<>();
 
     private MyAdapter mAdapter;
@@ -235,6 +238,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         mData.add(new SystemInfo(KEY_INPUT_METHOD, "输入法"));
         mData.add(new SystemInfo(KEY_BUILD, "Build"));
         mData.add(new SystemInfo(KEY_ENVIRONMENT_PATH, "PATH"));
+        mData.add(new SystemInfo(KEY_PROPERTIES, "系统属性"));
     }
 
     private void getPublicIp() {
@@ -380,6 +384,8 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                     return getBuildInfo();
                 case KEY_ENVIRONMENT_PATH:
                     return getEnvironmentPathInfo();
+                case KEY_PROPERTIES:
+                    return getSystemPropertiesInfo();
                 default:
                     throw new IllegalArgumentException("can not find any info about key: " + key);
             }
@@ -730,6 +736,18 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         private String getEnvironmentPathInfo() {
             List<String> pathList = IOUtil.environmentPathList();
             return TextUtils.join("\n", pathList);
+        }
+
+        private String getSystemPropertiesInfo() {
+            List<String> list = new ArrayList<>();
+            Properties properties = System.getProperties();
+            Enumeration<?> propertyNames = properties.propertyNames();
+            while (propertyNames.hasMoreElements()) {
+                String key = (String) propertyNames.nextElement();
+                list.add(key + ": " + properties.getProperty(key));
+            }
+            Collections.sort(list);
+            return TextUtils.join("\n", list);
         }
     }
 
