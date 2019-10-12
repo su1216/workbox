@@ -57,6 +57,7 @@ import com.su.workbox.ui.data.DatabaseListActivity;
 import com.su.workbox.ui.log.common.CommonLogActivity;
 import com.su.workbox.ui.log.crash.CrashLogActivity;
 import com.su.workbox.ui.mock.MockGroupHostActivity;
+import com.su.workbox.ui.system.FileSystemActivity;
 import com.su.workbox.ui.ui.GridLineSettingActivity;
 import com.su.workbox.ui.ui.GridLineView;
 import com.su.workbox.ui.ui.RulerSettingActivity;
@@ -174,6 +175,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         findPreference("lifecycle_history").setOnPreferenceClickListener(this);
         findPreference("more_phone_info").setOnPreferenceClickListener(this);
         findPreference("app_list").setOnPreferenceClickListener(this);
+        findPreference("file_system").setOnPreferenceClickListener(this);
         mHostsPreference = findPreference("hosts");
         mWebViewHostsPreference = findPreference("web_view_hosts");
         initNetworkPreferences();
@@ -509,6 +511,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 return true;
             case "app_info":
                 AppInfoListActivity.startActivity(mActivity);
+                return true;
+            case "file_system":
+                startActivity(new Intent(mActivity, FileSystemActivity.class));
                 return true;
             case "app_component_info":
                 startActivity(new Intent(mActivity, AppComponentActivity.class));

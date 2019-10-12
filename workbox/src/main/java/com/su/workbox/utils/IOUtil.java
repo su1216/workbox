@@ -17,6 +17,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import com.su.workbox.AppHelper;
+import com.su.workbox.entity.FileSystem;
 import com.su.workbox.entity.PidInfo;
 import com.su.workbox.widget.ToastBuilder;
 
@@ -130,17 +131,57 @@ public final class IOUtil {
         return processDigestResult(sha256);
     }
 
-    @Nullable
-    public static PidInfo getProcessInfo(int pid) {
-        String result = AppHelper.shellExec("/bin/sh", "-c", "ps " + pid);
+    private static boolean isEmptyResult(@Nullable String result, boolean hasTitleLine) {
         if (TextUtils.isEmpty(result)) {
-            return null;
+            return true;
+        }
+        if (hasTitleLine) {
+            String[] lines = result.split("\n");
+            int length = lines.length;
+            return length < 2;
+        }
+        return false;
+    }
+
+    @NonNull
+    public static List<FileSystem> getFileSystemList() {
+        List<FileSystem> list = new ArrayList<>();
+        String result = AppHelper.shellExec("/bin/sh", "-c", "df -h");
+        if (isEmptyResult(result, true)) {
+            return list;
         }
         String[] lines = result.split("\n");
         int length = lines.length;
-        if (length < 2) {
+        for (int i = 1; i < length; i++) {
+            list.add(FileSystem.fromShellLine(lines[i]));
+        }
+        return list;
+    }
+
+    public static void fillFileSystemType(@NonNull List<FileSystem> list) {
+        try {
+            List<String> lines = IOUtil.streamToLines(new FileInputStream("/proc/mounts"));
+            for (FileSystem fileSystem : list) {
+                for (String line : lines) {
+                    String[] info = line.split("\\s+");
+                    if (TextUtils.equals(fileSystem.getFileSystem(), info[0])) {
+                        fileSystem.setFileSystemType(info[2]);
+                        break;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            Log.w(TAG, e);
+        }
+    }
+
+    @Nullable
+    public static PidInfo getProcessInfo(int pid) {
+        String result = AppHelper.shellExec("/bin/sh", "-c", "ps " + pid);
+        if (isEmptyResult(result, true)) {
             return null;
         }
+        String[] lines = result.split("\n");
         PidInfo pidInfo = PidInfo.fromShellLine(lines[1]);
 
         String userProcessResult = AppHelper.shellExec("/bin/sh", "-c", "ps -U " + pidInfo.getFormatUid());
@@ -348,6 +389,11 @@ public final class IOUtil {
 
     @NonNull
     public static String streamToString(@NonNull InputStream input) throws IOException {
+        return TextUtils.join("\n", streamToLines(input));
+    }
+
+    @NonNull
+    public static List<String> streamToLines(@NonNull InputStream input) throws IOException {
         final BufferedReader reader = new BufferedReader(new InputStreamReader(input), 8192);
         try {
             String line;
@@ -355,7 +401,7 @@ public final class IOUtil {
             while ((line = reader.readLine()) != null) {
                 buffer.add(line);
             }
-            return TextUtils.join("\n", buffer);
+            return buffer;
         } finally {
             closeQuietly(reader);
         }
