@@ -143,6 +143,11 @@ public final class IOUtil {
         return false;
     }
 
+    public static List<String> getShellVariables() {
+        String variables = AppHelper.shellExec("/bin/sh", "-c", "set");
+        return Arrays.asList(variables.split("\n"));
+    }
+
     @NonNull
     public static List<FileSystem> getFileSystemList() {
         List<FileSystem> list = new ArrayList<>();

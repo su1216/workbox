@@ -75,6 +75,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -102,9 +103,10 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
     private static final String KEY_BUILD = "android.os.build";
     private static final String KEY_ENVIRONMENT_PATH = "environment_path";
     private static final String KEY_PROPERTIES = "system_properties";
+    private static final String KEY_SHELL_SET = "shell_set";
     private List<SystemInfo> mData = new ArrayList<>();
 
-    private MyAdapter mAdapter;
+    private InfoAdapter mAdapter;
     private String mBatteryInfo;
     private BroadcastReceiver mBatteryInfoReceiver = new BroadcastReceiver() {
         @Override
@@ -199,7 +201,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         //设置控件显示间隔时间
         controller.setDelay(0.3f);
         recyclerView.setLayoutAnimation(controller);
-        mAdapter = new MyAdapter(this, mData);
+        mAdapter = new InfoAdapter(this, mData);
         recyclerView.setAdapter(mAdapter);
     }
 
@@ -240,6 +242,11 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         mData.add(new SystemInfo(KEY_BUILD, "Build"));
         mData.add(new SystemInfo(KEY_ENVIRONMENT_PATH, "PATH"));
         mData.add(new SystemInfo(KEY_PROPERTIES, "系统属性"));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mData.add(new SystemInfo(KEY_SHELL_SET, "Shell变量"));
+        } else {
+            mData.add(new SystemInfo(KEY_SHELL_SET, "环境变量"));
+        }
     }
 
     private void getPublicIp() {
@@ -300,12 +307,12 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                 .show();
     }
 
-    private static class MyAdapter extends BaseRecyclerAdapter<SystemInfo> {
+    private static class InfoAdapter extends BaseRecyclerAdapter<SystemInfo> {
 
         private DeviceInfoActivity mActivity;
         private PackageManager mPackageManager;
 
-        private MyAdapter(DeviceInfoActivity activity, List<SystemInfo> data) {
+        private InfoAdapter(DeviceInfoActivity activity, List<SystemInfo> data) {
             super(data);
             mActivity = activity;
             mPackageManager = activity.getPackageManager();
@@ -387,6 +394,8 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                     return getEnvironmentPathInfo();
                 case KEY_PROPERTIES:
                     return getSystemPropertiesInfo();
+                case KEY_SHELL_SET:
+                    return getVariablesInfo();
                 default:
                     throw new IllegalArgumentException("can not find any info about key: " + key);
             }
@@ -749,6 +758,36 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
             }
             Collections.sort(list);
             return TextUtils.join("\n", list);
+        }
+
+        private String getVariablesInfo() {
+            List<String> list;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                list = getShellVariables();
+            } else {
+                list = getSystemEnvList();
+            }
+            Collections.sort(list);
+            return TextUtils.join("\n", list);
+        }
+
+        private List<String> getShellVariables() {
+            List<String> list = IOUtil.getShellVariables();
+            List<String> variableList = new ArrayList<>();
+            for (String variable : list) {
+                variableList.add(variable.replaceFirst("=", ": "));
+            }
+            Collections.sort(variableList);
+            return variableList;
+        }
+
+        private List<String> getSystemEnvList() {
+            List<String> list = new ArrayList<>();
+            Map<String, String> map = System.getenv();
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                list.add(entry.getKey() + ": " + entry.getValue());
+            }
+            return list;
         }
     }
 
