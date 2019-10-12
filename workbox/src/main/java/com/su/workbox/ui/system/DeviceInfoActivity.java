@@ -1,4 +1,4 @@
-package com.su.workbox.ui;
+package com.su.workbox.ui.system;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -45,6 +45,7 @@ import android.widget.TextView;
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.entity.SystemInfo;
+import com.su.workbox.ui.PermissionRequiredActivity;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;

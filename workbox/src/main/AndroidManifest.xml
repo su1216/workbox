@@ -176,14 +176,14 @@
             android:theme="@style/WorkboxListTheme"/>
         <!-- 系统信息 -->
         <activity
-            android:name=".ui.DeviceInfoActivity"
+            android:name=".ui.system.DeviceInfoActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"
             android:windowSoftInputMode="stateHidden"/>
         <!-- 应用列表 -->
         <activity
-            android:name=".ui.AppListActivity"
+            android:name=".ui.system.AppListActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxSearchViewToolbar"

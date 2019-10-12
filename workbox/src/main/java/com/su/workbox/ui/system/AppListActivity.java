@@ -1,4 +1,4 @@
-package com.su.workbox.ui;
+package com.su.workbox.ui.system;
 
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.su.workbox.R;
 import com.su.workbox.entity.AppInfo;
+import com.su.workbox.ui.BaseAppCompatActivity;
 import com.su.workbox.ui.base.BaseFragment;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
