@@ -39,6 +39,7 @@ import com.su.workbox.Workbox;
 import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.net.interceptor.DataUsageInterceptor;
 import com.su.workbox.ui.system.AppListActivity;
+import com.su.workbox.ui.system.ConfigQualifiersActivity;
 import com.su.workbox.ui.system.DeviceInfoActivity;
 import com.su.workbox.ui.HostsActivity;
 import com.su.workbox.ui.JsInterfaceListActivity;
@@ -174,6 +175,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         mCurrentActivityPreference.setOnPreferenceChangeListener(this);
         findPreference("lifecycle_history").setOnPreferenceClickListener(this);
         findPreference("more_phone_info").setOnPreferenceClickListener(this);
+        findPreference("config_qualifier").setOnPreferenceClickListener(this);
         findPreference("app_list").setOnPreferenceClickListener(this);
         findPreference("file_system").setOnPreferenceClickListener(this);
         mHostsPreference = findPreference("hosts");
@@ -520,6 +522,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 return true;
             case "more_phone_info":
                 startActivity(new Intent(mActivity, DeviceInfoActivity.class));
+                return true;
+            case "config_qualifier":
+                startActivity(new Intent(mActivity, ConfigQualifiersActivity.class));
                 return true;
             case "app_list":
                 startActivity(new Intent(mActivity, AppListActivity.class));

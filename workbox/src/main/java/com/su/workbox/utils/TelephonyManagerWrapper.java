@@ -97,6 +97,17 @@ public class TelephonyManagerWrapper {
         return mManager.getNetworkOperatorName();
     }
 
+    public String getSimOperator(int subId) {
+        Class<TelephonyManager> managerClass = TelephonyManager.class;
+        try {
+            Method method = managerClass.getMethod("getSimOperator", int.class);
+            return (String) method.invoke(mManager, subId);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            Log.w(TAG, e);
+        }
+        return mManager.getSimOperator();
+    }
+
     public String getNetworkTypeName() {
         Class<TelephonyManager> managerClass = TelephonyManager.class;
         try {

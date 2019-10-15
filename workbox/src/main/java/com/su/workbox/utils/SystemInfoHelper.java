@@ -44,6 +44,9 @@ public class SystemInfoHelper {
         if (densityDpi <= 160) {
             return "mdpi";
         }
+        if (densityDpi <= 213) {
+            return "tvdpi";
+        }
         if (densityDpi <= 240) {
             return "hdpi";
         }

@@ -29,4 +29,5 @@
     <string name="workbox_capacity">容量</string>
     <string name="workbox_plugged_usb">充电中 (USB)</string>
     <string name="workbox_plugged_ac">充电中 (AC)</string>
+    <string name="workbox_no_qualifier">无限定符</string>
 </resources>
