@@ -11,5 +11,5 @@ public @interface NoteJsCallAndroid {
 
     String description() default "";
 
-    String parameters() default "";
+    Parameter[] parameters() default {};
 }

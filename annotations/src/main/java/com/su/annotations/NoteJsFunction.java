@@ -14,7 +14,7 @@ public @interface NoteJsFunction {
 
     String description() default "";
 
-    NoteJsFilepath jsFilepath();
+    NoteFilepath jsFilepath();
 
     Parameter[] parameters() default {};
 

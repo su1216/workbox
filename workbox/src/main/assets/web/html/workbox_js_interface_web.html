@@ -11,10 +11,15 @@
         #name{
             margin-left: 13px;
         }
+        .parameter_container{
+            padding: 0 0;
+            width: 96%;
+            margin: 0 2% 0 2%;
+        }
         .button_border{
             padding: 0 0;
-            width: 90%;
-            margin: 20px auto 0 auto;
+            width: 96%;
+            margin: 20px 2% 0 2%;
             text-align: center;
         }
         .go{
@@ -43,84 +48,16 @@
             color: red;
             font-size: 14px;
         }
-
     </style>
-    <script type="text/javascript">
-        sName = "";
-        sParameter = "";
-
-        function setContent(name,parameter){
-            sName = name;
-            sParameter = parameter;
-            document.getElementById('name').innerHTML= sName;
-            if(isNull(sParameter)){
-                document.getElementById('assist').setAttribute('style','display:none');
-                document.getElementById('parameter').parentNode.setAttribute('style','display:none');
-            }else{
-                setParamContent(JSON.stringify(JSON.parse(sParameter),null,2));
-            }
-        }
-
-        function format(){
-          try{
-            var json = JSON.stringify(JSON.parse(getParamContent()),null,2);
-            setParamContent(json);
-            document.getElementById('hint').innerHTML = "";
-            return true;
-          }catch(e){
-            document.getElementById('hint').innerHTML = e.description+":"+e.message;
-            return false;
-          }
-        }
-
-        function reset(){
-            setParamContent(JSON.stringify(JSON.parse(sParameter),null,2));
-        }
-
-        function go(){
-            if(isNull(sParameter)){
-                this.location.href = "javascript:" + document.getElementById('obj').innerHTML + "." + sName + "()";
-            }else{
-                if(format()){
-                    this.location.href = "javascript:" + document.getElementById('obj').innerHTML + "." + sName + "('" + getParamContent() + "')";
-                }
-            }
-        }
-
-        function getParamContent(){
-            return document.getElementById('parameter').value;
-        }
-
-        function setParamContent(json){
-            document.getElementById('parameter').value = json;
-            var s_height = document.getElementById('parameter').scrollHeight;
-            document.getElementById('parameter').setAttribute('style','height:'+s_height+'px;width:100%;padding:0px;');
-        }
-
-        function isNull(data){
-            return (data == "" || data == undefined || data == null) ? true : false;
-        }
-
-        function GetQueryString(name){
-            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-            var r = window.location.search.substr(1).match(reg);
-            if(r!=null) return decodeURIComponent(r[2]); return null;
-        }
-
-        function initJavascriptInterfaceObject() {
-            document.getElementById('obj').innerHTML=GetQueryString("javascriptInterfaceObjectName");
-        }
-
-    </script>
 </head>
 <body>
-<div>
-    <span>方法名:</span><span id="name">onclick</span>
-</div>
-<div>
+<div style="margin:0 2% 0 2%">
     <span>注入对象:</span><span id="obj">obj</span>
 </div>
-<div>
+<div style="margin:0 2% 0 2%">
+    <span>方法名:</span><span id="name">onclick</span>
+</div>
+<div id="parameters" class="parameter_container">
     <p>参数:</p>
     <textarea id="parameter"></textarea>
 </div>
@@ -129,15 +66,158 @@
 
 <div id="assist" class="button_border">
     <a href="javascript:format()">format</a>
-    <a href="javascript:reset()">reset</a>
+    <a href="javascript:init()">reset</a>
 </div>
 
 <div class="go button_border">
     <a id="go" href="javascript:go()">run</a>
 </div>
 <script type="text/javascript">
-    setContent(GetQueryString("functionName"),GetQueryString("functionParameter"));
-    initJavascriptInterfaceObject();
-</script>
+        sName = ""
+        sParameters = null
+
+        function setContent(name, parameters) {
+            document.getElementById('parameters').innerHTML = ""
+            sName = name
+            sParameters = parameters
+            document.getElementById('name').innerHTML= sName
+            if (isNull(sParameters) || sParameters.length == 0) {
+                document.getElementById('assist').setAttribute('style','display:none')
+            } else {
+                fillParameters(parameters)
+            }
+        }
+
+        function fillParameters(parameters) {
+            var parametersElement = document.getElementById('parameters')
+            var length = parameters.length
+            for (var i = 0; i < length; i++) {
+                var parameter = parameters[i]
+                var divChild = document.createElement("div")
+                parametersElement.appendChild(divChild)
+                divChild.id = "parameter" + i
+
+				if (isNull(parameter.parameterName)) {
+					divChild.appendChild(document.createElement("br"))
+				} else {
+					var pChild = document.createElement("p")
+					pChild.innerText = parameter.parameterName
+					divChild.appendChild(pChild)
+				}
+
+                var parameterChild = document.createElement("textarea")
+                var spanChild = document.createElement("span")
+                if (parameter.parameter == null) {
+                    parameterChild.innerHTML = ""
+                } else {
+                    parameterChild.innerHTML = JSON.stringify(JSON.parse(parameter.parameter), null, 2)
+                }
+                divChild.appendChild(parameterChild)
+				divChild.appendChild(document.createElement("br"))
+                divChild.appendChild(spanChild)
+                setParamContent(parameterChild)
+            }
+        }
+
+        function toJsonString(obj) {
+            try {
+                return JSON.stringify(obj, null, 2)
+            } catch (e) {
+                return obj.toString()
+            }
+        }
+
+        function format() {
+			var status = true
+            var parametersElement = document.getElementById('parameters')
+			var length = parametersElement.children.length
+			for (var i = 0; i < length; i++) {
+				var parameterElement = document.getElementById('parameter' + i)
+				var textareaChild = parameterElement.getElementsByTagName('textarea')[0]
+				var spanChild = parameterElement.getElementsByTagName('span')[0]
+				var text = textareaChild.value
+				try {
+					var json = JSON.stringify(JSON.parse(text), null, 2)
+					textareaChild.value = json
+					setParamContent(textareaChild)
+					spanChild.textContent = ""
+				} catch(e) {
+					spanChild.textContent = e.description + "\n" + e.message
+					status = false
+				}
+			}
+			return status
+        }
+
+        function go() {
+            if (isNull(sParameters)) {
+                this.location.href = "javascript:" + document.getElementById('obj').innerHTML + "." + sName + "()"
+            } else {
+                format()
+				var parametersString = ""
+				var parametersElement = document.getElementById('parameters')
+				var length = parametersElement.children.length
+				for (var i = 0; i < length; i++) {
+					var parameterElement = document.getElementById('parameter' + i)
+					var parameter = sParameters[i]
+					var textareaChild = parameterElement.getElementsByTagName('textarea')[0]
+					if (textareaChild.value == "null") {
+						parametersString += "null, "
+					} else if (textareaChild.value == "") {
+						parametersString += "'', "
+					} else {
+						parametersString += makeParameterByType(textareaChild.value, parameter) + ", "
+					}
+				}
+				parametersString = parametersString.substring(0, parametersString.length - 2)
+                this.location.href = "javascript:" + document.getElementById('obj').innerHTML + "." + sName + "(" + parametersString + ")"
+            }
+        }
+
+		function makeParameterByType(text, parameter) {
+			var type = parameter.parameterClassName
+			if (type == "long") {
+				return text + "L"
+			} else if (type == "double") {
+				return text + "D"
+			} else if (type == "float") {
+				return text + "F"
+			} else if (type == "java.lang.String") {
+				return "'" + text + "'"
+			}
+			return text
+        }
+
+        function setParamContent(element) {
+            var scrollHeight = element.scrollHeight
+            element.setAttribute('style', 'height:' + scrollHeight + 'px;width:100%;')
+        }
+
+        function isNull(data) {
+            return (data == [] || data == undefined || data == null) ? true : false
+        }
+
+        function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)")
+            var r = window.location.search.substr(1).match(reg)
+            if (r != null)
+				return decodeURIComponent(r[2])
+			return null
+        }
+
+        function initJavascriptInterfaceObject() {
+            document.getElementById('obj').innerHTML = GetQueryString("javascriptInterfaceObjectName")
+        }
+
+		function init() {
+			document.getElementById('parameters').innerHTML = ""
+			var parameters = GetQueryString("functionParameter")
+			var parameterObjs = JSON.parse(parameters)
+			setContent(GetQueryString("functionName"), parameterObjs)
+			initJavascriptInterfaceObject()
+		}
+
+		init()
+    </script>
 </body>
 </html>

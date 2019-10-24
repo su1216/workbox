@@ -4,8 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.auto.service.AutoService;
 import com.su.annotations.NoteComponent;
+import com.su.annotations.NoteFilepath;
 import com.su.annotations.NoteJsCallAndroid;
-import com.su.annotations.NoteJsFilepath;
 import com.su.annotations.NoteJsFunction;
 import com.su.annotations.NoteWebView;
 import com.su.compiler.entity.NoteComponentEntity;
@@ -120,10 +120,26 @@ public class NoteProcessor extends AbstractProcessor {
             List<NoteJsCallAndroidEntity> results = allResults.computeIfAbsent(className, s -> new ArrayList<>());
             NoteJsCallAndroid noteJsCallAndroid = e.getAnnotation(NoteJsCallAndroid.class);
             NoteJsCallAndroidEntity entity = new NoteJsCallAndroidEntity();
-            entity.setDescription(noteJsCallAndroid.description());
-            entity.setParameters(noteJsCallAndroid.parameters());
             entity.setFunctionName(e.getSimpleName().toString());
-
+            entity.setDescription(noteJsCallAndroid.description());
+            com.su.annotations.Parameter[] parameters = noteJsCallAndroid.parameters();
+            int length = parameters.length;
+            Parameter[] realParameters = new Parameter[length];
+            for (int i = 0; i < length; i++) {
+                com.su.annotations.Parameter parameter = parameters[i];
+                Parameter parameterEntity = new Parameter();
+                parameterEntity.setParameter(parameter.parameter());
+                parameterEntity.setParameterName(parameter.parameterName());
+                try {
+                    parameter.parameterClass();
+                } catch (MirroredTypeException mte) {
+                    TypeMirror typeMirror = mte.getTypeMirror();
+                    parameterEntity.setParameterClassName(typeMirror.toString());
+                }
+                parameterEntity.setParameterRequired(parameter.parameterRequired());
+                realParameters[i] = parameterEntity;
+            }
+            entity.setParameters(realParameters);
             results.add(entity);
             note(mMessager, "entity: " + entity);
         }
@@ -362,7 +378,7 @@ public class NoteProcessor extends AbstractProcessor {
         annotations.add(NoteJsCallAndroid.class);
         annotations.add(NoteComponent.class);
         annotations.add(NoteJsFunction.class);
-        annotations.add(NoteJsFilepath.class);
+        annotations.add(NoteFilepath.class);
         annotations.add(NoteWebView.class);
         annotations.add(com.su.annotations.Parameter.class);
         return annotations;

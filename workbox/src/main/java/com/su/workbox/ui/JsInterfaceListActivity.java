@@ -17,11 +17,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.WorkboxSupplier;
+import com.su.workbox.entity.Parameter;
 import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.SearchableHelper;
 import com.su.workbox.widget.ToastBuilder;
@@ -138,18 +137,19 @@ public class JsInterfaceListActivity extends BaseAppCompatActivity implements Se
         }
 
         if (!TextUtils.isEmpty(str)) {
-            List<MethodItem> list = new ArrayList<>();
-            JSONArray array = JSON.parseArray(str);
-            int size = array.size();
-            for (int i = 0; i < size; i++) {
-                MethodItem methodItem = new MethodItem();
-                JSONObject jsonObject = array.getJSONObject(i);
-                methodItem.setName(jsonObject.getString("functionName"));
-                methodItem.setDesc(jsonObject.getString("description"));
-                methodItem.setParameters(jsonObject.getString("parameters"));
-                list.add(methodItem);
-            }
-            if (size > 0) {
+//            List<MethodItem> list = new ArrayList<>();
+//            JSONArray array = JSON.parseArray(str);
+//            int size = array.size();
+//            for (int i = 0; i < size; i++) {
+//                MethodItem methodItem = new MethodItem();
+//                JSONObject jsonObject = array.getJSONObject(i);
+//                methodItem.setName(jsonObject.getString("functionName"));
+//                methodItem.setDesc(jsonObject.getString("description"));
+//                methodItem.setParameters(jsonObject.getString("parameters"));
+//                list.add(methodItem);
+//            }
+            List<MethodItem> list = JSON.parseArray(str, MethodItem.class);
+            if (!list.isEmpty()) {
                 mAllFileList.add(new FileItem(injectName, list));
             }
         }
@@ -189,11 +189,11 @@ public class JsInterfaceListActivity extends BaseAppCompatActivity implements Se
             for (MethodItem search : methodItems) {
                 boolean nameFind = false;
                 boolean descFind = false;
-                if (mSearchableHelper.find(cs, search.getName(), mNameFilterColorIndexList)) {
+                if (mSearchableHelper.find(cs, search.getFunctionName(), mNameFilterColorIndexList)) {
                     nameFind = true;
                 }
 
-                if (mSearchableHelper.find(cs, search.getDesc(), mDescFilterColorIndexList)) {
+                if (mSearchableHelper.find(cs, search.getDescription(), mDescFilterColorIndexList)) {
                     descFind = true;
                 }
 
@@ -251,11 +251,11 @@ public class JsInterfaceListActivity extends BaseAppCompatActivity implements Se
             TextView nameView = holder.getView(R.id.name);
             TextView descView = holder.getView(R.id.desc);
             TextView hasParameterView = holder.getView(R.id.has_parameter);
-            nameView.setText(methodItem.getName());
-            if (TextUtils.isEmpty(methodItem.getDesc())) {
+            nameView.setText(methodItem.getFunctionName());
+            if (TextUtils.isEmpty(methodItem.getDescription())) {
                 descView.setVisibility(View.GONE);
             } else {
-                descView.setText(methodItem.getDesc());
+                descView.setText(methodItem.getDescription());
                 descView.setVisibility(View.VISIBLE);
             }
             hasParameterView.setText(methodItem.isHasParameters() ? "" : "无参数");
@@ -264,12 +264,12 @@ public class JsInterfaceListActivity extends BaseAppCompatActivity implements Se
             mSearchableHelper.refreshFilterColor(descView, colorIndex, mDescFilterColorIndexList);
             holder.itemView.setOnClickListener(v -> {
                 MethodItem currentMethodItem = fileItem.methodItemList.get(positions[1]);
-                String functionName = currentMethodItem.getName();
-                String parameters = currentMethodItem.getParameters();
+                String functionName = currentMethodItem.getFunctionName();
+                List<Parameter> parameters = currentMethodItem.getParameters();
                 String params = "?javascriptInterfaceObjectName=" + fileItem.injectName
                         + "&functionName=" + Uri.encode(functionName);
-                if (!TextUtils.isEmpty(parameters)) {
-                    params = params + "&functionParameter=" + Uri.encode(parameters);
+                if (!parameters.isEmpty()) {
+                    params = params + "&functionParameter=" + Uri.encode(JSON.toJSONString(parameters));
                 }
                 AppHelper.startWebView(JsInterfaceListActivity.this, "android - js接口调试", INIT_URL + params, false);
             });
@@ -337,55 +337,45 @@ public class JsInterfaceListActivity extends BaseAppCompatActivity implements Se
     }
 
     private static class MethodItem {
-        private String name;
-        private String parameters;
-        private boolean isStatic;
-        private String desc;
+        private String functionName;
+        private ArrayList<Parameter> parameters = new ArrayList<>();
+        private String description;
 
-        public String getName() {
-            return name;
+        public String getFunctionName() {
+            return functionName;
         }
 
-        public void setName(String name) {
-            this.name = name;
+        public void setFunctionName(String functionName) {
+            this.functionName = functionName;
         }
 
-        String getParameters() {
+        public ArrayList<Parameter> getParameters() {
             return parameters;
         }
 
-        void setParameters(String parameters) {
+        public void setParameters(ArrayList<Parameter> parameters) {
             this.parameters = parameters;
         }
 
         boolean isHasParameters() {
-            return !TextUtils.isEmpty(parameters);
+            return !parameters.isEmpty();
         }
 
-        public boolean isStatic() {
-            return isStatic;
+        public String getDescription() {
+            return description;
         }
 
-        public void setStatic(boolean aStatic) {
-            isStatic = aStatic;
-        }
-
-        public String getDesc() {
-            return desc;
-        }
-
-        public void setDesc(String desc) {
-            this.desc = desc;
+        public void setDescription(String description) {
+            this.description = description;
         }
 
         @NonNull
         @Override
         public String toString() {
             return "MethodItem{" +
-                    "name='" + name + '\'' +
-                    ", requestBody='" + parameters + '\'' +
-                    ", isStatic=" + isStatic +
-                    ", desc='" + desc + '\'' +
+                    "name='" + functionName + '\'' +
+                    ", parameters='" + parameters + '\'' +
+                    ", description='" + description + '\'' +
                     '}';
         }
     }

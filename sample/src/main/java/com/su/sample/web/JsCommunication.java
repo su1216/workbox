@@ -12,6 +12,7 @@ import android.webkit.JavascriptInterface;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.su.annotations.NoteJsCallAndroid;
+import com.su.annotations.Parameter;
 
 /**
  * Created by su on 2015/1/28.
@@ -33,11 +34,11 @@ public class JsCommunication {
     }
 
     @NoteJsCallAndroid(description = "打开一个新的webview ",
-            parameters = "{\n" +
+            parameters = @Parameter(parameterClass = String.class, parameter = "{\n" +
                     "  \"title\": \"test1\",\n" +
                     "  \"webViewUrl\": \"https://www.baidu.com\",\n" +
                     "  \"refresh\": true\n" +
-                    "}")
+                    "}"))
     @JavascriptInterface
     public void webview(String data) {
         logCall("webview", data);
@@ -55,9 +56,9 @@ public class JsCommunication {
     }
 
     @NoteJsCallAndroid(description = "复制内容到粘贴板中",
-            parameters = "{\n" +
+            parameters = @Parameter(parameterClass = String.class, parameter = "{\n" +
                     "  \"content\": \"找个输入框长按试试\"\n" +
-                    "}")
+                    "}"))
     @JavascriptInterface
     public void setClipBoard(String data) {
         logCall("setClipBoard", data);
@@ -74,11 +75,11 @@ public class JsCommunication {
     }
 
     @NoteJsCallAndroid(description = "在android中输出log，使用adb命令查看",
-            parameters = "{\n" +
+            parameters = @Parameter(parameterClass = String.class, parameter = "{\n" +
                     "  \"tag\": \"FROM_JS\",\n" +
                     "  \"level\": \"e\",\n" +
                     "  \"content\": \"在終端中执行adb logcat -v time -s FROM_JS (你的tag)就能看到log了\"\n" +
-                    "}")
+                    "}"))
     @JavascriptInterface
     public void log(String data) {
         if (!TextUtils.isEmpty(data)) {

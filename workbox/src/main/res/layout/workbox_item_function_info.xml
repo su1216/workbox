@@ -30,7 +30,7 @@
             android:layout_gravity="center_vertical|end"
             android:textColor="@color/workbox_third_text"
             android:textSize="12sp"
-            tool:text="static"/>
+            tool:text="无参数"/>
     </FrameLayout>
     <TextView
         android:id="@+id/desc"

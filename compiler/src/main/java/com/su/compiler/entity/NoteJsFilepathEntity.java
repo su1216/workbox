@@ -1,6 +1,6 @@
 package com.su.compiler.entity;
 
-import com.su.annotations.NoteJsFilepath;
+import com.su.annotations.NoteFilepath;
 
 /**
  * Created by su on 17-10-25.
@@ -9,8 +9,8 @@ import com.su.annotations.NoteJsFilepath;
 public class NoteJsFilepathEntity {
     private String filepath;
 
-    public NoteJsFilepathEntity(NoteJsFilepath noteJsFilepath) {
-        filepath = noteJsFilepath.filepath();
+    public NoteJsFilepathEntity(NoteFilepath noteFilepath) {
+        filepath = noteFilepath.filepath();
     }
 
     public String getFilepath() {
