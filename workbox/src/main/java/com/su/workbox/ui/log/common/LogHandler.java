@@ -86,6 +86,7 @@ public class LogHandler extends Handler {
                 message.obj = parseLogRecord(log);
                 mHandler.sendMessage(message);
             }
+            process.destroy();
         } catch (IOException e) {
             Log.e(TAG, "fail to capture logs.", e);
         } finally {
