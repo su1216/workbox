@@ -98,6 +98,7 @@ public class SystemInfoHelper {
             sSystemVersionCode.put(26, "8.0.0");
             sSystemVersionCode.put(27, "8.1");
             sSystemVersionCode.put(28, "9.0");
+            sSystemVersionCode.put(29, "10.0");
         }
         return sSystemVersionCode.get(sdk);
     }
