@@ -1,16 +1,23 @@
 package com.su.workbox.utils;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
+
+import com.su.workbox.R;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class TelephonyManagerWrapper {
     public static final String TAG = TelephonyManagerWrapper.class.getSimpleName();
+    private static String sCanNotGet = GeneralInfoHelper.getContext().getResources().getString(R.string.workbox_can_not_get);
 
     private TelephonyManager mManager;
 
@@ -19,7 +26,7 @@ public class TelephonyManagerWrapper {
     }
 
     public int getPhoneCount() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return mManager.getPhoneCount();
         }
         return 1;
@@ -39,6 +46,9 @@ public class TelephonyManagerWrapper {
 
     @SuppressLint({"MissingPermission", "HardwareIds"})
     public String getImei(int slotIndex) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return sCanNotGet;
+        }
         Class<TelephonyManager> managerClass = TelephonyManager.class;
         try {
             Method method = managerClass.getMethod("getImei", int.class);
@@ -51,6 +61,9 @@ public class TelephonyManagerWrapper {
 
     @SuppressLint({"MissingPermission", "HardwareIds"})
     public String getMeid(int slotIndex) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return sCanNotGet;
+        }
         Class<TelephonyManager> managerClass = TelephonyManager.class;
         try {
             Method method = managerClass.getMethod("getMeid", int.class);
@@ -62,9 +75,9 @@ public class TelephonyManagerWrapper {
     }
 
     public int getPhoneType(int subId) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 && !mManager.isVoiceCapable()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 && !mManager.isVoiceCapable()) {
             return TelephonyManager.PHONE_TYPE_NONE;
-         }
+        }
         Class<TelephonyManager> managerClass = TelephonyManager.class;
         try {
             Method method = managerClass.getMethod("getCurrentPhoneType", int.class);
@@ -95,6 +108,17 @@ public class TelephonyManagerWrapper {
             Log.w(TAG, e);
         }
         return mManager.getNetworkOperatorName();
+    }
+
+    public String getNetworkOperator(int subId) {
+        Class<TelephonyManager> managerClass = TelephonyManager.class;
+        try {
+            Method method = managerClass.getMethod("getNetworkOperator", int.class);
+            return (String) method.invoke(mManager, subId);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            Log.w(TAG, e);
+        }
+        return mManager.getNetworkOperator();
     }
 
     public String getSimOperator(int subId) {
@@ -145,6 +169,15 @@ public class TelephonyManagerWrapper {
 
     @SuppressLint({"MissingPermission", "HardwareIds"})
     public String getSimSerialNumber(int subId) {
+        String iccid = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            iccid = getSimSerialNumber22(subId);
+        }
+        if (TextUtils.isEmpty(iccid) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return sCanNotGet;
+        } else if (!TextUtils.isEmpty(iccid)) {
+            return iccid;
+        }
         Class<TelephonyManager> managerClass = TelephonyManager.class;
         try {
             Method method = managerClass.getMethod("getSimSerialNumber", int.class);
@@ -155,8 +188,22 @@ public class TelephonyManagerWrapper {
         return mManager.getSimSerialNumber();
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
+    @SuppressLint({"MissingPermission", "HardwareIds"})
+    private String getSimSerialNumber22(int subId) {
+        SubscriptionManager manager = SubscriptionManager.from(GeneralInfoHelper.getContext());
+        SubscriptionInfo activeSubscriptionInfoForSimSlotIndex = manager.getActiveSubscriptionInfoForSimSlotIndex(subId);
+        if (activeSubscriptionInfoForSimSlotIndex != null) {
+            return activeSubscriptionInfoForSimSlotIndex.getIccId();
+        }
+        return null;
+    }
+
     @SuppressLint({"MissingPermission", "HardwareIds"})
     public String getSubscriberId(int subId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return sCanNotGet;
+        }
         Class<TelephonyManager> managerClass = TelephonyManager.class;
         try {
             Method method = managerClass.getMethod("getSubscriberId", int.class);

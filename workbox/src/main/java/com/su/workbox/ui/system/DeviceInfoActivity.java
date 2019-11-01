@@ -311,10 +311,12 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
 
         private DeviceInfoActivity mActivity;
         private PackageManager mPackageManager;
+        private Resources mResources;
 
         private InfoAdapter(DeviceInfoActivity activity, List<SystemInfo> data) {
             super(data);
             mActivity = activity;
+            mResources = activity.getResources();
             mPackageManager = activity.getPackageManager();
         }
 
@@ -405,7 +407,9 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         private String getPhoneId() {
             boolean isHasPermission = PackageManager.PERMISSION_GRANTED == mPackageManager.checkPermission(Manifest.permission.READ_PHONE_STATE, mActivity.getPackageName());
             String desc = "Android ID: " + GeneralInfoHelper.getAndroidId();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                desc += "\n\n" + "设备序列号: " + mResources.getString(R.string.workbox_can_not_get);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 desc += "\n\n" + "设备序列号: " + (isHasPermission ? Build.getSerial() : "未授权");
             } else {
                 desc += "\n\n" + "设备序列号: " + Build.SERIAL;
@@ -554,7 +558,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
             int count = wrapper.getPhoneCount();
 
             StringBuilder builder = new StringBuilder();
-            builder.append("多卡: " + (count > 1 ? "true" : "false") + "\n");
+            builder.append("多卡: " + (count > 1 ? mResources.getString(R.string.workbox_yes) : mResources.getString(R.string.workbox_no)) + "\n");
             builder.append("当前网络: " + wrapper.getNetworkTypeName() + "\n\n");
             for (int i = 0; i < count; i++) {
                 if (!wrapper.isSimCardPresent(i)) {
@@ -566,25 +570,32 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
                 int phoneType = wrapper.getPhoneType(i);
                 if (phoneType == TelephonyManager.PHONE_TYPE_CDMA || phoneType == TelephonyManager.PHONE_TYPE_GSM) {
                     if (phoneType == TelephonyManager.PHONE_TYPE_CDMA) {
-                        String meid = wrapper.getMeid(i);
                         builder.append(wrapper.field2String("网络制式", "CDMA") + "\n");
-                        builder.append(wrapper.field2String("meid", meid) + "\n");
+                        String meid = wrapper.getMeid(i);
+                        builder.append(wrapper.field2String("MEID", meid) + "\n");
                     } else {
-                        String imei = wrapper.getImei(i);
                         builder.append(wrapper.field2String("网络制式", "GSM") + "\n");
-                        builder.append(wrapper.field2String("imei", imei) + "\n");
+                        String imei = wrapper.getImei(i);
+                        builder.append(wrapper.field2String("IMEI", imei) + "\n");
                     }
                 }
                 String subscriberId = wrapper.getSubscriberId(i);
-                builder.append(wrapper.field2String("Subscriber Id", subscriberId) + "\n");
+                builder.append(wrapper.field2String("IMSI", subscriberId) + "\n");
                 String sv = wrapper.getDeviceSoftwareVersion(i);
-                builder.append(wrapper.field2String("sv", sv) + "\n");
+                builder.append(wrapper.field2String("SV", sv) + "\n");
                 String phoneNumber = wrapper.getLine1Number(i);
                 builder.append(wrapper.field2String("电话号码", phoneNumber) + "\n");
                 String simSerialNumber = wrapper.getSimSerialNumber(i);
-                builder.append(wrapper.field2String("SIM序列号", simSerialNumber) + "\n");
+                builder.append(wrapper.field2String("ICCID", simSerialNumber) + "\n");
 
-                String networkCountryIso = wrapper.getNetworkCountryIso(i);
+                String networkOperator = wrapper.getNetworkOperator(i);
+                if (!TextUtils.isEmpty(networkOperator)) {
+                    String mcc = networkOperator.substring(0, 3);
+                    String mnc = networkOperator.substring(3);
+                    builder.append(wrapper.field2String("MCC", mcc) + "\n");
+                    builder.append(wrapper.field2String("MNC", mnc) + "\n");
+                }
+                String networkCountryIso = wrapper.getNetworkCountryIso(i).toUpperCase();
                 builder.append(wrapper.field2String("国家代码", networkCountryIso) + "\n");
 
                 String operatorName = wrapper.getNetworkOperatorName(i);
