@@ -18,6 +18,7 @@
         android:textColor="@color/workbox_first_text"
         android:textSize="12sp"/>
     <TextView
+        android:id="@+id/title_mac"
         android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:layout_weight="1"

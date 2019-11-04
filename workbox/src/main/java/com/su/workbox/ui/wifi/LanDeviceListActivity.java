@@ -297,7 +297,15 @@ public class LanDeviceListActivity extends BaseAppCompatActivity {
 
     //read mac from arp
     private void readArp() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Log.w(TAG, "can't read arp in android 10");
+            return;
+        }
         String arp = AppHelper.shellExec("/bin/sh", "-c", "cat /proc/net/arp | sort | sed '$ d'");
+        if (TextUtils.isEmpty(arp)) {
+            Log.e(TAG, "read arp error!");
+            return;
+        }
         Scanner scanner = new Scanner(arp);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
@@ -363,6 +371,14 @@ public class LanDeviceListActivity extends BaseAppCompatActivity {
         @Override
         public BaseRecyclerAdapter.BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(getLayoutId(viewType), parent, false);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                return new BaseRecyclerAdapter.BaseViewHolder(view);
+            }
+            if (viewType == BaseRecyclerAdapter.ITEM_TYPE_HEADER) {
+                view.findViewById(R.id.title_mac).setVisibility(View.GONE);
+            } else {
+                view.findViewById(R.id.mac).setVisibility(View.GONE);
+            }
             return new BaseRecyclerAdapter.BaseViewHolder(view);
         }
 
@@ -372,10 +388,12 @@ public class LanDeviceListActivity extends BaseAppCompatActivity {
             if (type == BaseRecyclerAdapter.ITEM_TYPE_NORMAL) {
                 LanDevice lanDevice = mLanDeviceList.get(position - 1);
                 TextView ipView = holder.getView(R.id.ip);
-                TextView macView = holder.getView(R.id.mac);
                 TextView deviceView = holder.getView(R.id.device);
                 ipView.setText(lanDevice.getIp());
-                macView.setText(lanDevice.getMac());
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                    TextView macView = holder.getView(R.id.mac);
+                    macView.setText(lanDevice.getMac());
+                }
                 String hostName = lanDevice.getHostName();
                 if (hostName == null) {
                     hostName = "";
