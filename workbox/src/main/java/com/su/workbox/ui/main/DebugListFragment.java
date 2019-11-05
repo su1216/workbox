@@ -38,9 +38,6 @@ import com.su.workbox.R;
 import com.su.workbox.Workbox;
 import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.net.interceptor.DataUsageInterceptor;
-import com.su.workbox.ui.system.AppListActivity;
-import com.su.workbox.ui.system.ConfigQualifiersActivity;
-import com.su.workbox.ui.system.DeviceInfoActivity;
 import com.su.workbox.ui.HostsActivity;
 import com.su.workbox.ui.JsInterfaceListActivity;
 import com.su.workbox.ui.JsListActivity;
@@ -58,6 +55,9 @@ import com.su.workbox.ui.data.DatabaseListActivity;
 import com.su.workbox.ui.log.common.CommonLogActivity;
 import com.su.workbox.ui.log.crash.CrashLogActivity;
 import com.su.workbox.ui.mock.MockGroupHostActivity;
+import com.su.workbox.ui.system.AppListActivity;
+import com.su.workbox.ui.system.ConfigQualifiersActivity;
+import com.su.workbox.ui.system.DeviceInfoActivity;
 import com.su.workbox.ui.system.FileSystemActivity;
 import com.su.workbox.ui.ui.GridLineSettingActivity;
 import com.su.workbox.ui.ui.GridLineView;
@@ -471,7 +471,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         String key = preference.getKey();
         switch (key) {
             case "crash_log":
-                startActivity(new Intent(mActivity, CrashLogActivity.class));
+                startActivity(CrashLogActivity.getLaunchIntent(mActivity));
                 return true;
             case "app_log":
                 startActivity(new Intent(mActivity, CommonLogActivity.class));
@@ -494,13 +494,13 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 AppHelper.goNotificationSettings(mActivity);
                 return true;
             case "permission":
-                PermissionListActivity.startActivity(mActivity);
+                startActivity(PermissionListActivity.getLaunchIntent(mActivity));
                 return true;
             case "feature":
                 startActivity(new Intent(mActivity, FeatureListActivity.class));
                 return true;
             case "data_view_export":
-                DataListActivity.startActivity(mActivity);
+                startActivity(DataListActivity.getLaunchIntent(mActivity));
                 return true;
             case "current_activity":
                 startActivity(new Intent(mActivity, CurrentActivitySettingActivity.class));
@@ -512,7 +512,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 startActivity(new Intent(mActivity, DatabaseListActivity.class));
                 return true;
             case "app_info":
-                AppInfoListActivity.startActivity(mActivity);
+                startActivity(AppInfoListActivity.getLaunchIntent(mActivity));
                 return true;
             case "file_system":
                 startActivity(new Intent(mActivity, FileSystemActivity.class));
@@ -521,7 +521,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 startActivity(new Intent(mActivity, AppComponentActivity.class));
                 return true;
             case "more_phone_info":
-                startActivity(new Intent(mActivity, DeviceInfoActivity.class));
+                startActivity(DeviceInfoActivity.getLaunchIntent(mActivity));
                 return true;
             case "config_qualifier":
                 startActivity(new Intent(mActivity, ConfigQualifiersActivity.class));
@@ -533,7 +533,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 startActivity(new Intent(mActivity, RecordListActivity.class));
                 return true;
             case "mock_data_list":
-                MockGroupHostActivity.startActivity(mActivity, preference.getTitle());
+                mActivity.startActivity(MockGroupHostActivity.getLaunchIntent(mActivity, preference.getTitle()));
                 return true;
             case "web_view_debug":
                 Intent serverIntent = new Intent(mActivity, WebViewListActivity.class);
@@ -542,13 +542,13 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 startActivity(serverIntent);
                 return true;
             case "js_interface":
-                JsInterfaceListActivity.startActivity(mActivity);
+                startActivity(JsInterfaceListActivity.getLaunchIntent(mActivity));
                 return true;
             case "js_rhino":
                 if (!AppHelper.hasPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
                         || !AppHelper.hasPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                     new ToastBuilder("没有外存读写权限").show();
-                    PermissionListActivity.startActivity(mActivity);
+                    startActivity(PermissionListActivity.getLaunchIntent(mActivity));
                     return true;
                 }
                 startActivity(new Intent(mActivity, JsListActivity.class));

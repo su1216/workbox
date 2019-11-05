@@ -68,10 +68,10 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
     private int mDangerousColor;
     private int mNormalColor;
 
-    public static void startActivity(@NonNull Context context, @NonNull String type) {
+    public static Intent getLaunchIntent(@NonNull Context context, @NonNull String type) {
         Intent intent = new Intent(context, ComponentListActivity.class);
         intent.putExtra("type", type);
-        context.startActivity(intent);
+        return intent;
     }
 
     @Override

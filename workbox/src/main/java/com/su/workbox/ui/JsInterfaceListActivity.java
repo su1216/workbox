@@ -55,8 +55,8 @@ public class JsInterfaceListActivity extends BaseAppCompatActivity implements Se
     private List<FileItem> mAllFileList = new ArrayList<>();
     private List<FileItem> mFilterFileItems = new ArrayList<>();
 
-    public static void startActivity(@NonNull Context context) {
-        context.startActivity(new Intent(context, JsInterfaceListActivity.class));
+    public static Intent getLaunchIntent(@NonNull Context context) {
+        return new Intent(context, JsInterfaceListActivity.class);
     }
 
     @Override

@@ -18,18 +18,20 @@ import com.su.workbox.net.interceptor.MockInterceptor;
 import com.su.workbox.ui.JsInterfaceListActivity;
 import com.su.workbox.ui.app.AppInfoListActivity;
 import com.su.workbox.ui.app.ComponentListActivity;
+import com.su.workbox.ui.app.PermissionListActivity;
 import com.su.workbox.ui.app.activity.ExcludeTypes;
-import com.su.workbox.ui.app.record.LifecycleRecordListActivity;
 import com.su.workbox.ui.app.activity.IntentDataCollector;
+import com.su.workbox.ui.app.record.ActivityLifecycleListener;
+import com.su.workbox.ui.app.record.LifecycleRecordListActivity;
+import com.su.workbox.ui.base.AppLifecycleListener;
 import com.su.workbox.ui.base.FragmentListenerManager;
 import com.su.workbox.ui.data.DataListActivity;
 import com.su.workbox.ui.data.DatabaseListActivity;
-import com.su.workbox.ui.app.PermissionListActivity;
-import com.su.workbox.ui.app.record.ActivityLifecycleListener;
-import com.su.workbox.ui.base.AppLifecycleListener;
+import com.su.workbox.ui.log.crash.CrashLogActivity;
 import com.su.workbox.ui.log.crash.CrashLogHandler;
 import com.su.workbox.ui.main.WorkboxMainActivity;
 import com.su.workbox.ui.mock.MockGroupHostActivity;
+import com.su.workbox.ui.system.DeviceInfoActivity;
 import com.su.workbox.ui.ui.RulerActivity;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.SpHelper;
@@ -50,9 +52,12 @@ public class Workbox {
     public static final String MODULE_MOCK_DATA = "mock_data";
     public static final String MODULE_JS_INTERFACES = "js_interfaces";
     public static final String MODULE_APP_INFO = "app_info";
+    public static final String MODULE_DEVICE_INFO = "device_info";
     public static final String MODULE_DATABASES = "databases";
     public static final String MODULE_RULER = "ruler";
     public static final String MODULE_LIFECYCLE = "lifecycle";
+    public static final String MODULE_CRASH_LOG = "crash_log";
+    public static final String MODULE_MAIN = "main";
     private static File sWorkboxSdcardDir = new File(Environment.getExternalStorageDirectory(), "workbox");
 
     private Workbox() {}
@@ -128,39 +133,45 @@ public class Workbox {
         FragmentListenerManager.setEnableLog(enableLog);
     }
 
-    public static void startActivity(@NonNull String module, @NonNull Context context) {
+    @Nullable
+    public static Intent getWorkboxModuleIntent(@NonNull String module, @NonNull Context context) {
         switch (module) {
             case MODULE_DATA_EXPORT:
-                DataListActivity.startActivity(context);
-                break;
+                return DataListActivity.getLaunchIntent(context);
             case MODULE_PERMISSIONS:
-                PermissionListActivity.startActivity(context);
-                break;
+                return PermissionListActivity.getLaunchIntent(context);
             case MODULE_ACTIVITIES:
-                ComponentListActivity.startActivity(context, "activity");
-                break;
+                return ComponentListActivity.getLaunchIntent(context, "activity");
             case MODULE_MOCK_DATA:
-                MockGroupHostActivity.startActivity(context, "数据模拟接口列表");
-                break;
+                return MockGroupHostActivity.getLaunchIntent(context, "数据模拟接口列表");
             case MODULE_JS_INTERFACES:
-                JsInterfaceListActivity.startActivity(context);
-                break;
+                return JsInterfaceListActivity.getLaunchIntent(context);
             case MODULE_APP_INFO:
-                AppInfoListActivity.startActivity(context);
-                break;
+                return AppInfoListActivity.getLaunchIntent(context);
+            case MODULE_DEVICE_INFO:
+                return DeviceInfoActivity.getLaunchIntent(context);
             case MODULE_DATABASES:
-                DatabaseListActivity.startActivity(context);
-                break;
+                return DatabaseListActivity.getLaunchIntent(context);
             case MODULE_RULER:
-                RulerActivity.startActivity(context);
-                break;
+                return RulerActivity.getLaunchIntent(context);
             case MODULE_LIFECYCLE:
-                LifecycleRecordListActivity.startActivity(context);
-                break;
+                return LifecycleRecordListActivity.getLaunchIntent(context);
+            case MODULE_CRASH_LOG:
+                return CrashLogActivity.getLaunchIntent(context);
+            case MODULE_MAIN:
+                return getWorkboxMainIntent();
             default:
-                context.startActivity(getWorkboxMainIntent());
-                break;
+                Log.e(TAG, "no intent for module: " + module);
+                return getWorkboxMainIntent();
         }
+    }
+
+    public static void startActivity(@NonNull String module, @NonNull Context context) {
+        Intent intent = getWorkboxModuleIntent(module, context);
+        if (intent == null) {
+            return;
+        }
+        context.startActivity(intent);
     }
 
     @NonNull

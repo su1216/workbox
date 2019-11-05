@@ -46,7 +46,7 @@ public class MockUtil {
             File mockCacheDir = activity.getExternalFilesDir("mock");
             if (mockCacheDir == null) {
                 new ToastBuilder("没有外存读取权限！").show();
-                PermissionListActivity.startActivity(activity);
+                activity.startActivity(PermissionListActivity.getLaunchIntent(activity));
                 return;
             }
             new ToastBuilder("没有外存读取权限只能处理" + mockCacheDir.getAbsolutePath() + "下的json文件").show();

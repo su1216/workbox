@@ -184,6 +184,10 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
     };
     private String mIp;
 
+    public static Intent getLaunchIntent(@NonNull Context context) {
+        return new Intent(context, DeviceInfoActivity.class);
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

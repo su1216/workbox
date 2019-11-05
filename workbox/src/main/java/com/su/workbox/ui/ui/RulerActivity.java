@@ -29,8 +29,8 @@ public class RulerActivity extends BaseAppCompatActivity {
         }
     };
 
-    public static void startActivity(@NonNull Context context) {
-        context.startActivity(new Intent(context, RulerActivity.class));
+    public static Intent getLaunchIntent(@NonNull Context context) {
+        return new Intent(context, RulerActivity.class);
     }
 
     @Override

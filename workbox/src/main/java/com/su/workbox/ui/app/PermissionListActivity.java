@@ -49,8 +49,8 @@ public class PermissionListActivity extends PermissionRequiredActivity implement
     private List<PermissionInfoWrapper> mDataList = new ArrayList<>();
     private RecyclerViewAdapter mAdapter;
 
-    public static void startActivity(@NonNull Context context) {
-        context.startActivity(new Intent(context, PermissionListActivity.class));
+    public static Intent getLaunchIntent(@NonNull Context context) {
+        return new Intent(context, PermissionListActivity.class);
     }
 
     @Override

@@ -21,9 +21,12 @@ public class Workbox {
     public static final String MODULE_MOCK_DATA = "mock_data";
     public static final String MODULE_JS_INTERFACES = "js_interfaces";
     public static final String MODULE_APP_INFO = "app_info";
+    public static final String MODULE_DEVICE_INFO = "device_info";
     public static final String MODULE_DATABASES = "databases";
     public static final String MODULE_RULER = "ruler";
     public static final String MODULE_LIFECYCLE = "lifecycle";
+    public static final String MODULE_CRASH_LOG = "crash_log";
+    public static final String MODULE_MAIN = "main";
 
     private Workbox() {}
 
@@ -64,6 +67,11 @@ public class Workbox {
     public static void registerFragment(@NonNull Fragment fragment) {}
 
     public static void enableFragmentLifecycleLog(boolean enableLog) {}
+
+    @Nullable
+    public static Intent getWorkboxModuleIntent(@NonNull String module, @NonNull Context context) {
+        return null;
+    }
 
     public static void startActivity(@NonNull String module, @NonNull Context context) {}
 

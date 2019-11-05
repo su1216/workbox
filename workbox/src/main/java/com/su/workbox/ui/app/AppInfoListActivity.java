@@ -57,8 +57,8 @@ public class AppInfoListActivity extends DataActivity implements ExpandableListV
     private AppInfoAdapter mAdapter;
     private File mExportedApkFile;
 
-    public static void startActivity(@NonNull Context context) {
-        context.startActivity(new Intent(context, AppInfoListActivity.class));
+    public static Intent getLaunchIntent(@NonNull Context context) {
+        return new Intent(context, AppInfoListActivity.class);
     }
 
     @Override

@@ -57,7 +57,7 @@ public class AppComponentActivity extends BaseAppCompatActivity {
         @Override
         public boolean onPreferenceClick(Preference preference) {
             String key = preference.getKey();
-            ComponentListActivity.startActivity(mActivity, key);
+            mActivity.startActivity(ComponentListActivity.getLaunchIntent(mActivity, key));
             return true;
         }
     }

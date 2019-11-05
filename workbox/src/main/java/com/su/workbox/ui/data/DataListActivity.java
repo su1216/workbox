@@ -39,8 +39,8 @@ public class DataListActivity extends BaseAppCompatActivity {
     private static final SimpleBlockedDialogFragment DIALOG_FRAGMENT = SimpleBlockedDialogFragment.newInstance();
     private static File sExportedSoDirFile;
 
-    public static void startActivity(@NonNull Context context) {
-        context.startActivity(new Intent(context, DataListActivity.class));
+    public static Intent getLaunchIntent(@NonNull Context context) {
+        return new Intent(context, DataListActivity.class);
     }
 
     @Override
@@ -159,12 +159,12 @@ public class DataListActivity extends BaseAppCompatActivity {
         public boolean onPreferenceClick(Preference preference) {
             if (!AppHelper.hasPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 mActivity.runOnUiThread(() -> new ToastBuilder("没有外存写入权限").show());
-                PermissionListActivity.startActivity(mActivity);
+                mActivity.startActivity(PermissionListActivity.getLaunchIntent(mActivity));
                 return true;
             }
             switch (preference.getKey()) {
                 case "apk":
-                    AppInfoListActivity.startActivity(mActivity);
+                    mActivity.startActivity(AppInfoListActivity.getLaunchIntent(mActivity));
                     break;
                 case "so":
                     exportSoFile();
@@ -177,7 +177,7 @@ public class DataListActivity extends BaseAppCompatActivity {
                     startActivity(intent);
                     break;
                 case "database":
-                    DatabaseListActivity.startActivity(mActivity);
+                    mActivity.startActivity(DatabaseListActivity.getLaunchIntent(mActivity));
                     break;
                 case "shared_preference":
                     startActivity(new Intent(mActivity, SharedPreferenceListActivity.class));

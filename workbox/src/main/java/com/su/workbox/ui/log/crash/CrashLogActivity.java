@@ -31,6 +31,10 @@ public class CrashLogActivity extends BaseAppCompatActivity {
     private CrashLogRecordModel mModel;
     private LogAdapter mAdapter;
 
+    public static Intent getLaunchIntent(@NonNull Context context) {
+        return new Intent(context, CrashLogActivity.class);
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

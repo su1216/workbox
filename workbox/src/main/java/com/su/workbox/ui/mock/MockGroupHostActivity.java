@@ -34,10 +34,10 @@ public class MockGroupHostActivity extends BaseAppCompatActivity {
     private RequestResponseModel mModel;
     private CancelableObserver<List<RequestResponseRecord.Summary>> mSummaryObserver;
 
-    public static void startActivity(@NonNull Context context, @Nullable CharSequence title) {
+    public static Intent getLaunchIntent(@NonNull Context context, @Nullable CharSequence title) {
         Intent intent = new Intent(context, MockGroupHostActivity.class);
         intent.putExtra("title", title);
-        context.startActivity(intent);
+        return intent;
     }
 
     @Override

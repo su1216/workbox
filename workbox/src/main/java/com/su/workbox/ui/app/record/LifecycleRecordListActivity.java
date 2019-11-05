@@ -38,8 +38,8 @@ public class LifecycleRecordListActivity extends BaseAppCompatActivity implement
     private LifecycleRecordModel mModel;
     private SearchableHelper mSearchableHelper = new SearchableHelper();
 
-    public static void startActivity(@NonNull Context context) {
-        context.startActivity(new Intent(context, LifecycleRecordListActivity.class));
+    public static Intent getLaunchIntent(@NonNull Context context) {
+        return new Intent(context, LifecycleRecordListActivity.class);
     }
 
     @Override

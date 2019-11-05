@@ -169,7 +169,7 @@ public class ExplorerActivity extends DataActivity {
         private void setOnClickListenerForDir(@NonNull File dir, @NonNull View itemView) {
             final String path = dir.getAbsolutePath();
             if (mActivity.mDatabasesDir.equals(dir)) {
-                itemView.setOnClickListener(v -> DatabaseListActivity.startActivity(mActivity));
+                itemView.setOnClickListener(v -> mActivity.startActivity(DatabaseListActivity.getLaunchIntent(mActivity)));
             } else if (mActivity.mSharedPreferenceDir.equals(dir)) {
                 itemView.setOnClickListener(v -> mActivity.startActivity(new Intent(mActivity, SharedPreferenceListActivity.class)));
             } else {

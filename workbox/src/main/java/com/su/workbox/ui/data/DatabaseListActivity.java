@@ -37,8 +37,8 @@ public class DatabaseListActivity extends DataActivity {
     private FilenameFilter mDbFilenameFilter = (dir, name) -> name.endsWith(".db");
     private static File sExportedDatabaseDirFile;
 
-    public static void startActivity(@NonNull Context context) {
-        context.startActivity(new Intent(context, DatabaseListActivity.class));
+    public static Intent getLaunchIntent(@NonNull Context context) {
+        return new Intent(context, DatabaseListActivity.class);
     }
 
     @Override
