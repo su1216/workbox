@@ -24,11 +24,15 @@
         <android.support.v7.preference.Preference
             android:key="app_info"
             android:title="应用信息"/>
+        <android.support.v7.preference.Preference
+            android:key="app_component_info"
+            android:summary="activity/service/receiver/provider"
+            android:title="组件信息"/>
         <com.su.workbox.widget.preference.SwitchPreference
             android:defaultValue="true"
-            android:key="app_component_info"
+            android:key="activity_launcher"
             android:summary="自动收集调用组件时Intent信息"
-            android:title="组件信息"/>
+            android:title="Activity任意门"/>
         <android.support.v7.preference.Preference
             android:key="data_view_export"
             android:summary="manifest/shared preference/sqlite db/apk/so ..."

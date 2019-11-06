@@ -44,6 +44,7 @@ import com.su.workbox.ui.JsListActivity;
 import com.su.workbox.ui.WebViewListActivity;
 import com.su.workbox.ui.app.AppComponentActivity;
 import com.su.workbox.ui.app.AppInfoListActivity;
+import com.su.workbox.ui.app.ComponentListActivity;
 import com.su.workbox.ui.app.FeatureListActivity;
 import com.su.workbox.ui.app.PermissionListActivity;
 import com.su.workbox.ui.app.record.ActivityLifecycleListener;
@@ -151,6 +152,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 + "版本:" + GeneralInfoHelper.getVersionName()
                 + "(" + GeneralInfoHelper.getVersionCode() + ")");
         findPreference("app_component_info").setOnPreferenceClickListener(this);
+        findPreference("activity_launcher").setOnPreferenceClickListener(this);
         findPreference("data_view_export").setOnPreferenceClickListener(this);
 
         Preference softwareInfoPreference = findPreference("software_info");
@@ -163,7 +165,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         hardwareInfoPreference.setSummary("分辨率: " + widthPixels + " x " + heightPixels + " px    "
                 + "密度: " + SystemInfoHelper.getDpiInfo(metrics.densityDpi) + " / " + metrics.density + "x   "
                 + "CPU 位数: " + SystemInfoHelper.getCpuBit());
-        findPreference("app_component_info").setOnPreferenceClickListener(this);
         findPreference("permission").setOnPreferenceClickListener(this);
         Preference featurePreference = findPreference("feature");
         featurePreference.setOnPreferenceClickListener(this);
@@ -519,6 +520,11 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 return true;
             case "app_component_info":
                 startActivity(new Intent(mActivity, AppComponentActivity.class));
+                return true;
+            case "activity_launcher":
+                Intent launchList = new Intent(mActivity, ComponentListActivity.class);
+                launchList.putExtra("type", "launcher");
+                startActivity(launchList);
                 return true;
             case "more_phone_info":
                 startActivity(DeviceInfoActivity.getLaunchIntent(mActivity));

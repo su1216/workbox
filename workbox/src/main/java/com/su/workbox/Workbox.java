@@ -141,7 +141,7 @@ public class Workbox {
             case MODULE_PERMISSIONS:
                 return PermissionListActivity.getLaunchIntent(context);
             case MODULE_ACTIVITIES:
-                return ComponentListActivity.getLaunchIntent(context, "activity");
+                return ComponentListActivity.getLaunchIntent(context, ComponentListActivity.TYPE_ACTIVITY);
             case MODULE_MOCK_DATA:
                 return MockGroupHostActivity.getLaunchIntent(context, "数据模拟接口列表");
             case MODULE_JS_INTERFACES:

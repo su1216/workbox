@@ -49,13 +49,17 @@ import java.util.Map;
  */
 public class ComponentListActivity extends BaseAppCompatActivity implements RecyclerItemClickListener.OnItemClickListener, SearchView.OnQueryTextListener {
     private static final String TAG = ComponentListActivity.class.getSimpleName();
-
+    public static final String TYPE_LAUNCHER = "launcher";
+    public static final String TYPE_ACTIVITY = "activity";
+    public static final String TYPE_SERVICE = "service";
+    public static final String TYPE_RECEIVER = "receiver";
+    public static final String TYPE_PROVIDER = "provider";
     private String mType;
     private String mTitle;
     private String mPackageName;
     private RecyclerView mRecyclerView;
     private RecyclerViewAdapter<ComponentInfo> mAdapter;
-    private List<ComponentInfo> mALlList = new ArrayList<>();
+    private List<ComponentInfo> mAllList = new ArrayList<>();
     private List<ComponentInfo> mNotedList = new ArrayList<>();
     private List<ComponentInfo> mUnnotedList = new ArrayList<>();
     private List<NoteComponentEntity> mNoteComponents = new ArrayList<>();
@@ -99,7 +103,7 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
             initList(info);
             rearrangeData(mNotedList);
             rearrangeData(mUnnotedList);
-            View header = makeHeaderView(mALlList);
+            View header = makeHeaderView(mAllList);
             mAdapter = new RecyclerViewAdapter<>(mFilterInfoList);
             mAdapter.setHeaderView(header);
             mRecyclerView.setAdapter(mAdapter);
@@ -143,16 +147,17 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
     private void initList(PackageInfo info) {
         List<? extends ComponentInfo> list;
         switch (mType) {
-            case "activity":
+            case TYPE_LAUNCHER:
+            case TYPE_ACTIVITY:
                 list = info.activities == null ? new ArrayList<>() : Arrays.asList(info.activities);
                 break;
-            case "receiver":
+            case TYPE_RECEIVER:
                 list = info.receivers == null ? new ArrayList<>() : Arrays.asList(info.receivers);
                 break;
-            case "service":
+            case TYPE_SERVICE:
                 list = info.services == null ? new ArrayList<>() : Arrays.asList(info.services);
                 break;
-            case "provider":
+            case TYPE_PROVIDER:
                 list = info.providers == null ? new ArrayList<>() : Arrays.asList(info.providers);
                 break;
             default:
@@ -180,22 +185,23 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
             }
         }
 
-        mALlList.addAll(mNotedList);
-        mALlList.addAll(mUnnotedList);
+        mAllList.addAll(mNotedList);
+        mAllList.addAll(mUnnotedList);
     }
 
     private void initTitle() {
         switch (mType) {
-            case "activity":
+            case TYPE_LAUNCHER:
+            case TYPE_ACTIVITY:
                 mTitle = "Activity列表";
                 break;
-            case "receiver":
+            case TYPE_RECEIVER:
                 mTitle = "BroadcastReceiver列表";
                 break;
-            case "service":
+            case TYPE_SERVICE:
                 mTitle = "Service列表";
                 break;
-            case "provider":
+            case TYPE_PROVIDER:
                 mTitle = "Provider列表";
                 break;
             default:
@@ -264,7 +270,7 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
             return;
         }
         final ComponentInfo info = mAdapter.getData().get(position - 1);
-        if (TextUtils.equals(mType, "activity")) {
+        if (TextUtils.equals(mType, TYPE_LAUNCHER)) {
             Intent intent = new Intent(this, IntentInfoActivity.class);
             intent.putExtra("info", (Parcelable) info); //ComponentInfo子类都实现了Parcelable接口
             startActivity(intent);
@@ -293,11 +299,11 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
         mNameFilterColorIndexList.clear();
         mDescFilterColorIndexList.clear();
         if (TextUtils.isEmpty(str)) {
-            mFilterInfoList.addAll(mALlList);
+            mFilterInfoList.addAll(mAllList);
             mAdapter.notifyDataSetChanged();
             return;
         }
-        for (ComponentInfo search : mALlList) {
+        for (ComponentInfo search : mAllList) {
             String name = search.name;
             String shortName = name;
             if (name.startsWith(mPackageName)) {

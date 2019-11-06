@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -65,13 +66,38 @@ public class ComponentInfoFragment extends BaseFragment {
     @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRecyclerView = (RecyclerView) inflater.inflate(R.layout.workbox_template_recycler_view, container, false);
+        View view = inflater.inflate(R.layout.workbox_template_title_recycler_view, container, false);
+        mRecyclerView = view.findViewById(R.id.recycler_view);
         initData();
         View header = makeHeaderView();
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(mList);
         adapter.setHeaderView(header);
         mRecyclerView.setAdapter(adapter);
-        return mRecyclerView;
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        setTitle(view.findViewById(R.id.id_toolbar));
+    }
+
+    private void setTitle(Toolbar toolbar) {
+        switch (mType) {
+            case "activity":
+                toolbar.setTitle("Activity详情");
+                break;
+            case "service":
+                toolbar.setTitle("Service详情");
+                break;
+            case "receiver":
+                toolbar.setTitle("Receiver详情");
+                break;
+            case "provider":
+                toolbar.setTitle("Provider详情");
+                break;
+            default:
+                break;
+        }
     }
 
     private View makeHeaderView() {
