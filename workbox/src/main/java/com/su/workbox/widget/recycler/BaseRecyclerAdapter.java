@@ -39,6 +39,11 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
         notifyDataSetChanged();
     }
 
+    public void setData(@NonNull List<T> data) {
+        mData = data;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

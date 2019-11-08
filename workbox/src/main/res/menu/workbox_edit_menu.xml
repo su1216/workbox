@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/edit"
+        android:icon="@drawable/workbox_menu_edit"
+        android:onClick="edit"
+        android:title="edit"
+        android:visible="true"
+        app:showAsAction="collapseActionView|ifRoom"/>
+    <item
+        android:id="@+id/save"
+        android:icon="@drawable/workbox_menu_save"
+        android:onClick="save"
+        android:title="save"
+        android:visible="false"
+        app:showAsAction="collapseActionView|ifRoom"/>
+</menu>

@@ -3,6 +3,9 @@ package com.su.workbox.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
+import com.su.workbox.Workbox;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,6 +32,7 @@ public class SpHelper {
     public static final String COLUMN_MEASURE_RESULT_COLOR_STRING = "measure_result_color";
     public static final String COLUMN_MEASURE_STATUS_BAR = "measure_status_bar";
     public static final String COLUMN_MEASURE_NAVIGATION_BAR = "measure_navigation_bar";
+    public static final String COLUMN_PANELS = "panels";
 
     private static SharedPreferences sDefaultSharedPreferences;
 
@@ -66,5 +70,18 @@ public class SpHelper {
             return Arrays.asList(sharedPreferenceDir.listFiles((dir, name) -> name.endsWith(".xml")));
         }
         return new ArrayList<>();
+    }
+
+    public static List<String> getPanelList() {
+        String panels = sDefaultSharedPreferences.getString(COLUMN_PANELS, "");
+        if (TextUtils.isEmpty(panels)) {
+            return Arrays.asList(Workbox.DEFAULT_PANEL_MODULES);
+        }
+        return Arrays.asList(panels.split(", "));
+    }
+
+    public static void setPanelList(List<String> list) {
+        String panels = TextUtils.join(", ", list);
+        sDefaultSharedPreferences.edit().putString(COLUMN_PANELS, panels).apply();
     }
 }

@@ -144,6 +144,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         mEntryClassName = Workbox.class.getPackage().getName() + ".ui.DebugEntryActivity";
         entryPreference.setChecked(isComponentEnabled(mActivity.getPackageManager(), mActivity.getPackageName(), mEntryClassName));
         entryPreference.setOnPreferenceChangeListener(this);
+        findPreference("panel_settings").setOnPreferenceClickListener(this);
         mNotificationPreference = findPreference("system_notification");
         mNotificationPreference.setOnPreferenceClickListener(this);
         Preference appInfoPreference = findPreference("app_info");
@@ -471,6 +472,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     public boolean onPreferenceClick(Preference preference) {
         String key = preference.getKey();
         switch (key) {
+            case "panel_settings":
+                startActivity(new Intent(mActivity, PanelSettingsActivity.class));
+                return true;
             case "crash_log":
                 startActivity(CrashLogActivity.getLaunchIntent(mActivity));
                 return true;

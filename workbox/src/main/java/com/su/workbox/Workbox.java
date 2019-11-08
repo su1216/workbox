@@ -58,6 +58,32 @@ public class Workbox {
     public static final String MODULE_LIFECYCLE = "lifecycle";
     public static final String MODULE_CRASH_LOG = "crash_log";
     public static final String MODULE_MAIN = "main";
+    public static final String[] MODULES = {MODULE_DATA_EXPORT,
+            MODULE_PERMISSIONS,
+            MODULE_ACTIVITIES,
+            MODULE_MOCK_DATA,
+            MODULE_JS_INTERFACES,
+            MODULE_APP_INFO,
+            MODULE_DEVICE_INFO,
+            MODULE_DATABASES,
+            MODULE_RULER,
+            MODULE_LIFECYCLE,
+            MODULE_CRASH_LOG,
+            MODULE_MAIN};
+
+    public static final String[] MODULE_NAMES = {"数据导出",
+            "权限列表",
+            "任意门",
+            "数据模拟",
+            "前端调试",
+            "应用信息",
+            "设备信息",
+            "数据库",
+            "测距",
+            "声明周期",
+            "崩溃日志",
+            "功能列表"};
+    public static final String[] DEFAULT_PANEL_MODULES = {MODULE_CRASH_LOG, MODULE_APP_INFO, MODULE_DEVICE_INFO, MODULE_ACTIVITIES, MODULE_MAIN};
     private static File sWorkboxSdcardDir = new File(Environment.getExternalStorageDirectory(), "workbox");
 
     private Workbox() {}

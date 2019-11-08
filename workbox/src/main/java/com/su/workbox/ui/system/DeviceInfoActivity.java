@@ -191,8 +191,8 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.workbox_activity_system_info);
-        RecyclerView recyclerView = findViewById(R.id.recycler);
+        setContentView(R.layout.workbox_template_recycler_list);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         initData();
         registerReceiver(mBatteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         GridLayoutManager layoutManager = new GridLayoutManager(this, 4);

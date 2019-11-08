@@ -34,6 +34,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity-alias>
+        <!--面板设置-->
+        <activity
+            android:name=".ui.main.PanelSettingsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxListTheme"/>
         <!--崩溃日志列表-->
         <activity
             android:name=".ui.log.crash.CrashLogActivity"

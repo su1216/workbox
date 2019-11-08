@@ -24,7 +24,6 @@ import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +33,6 @@ public class DatabaseListActivity extends DataActivity {
     private List<String> mGroupList = new ArrayList<>();
     private List<Database> mDatabaseList = new ArrayList<>();
     private DatabaseAdapter mAdapter;
-    private FilenameFilter mDbFilenameFilter = (dir, name) -> name.endsWith(".db");
     private static File sExportedDatabaseDirFile;
 
     public static Intent getLaunchIntent(@NonNull Context context) {
