@@ -29,6 +29,7 @@ import com.su.workbox.ui.data.DataListActivity;
 import com.su.workbox.ui.data.DatabaseListActivity;
 import com.su.workbox.ui.log.crash.CrashLogActivity;
 import com.su.workbox.ui.log.crash.CrashLogHandler;
+import com.su.workbox.ui.main.FloatEntry;
 import com.su.workbox.ui.main.WorkboxMainActivity;
 import com.su.workbox.ui.mock.MockGroupHostActivity;
 import com.su.workbox.ui.system.DeviceInfoActivity;
@@ -107,6 +108,9 @@ public class Workbox {
             WorkboxSupplier.newDefaultInstance();
         } else {
             WorkboxSupplier.newInstance(className);
+        }
+        if (SpHelper.getWorkboxSharedPreferences().getBoolean(SpHelper.COLUMN_PANEL_ICON, true)) {
+            FloatEntry.getInstance();
         }
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "elapse: " + (System.currentTimeMillis() - now));

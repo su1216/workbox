@@ -144,7 +144,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         mEntryClassName = Workbox.class.getPackage().getName() + ".ui.DebugEntryActivity";
         entryPreference.setChecked(isComponentEnabled(mActivity.getPackageManager(), mActivity.getPackageName(), mEntryClassName));
         entryPreference.setOnPreferenceChangeListener(this);
-        findPreference("panel_settings").setOnPreferenceClickListener(this);
+        SwitchPreferenceCompat panelIconPreference = (SwitchPreferenceCompat) findPreference("panel_icon");
+        panelIconPreference.setOnPreferenceClickListener(this);
+        panelIconPreference.setOnPreferenceChangeListener(this);
         mNotificationPreference = findPreference("system_notification");
         mNotificationPreference.setOnPreferenceClickListener(this);
         Preference appInfoPreference = findPreference("app_info");
@@ -281,6 +283,14 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         if (TextUtils.equals(key, "debug_entry")) {
             boolean enable = (boolean) newValue;
             enableEntry(mActivity, mEntryClassName, enable);
+            return true;
+        } else if (TextUtils.equals(key, SpHelper.COLUMN_PANEL_ICON)) {
+            boolean enable = (boolean) newValue;
+            if (enable) {
+                FloatEntry.getInstance();
+            } else {
+                FloatEntry.getInstance().destroy();
+            }
             return true;
         } else if (TextUtils.equals(key, "current_activity")) {
             if (!AppHelper.hasSystemWindowPermission(mActivity)) {
@@ -472,7 +482,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     public boolean onPreferenceClick(Preference preference) {
         String key = preference.getKey();
         switch (key) {
-            case "panel_settings":
+            case "panel_icon":
                 startActivity(new Intent(mActivity, PanelSettingsActivity.class));
                 return true;
             case "crash_log":

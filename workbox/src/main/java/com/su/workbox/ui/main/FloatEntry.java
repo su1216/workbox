@@ -17,7 +17,10 @@ import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.TouchProxy;
 
-public class FloatEntry implements View.OnTouchListener, View.OnClickListener {
+import java.util.Observable;
+import java.util.Observer;
+
+public class FloatEntry implements View.OnTouchListener, View.OnClickListener, Observer {
 
     @SuppressLint("StaticFieldLeak")
     private static FloatEntry sFloatEntry;
@@ -93,6 +96,7 @@ public class FloatEntry implements View.OnTouchListener, View.OnClickListener {
     public void destroy() {
         mWindowManager.removeViewImmediate(mRootView);
         mRootView = null;
+        sFloatEntry = null;
     }
 
     @Override
@@ -103,5 +107,15 @@ public class FloatEntry implements View.OnTouchListener, View.OnClickListener {
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         return mTouchProxy.onTouchEvent(v, event);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        boolean isForeground = (Boolean) arg;
+        if (isForeground) {
+            mRootView.setVisibility(View.VISIBLE);
+        } else {
+            mRootView.setVisibility(View.GONE);
+        }
     }
 }

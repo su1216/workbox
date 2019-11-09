@@ -33,6 +33,7 @@ public class SpHelper {
     public static final String COLUMN_MEASURE_STATUS_BAR = "measure_status_bar";
     public static final String COLUMN_MEASURE_NAVIGATION_BAR = "measure_navigation_bar";
     public static final String COLUMN_PANELS = "panels";
+    public static final String COLUMN_PANEL_ICON = "panel_icon";
 
     private static SharedPreferences sDefaultSharedPreferences;
 

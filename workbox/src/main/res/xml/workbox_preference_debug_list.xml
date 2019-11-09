@@ -10,7 +10,7 @@
         android:track="@drawable/workbox_switch_track_selector"/>
     <com.su.workbox.widget.preference.SwitchPreference
         android:defaultValue="true"
-        android:key="panel_settings"
+        android:key="panel_icon"
         android:summary="配置悬浮窗面板内容"
         android:title="控制面板"/>
     <android.support.v7.preference.PreferenceCategory
