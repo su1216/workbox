@@ -1,7 +1,5 @@
 package com.su.workbox.utils;
 
-import static android.content.ContentResolver.SCHEME_FILE;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -44,6 +42,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
+import static android.content.ContentResolver.SCHEME_FILE;
 
 /**
  * Created by su on 15-11-10.
@@ -100,6 +100,16 @@ public final class IOUtil {
         details += "    ";
         details += ThreadUtil.getSimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(file.lastModified()));
         return details;
+    }
+
+    public static boolean isRoot() {
+        List<String> pathList = IOUtil.environmentPathList();
+        for (String path : pathList) {
+            if (new File(path, "su").exists()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Nullable

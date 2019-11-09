@@ -69,6 +69,9 @@
     <android.support.v7.preference.PreferenceCategory
         android:title="System">
         <android.support.v7.preference.Preference
+            android:key="system_root"
+            android:title="ROOT"/>
+        <android.support.v7.preference.Preference
             android:key="system_proxy"
             android:title="系统代理">
             <intent android:action="android.settings.WIFI_SETTINGS"/>

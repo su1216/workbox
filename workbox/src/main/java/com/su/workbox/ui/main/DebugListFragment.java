@@ -67,6 +67,7 @@ import com.su.workbox.ui.ui.ScreenColorViewManager;
 import com.su.workbox.ui.usage.RecordListActivity;
 import com.su.workbox.ui.wifi.LanDeviceListActivity;
 import com.su.workbox.utils.GeneralInfoHelper;
+import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.NetworkUtil;
 import com.su.workbox.utils.ReflectUtil;
 import com.su.workbox.utils.SpHelper;
@@ -135,11 +136,22 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         manager.setSharedPreferencesName(SpHelper.NAME);
         addPreferencesFromResource(R.xml.workbox_preference_debug_list);
         mActivity = getActivity();
-        findPreference("crash_log").setOnPreferenceClickListener(this);
-        findPreference("app_log").setOnPreferenceClickListener(this);
-        mProxyPreference = findPreference("system_proxy");
-        mLanDevicesPreference = findPreference("lan_devices");
-        mLanDevicesPreference.setOnPreferenceClickListener(this);
+
+        initWorkboxPreferences();
+        initLogPreferences();
+        initAppPreferences();
+        initSystemPreferences();
+        initNetworkPreferences();
+        initUiPreference();
+        initOtherPreferences();
+
+        mReceiver = new NetworkChangeReceiver(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        mActivity.registerReceiver(mReceiver, intentFilter);
+    }
+
+    private void initWorkboxPreferences() {
         SwitchPreferenceCompat entryPreference = (SwitchPreferenceCompat) findPreference("debug_entry");
         mEntryClassName = Workbox.class.getPackage().getName() + ".ui.DebugEntryActivity";
         entryPreference.setChecked(isComponentEnabled(mActivity.getPackageManager(), mActivity.getPackageName(), mEntryClassName));
@@ -147,8 +159,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         SwitchPreferenceCompat panelIconPreference = (SwitchPreferenceCompat) findPreference("panel_icon");
         panelIconPreference.setOnPreferenceClickListener(this);
         panelIconPreference.setOnPreferenceChangeListener(this);
-        mNotificationPreference = findPreference("system_notification");
-        mNotificationPreference.setOnPreferenceClickListener(this);
+    }
+
+    private void initAppPreferences() {
         Preference appInfoPreference = findPreference("app_info");
         appInfoPreference.setOnPreferenceClickListener(this);
         appInfoPreference.setSummary("debuggable: " + GeneralInfoHelper.isDebuggable() + "    "
@@ -157,17 +170,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         findPreference("app_component_info").setOnPreferenceClickListener(this);
         findPreference("activity_launcher").setOnPreferenceClickListener(this);
         findPreference("data_view_export").setOnPreferenceClickListener(this);
-
-        Preference softwareInfoPreference = findPreference("software_info");
-        softwareInfoPreference.setSummary("Android " + Build.VERSION.RELEASE + "    " + SystemInfoHelper.getSystemVersionName(Build.VERSION.SDK_INT) + "    "
-                + "API " + Build.VERSION.SDK_INT);
-        Preference hardwareInfoPreference = findPreference("hardware_info");
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        int widthPixels = GeneralInfoHelper.getScreenWidth();
-        int heightPixels = GeneralInfoHelper.getScreenHeight();
-        hardwareInfoPreference.setSummary("分辨率: " + widthPixels + " x " + heightPixels + " px    "
-                + "密度: " + SystemInfoHelper.getDpiInfo(metrics.densityDpi) + " / " + metrics.density + "x   "
-                + "CPU 位数: " + SystemInfoHelper.getCpuBit());
         findPreference("permission").setOnPreferenceClickListener(this);
         Preference featurePreference = findPreference("feature");
         featurePreference.setOnPreferenceClickListener(this);
@@ -178,24 +180,35 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         mCurrentActivityPreference.setOnPreferenceClickListener(this);
         mCurrentActivityPreference.setOnPreferenceChangeListener(this);
         findPreference("lifecycle_history").setOnPreferenceClickListener(this);
+        mNotificationPreference = findPreference("system_notification");
+        mNotificationPreference.setOnPreferenceClickListener(this);
+    }
+
+    private void initLogPreferences() {
+        findPreference("crash_log").setOnPreferenceClickListener(this);
+        findPreference("app_log").setOnPreferenceClickListener(this);
+    }
+
+    private void initSystemPreferences() {
+        Preference rootPreference = findPreference("system_root");
+        rootPreference.setSummary(IOUtil.isRoot() ? "已ROOT" : "未ROOT");
+        mProxyPreference = findPreference("system_proxy");
+        mLanDevicesPreference = findPreference("lan_devices");
+        mLanDevicesPreference.setOnPreferenceClickListener(this);
+        Preference softwareInfoPreference = findPreference("software_info");
+        softwareInfoPreference.setSummary("Android " + Build.VERSION.RELEASE + "    " + SystemInfoHelper.getSystemVersionName(Build.VERSION.SDK_INT) + "    "
+                + "API " + Build.VERSION.SDK_INT);
+        Preference hardwareInfoPreference = findPreference("hardware_info");
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int widthPixels = GeneralInfoHelper.getScreenWidth();
+        int heightPixels = GeneralInfoHelper.getScreenHeight();
+        hardwareInfoPreference.setSummary("分辨率: " + widthPixels + " x " + heightPixels + " px    "
+                + "密度: " + SystemInfoHelper.getDpiInfo(metrics.densityDpi) + " / " + metrics.density + "x   "
+                + "CPU 位数: " + SystemInfoHelper.getCpuBit());
         findPreference("more_phone_info").setOnPreferenceClickListener(this);
         findPreference("config_qualifier").setOnPreferenceClickListener(this);
         findPreference("app_list").setOnPreferenceClickListener(this);
         findPreference("file_system").setOnPreferenceClickListener(this);
-        mHostsPreference = findPreference("hosts");
-        mWebViewHostsPreference = findPreference("web_view_hosts");
-        initNetworkPreferences();
-        initUiPreference();
-
-        findPreference("web_view_debug").setOnPreferenceClickListener(this);
-        findPreference("js_interface").setOnPreferenceClickListener(this);
-        Preference preference = findPreference("js_rhino");
-        preference.setVisible(ReflectUtil.isUseRhino());
-        preference.setOnPreferenceClickListener(this);
-        mReceiver = new NetworkChangeReceiver(this);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        mActivity.registerReceiver(mReceiver, intentFilter);
     }
 
     private void initNetworkPreferences() {
@@ -213,6 +226,17 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         Preference mockDataListPreference = findPreference("mock_data_list");
         mockDataListPreference.setVisible(okHttp3);
         mockDataListPreference.setOnPreferenceClickListener(this);
+
+        mHostsPreference = findPreference("hosts");
+        mWebViewHostsPreference = findPreference("web_view_hosts");
+    }
+
+    private void initOtherPreferences() {
+        findPreference("web_view_debug").setOnPreferenceClickListener(this);
+        findPreference("js_interface").setOnPreferenceClickListener(this);
+        Preference preference = findPreference("js_rhino");
+        preference.setVisible(ReflectUtil.isUseRhino());
+        preference.setOnPreferenceClickListener(this);
     }
 
     @Override
