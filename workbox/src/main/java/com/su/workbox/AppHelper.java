@@ -161,7 +161,7 @@ public final class AppHelper {
             arrayOfObject1[0] = 24;
             arrayOfObject1[1] = Binder.getCallingUid();
             arrayOfObject1[2] = context.getPackageName();
-            int m = (Integer) method.invoke(object, arrayOfObject1);
+            int m = (int) method.invoke(object, arrayOfObject1);
             return m == AppOpsManager.MODE_ALLOWED;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             Log.w(TAG, e);
@@ -172,6 +172,7 @@ public final class AppHelper {
     public static void gotoManageOverlayPermission(@NonNull Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setData(Uri.parse("package:" + context.getPackageName()));
             context.startActivity(intent);
         }

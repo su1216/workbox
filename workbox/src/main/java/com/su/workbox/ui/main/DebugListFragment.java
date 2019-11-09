@@ -89,6 +89,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     private static final int REQUEST_HOST = 1;
     private static final int REQUEST_WEB_VIEW_HOST = 2;
     private static final int REQUEST_MEDIA_PROJECTION = 3;
+    private SwitchPreferenceCompat mPanelIconPreference;
     private CurrentActivityView mCurrentActivityView;
     private SwitchPreferenceCompat mCurrentActivityPreference;
     private Preference mProxyPreference;
@@ -107,6 +108,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     private SwitchPreferenceCompat mColorPickerPreference;
 
     private NetworkChangeReceiver mReceiver;
+
     private static class NetworkChangeReceiver extends BroadcastReceiver {
         private DebugListFragment mFragment;
 
@@ -156,9 +158,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         mEntryClassName = Workbox.class.getPackage().getName() + ".ui.DebugEntryActivity";
         entryPreference.setChecked(isComponentEnabled(mActivity.getPackageManager(), mActivity.getPackageName(), mEntryClassName));
         entryPreference.setOnPreferenceChangeListener(this);
-        SwitchPreferenceCompat panelIconPreference = (SwitchPreferenceCompat) findPreference("panel_icon");
-        panelIconPreference.setOnPreferenceClickListener(this);
-        panelIconPreference.setOnPreferenceChangeListener(this);
+        mPanelIconPreference = (SwitchPreferenceCompat) findPreference("panel_icon");
+        mPanelIconPreference.setOnPreferenceClickListener(this);
+        mPanelIconPreference.setOnPreferenceChangeListener(this);
     }
 
     private void initAppPreferences() {
@@ -311,9 +313,14 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         } else if (TextUtils.equals(key, SpHelper.COLUMN_PANEL_ICON)) {
             boolean enable = (boolean) newValue;
             if (enable) {
-                FloatEntry.getInstance();
+                if (!AppHelper.hasSystemWindowPermission(mActivity)) {
+                    AppHelper.gotoManageOverlayPermission(mActivity);
+                    mPanelIconPreference.setChecked(false);
+                    return false;
+                }
+                FloatEntry.getInstance().show();
             } else {
-                FloatEntry.getInstance().destroy();
+                FloatEntry.getInstance().hide();
             }
             return true;
         } else if (TextUtils.equals(key, "current_activity")) {

@@ -110,7 +110,11 @@ public class Workbox {
             WorkboxSupplier.newInstance(className);
         }
         if (SpHelper.getWorkboxSharedPreferences().getBoolean(SpHelper.COLUMN_PANEL_ICON, true)) {
-            FloatEntry.getInstance();
+            if (!AppHelper.hasSystemWindowPermission(app)) {
+                AppHelper.gotoManageOverlayPermission(app);
+                return;
+            }
+            FloatEntry.getInstance().show();
         }
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "elapse: " + (System.currentTimeMillis() - now));

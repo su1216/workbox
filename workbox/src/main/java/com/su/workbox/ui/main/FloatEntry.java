@@ -12,8 +12,11 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import com.su.workbox.AppHelper;
 import com.su.workbox.R;
+import com.su.workbox.ui.base.AppLifecycleListener;
 import com.su.workbox.utils.GeneralInfoHelper;
+import com.su.workbox.utils.SpHelper;
 import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.TouchProxy;
 
@@ -53,6 +56,7 @@ public class FloatEntry implements View.OnTouchListener, View.OnClickListener, O
             }
         });
         init();
+        AppLifecycleListener.getInstance().addObserver(this);
     }
 
     private void createLayoutParams() {
@@ -63,7 +67,7 @@ public class FloatEntry implements View.OnTouchListener, View.OnClickListener, O
             mLayoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
         }
         mLayoutParams.format = PixelFormat.TRANSPARENT;
-        mLayoutParams.gravity = Gravity.TOP | Gravity.LEFT;
+        mLayoutParams.gravity = Gravity.TOP | Gravity.START;
         mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         mLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         mLayoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -93,10 +97,12 @@ public class FloatEntry implements View.OnTouchListener, View.OnClickListener, O
         }
     }
 
-    public void destroy() {
-        mWindowManager.removeViewImmediate(mRootView);
-        mRootView = null;
-        sFloatEntry = null;
+    public void hide() {
+        mRootView.setVisibility(View.GONE);
+    }
+
+    public void show() {
+        mRootView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -112,10 +118,16 @@ public class FloatEntry implements View.OnTouchListener, View.OnClickListener, O
     @Override
     public void update(Observable o, Object arg) {
         boolean isForeground = (Boolean) arg;
-        if (isForeground) {
-            mRootView.setVisibility(View.VISIBLE);
+        if (SpHelper.getWorkboxSharedPreferences().getBoolean(SpHelper.COLUMN_PANEL_ICON, true)
+                && AppHelper.hasSystemWindowPermission(GeneralInfoHelper.getContext())) {
+            getInstance();
         } else {
-            mRootView.setVisibility(View.GONE);
+            return;
+        }
+        if (isForeground) {
+            show();
+        } else {
+            hide();
         }
     }
 }
