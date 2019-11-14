@@ -9,7 +9,7 @@ import android.util.Log;
 import com.su.annotations.NoteComponent;
 import com.su.annotations.Parameter;
 
-@NoteComponent(description = "Service传参测试",
+@NoteComponent(description = "Service测试",
         type = "service",
         parameters = {@Parameter(parameterName = "cmd", parameterClass = String.class)})
 public class TestService extends Service {

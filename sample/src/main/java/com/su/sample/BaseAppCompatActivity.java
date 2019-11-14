@@ -26,7 +26,6 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
 
     private void setupToolbar() {
         mToolbar = findViewById(R.id.id_toolbar);
-        //抢标页面/转让页面等没有toolbar
         if (mToolbar != null) {
             mToolbar.setNavigationOnClickListener(v -> popStackIfNeeded(BaseAppCompatActivity.this));
         }
