@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,8 +20,10 @@ import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.SpHelper;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
+import com.su.workbox.widget.recycler.SwipeController;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -110,12 +114,16 @@ public class ExplorerActivity extends DataActivity {
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.workbox_template_recycler_view, container, false);
             File file = new File(mCurrentPath);
-            List<File> files = Arrays.asList(file.listFiles());
+            List<File> files = new ArrayList<>();
+            Collections.addAll(files, file.listFiles());
             Collections.sort(files);
-            mFileAdapter = new FileAdapter(mActivity, files);
+            mFileAdapter = new FileAdapter(mActivity, recyclerView, files);
             recyclerView.setAdapter(mFileAdapter);
             PreferenceItemDecoration decoration = new PreferenceItemDecoration(mActivity, 0, 0);
             recyclerView.addItemDecoration(decoration);
+            SwipeController swipeController = new SwipeController(mFileAdapter);
+            ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
+            itemTouchhelper.attachToRecyclerView(recyclerView);
             return recyclerView;
         }
 
@@ -140,12 +148,16 @@ public class ExplorerActivity extends DataActivity {
         }
     }
 
-    private static class FileAdapter extends BaseRecyclerAdapter<File> {
+    private static class FileAdapter extends BaseRecyclerAdapter<File> implements SwipeController.OnSwipeListener {
 
         private ExplorerActivity mActivity;
+        private RecyclerView mRecyclerView;
+        private File mRecentlyDeletedItem;
+        private int mRecentlyDeletedItemPosition;
 
-        FileAdapter(ExplorerActivity activity, List<File> data) {
+        FileAdapter(ExplorerActivity activity, @NonNull RecyclerView recyclerView, List<File> data) {
             super(data);
+            mRecyclerView = recyclerView;
             mActivity = activity;
         }
 
@@ -186,6 +198,39 @@ public class ExplorerActivity extends DataActivity {
         public void updateData(@NonNull List<File> data) {
             Collections.sort(data);
             super.updateData(data);
+        }
+
+        @Override
+        public void onDelete(@NonNull RecyclerView.ViewHolder viewHolder) {
+            List<File> list = getData();
+            int position = viewHolder.getAdapterPosition();
+            mRecentlyDeletedItem = list.get(position);
+            mRecentlyDeletedItemPosition = position;
+            Snackbar.make(mRecyclerView, "已将" + mRecentlyDeletedItem.getName() + "删除", Snackbar.LENGTH_LONG)
+                    .setAction("UNDO", v -> onUndo())
+                    .addCallback(new Snackbar.Callback() {
+                        public void onShown(Snackbar sb) {
+                            list.remove(mRecentlyDeletedItem);
+                            notifyItemRemoved(mRecentlyDeletedItemPosition);
+                        }
+
+                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                            if (event != DISMISS_EVENT_ACTION) {
+                                IOUtil.deleteFiles(mRecentlyDeletedItem);
+                            }
+                        }
+                    })
+                    .show();
+        }
+
+        @Override
+        public void onUndo() {
+            if (mRecentlyDeletedItem == null) {
+                return;
+            }
+            List<File> list = getData();
+            list.add(mRecentlyDeletedItemPosition, mRecentlyDeletedItem);
+            notifyItemInserted(mRecentlyDeletedItemPosition);
         }
     }
 
