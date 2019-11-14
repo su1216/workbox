@@ -1,5 +1,7 @@
 package com.su.workbox.entity;
 
+import android.view.View;
+
 import java.util.Objects;
 
 /**
@@ -8,9 +10,11 @@ import java.util.Objects;
 public class Module {
     private String id;
     private String name;
-    private int order;
+    private int order = 1024;
     private boolean enable;
     private boolean checked;
+    private boolean extra;
+    private View.OnClickListener onClickListener;
 
     public String getId() {
         return id;
@@ -52,6 +56,22 @@ public class Module {
         this.checked = checked;
     }
 
+    public View.OnClickListener getOnClickListener() {
+        return onClickListener;
+    }
+
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+    }
+
+    public boolean isExtra() {
+        return extra;
+    }
+
+    public void setExtra(boolean extra) {
+        this.extra = extra;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -73,6 +93,8 @@ public class Module {
                 ", order=" + order +
                 ", enable=" + enable +
                 ", checked=" + checked +
+                ", extra=" + extra +
+                ", onClickListener=" + onClickListener +
                 '}';
     }
 }

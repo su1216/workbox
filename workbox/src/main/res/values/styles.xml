@@ -174,4 +174,9 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
+
+    <style name="WorkboxFadeAnim">
+        <item name="android:windowEnterAnimation">@anim/workbox_fade_enter</item>
+        <item name="android:windowExitAnimation">@anim/workbox_fade_exit</item>
+    </style>
 </resources>

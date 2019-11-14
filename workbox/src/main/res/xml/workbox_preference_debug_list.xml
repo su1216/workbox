@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.preference.PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.su.workbox.widget.preference.SwitchPreference
+        android:defaultValue="true"
+        android:key="panel_icon"
+        android:summary="配置悬浮面板内容"
+        android:title="悬浮面板"/>
     <android.support.v7.preference.SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="debug_entry"
@@ -8,11 +13,6 @@
         android:thumb="@drawable/workbox_switch_button"
         android:title="Launcher入口"
         android:track="@drawable/workbox_switch_track_selector"/>
-    <com.su.workbox.widget.preference.SwitchPreference
-        android:defaultValue="true"
-        android:key="panel_icon"
-        android:summary="配置悬浮窗面板内容"
-        android:title="控制面板"/>
     <android.support.v7.preference.PreferenceCategory
         android:title="Log">
         <android.support.v7.preference.Preference

@@ -13,7 +13,6 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.su.workbox.R;
-import com.su.workbox.Workbox;
 import com.su.workbox.entity.Module;
 import com.su.workbox.ui.BaseAppCompatActivity;
 import com.su.workbox.utils.SpHelper;
@@ -31,7 +30,6 @@ public class PanelSettingsActivity extends BaseAppCompatActivity {
 
     public static final String TAG = PanelSettingsActivity.class.getSimpleName();
     private List<Module> mEnableModuleList = new ArrayList<>();
-    private List<Module> mAllModuleList = new ArrayList<>();
     private ModuleAdapter mAdapter;
     private ItemTouchHelperCallback mHelperCallback;
 
@@ -39,7 +37,6 @@ public class PanelSettingsActivity extends BaseAppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.workbox_template_recycler_list);
-        initAllModuleList();
         initModuleList();
         sortAllModuleList();
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
@@ -56,19 +53,7 @@ public class PanelSettingsActivity extends BaseAppCompatActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        setTitle("控制面板");
-    }
-
-    private void initAllModuleList() {
-        int length = Workbox.MODULES.length;
-        for (int i = 0; i < length; i++) {
-            String id = Workbox.MODULES[i];
-            Module module = new Module();
-            module.setId(id);
-            module.setOrder(1024);
-            module.setName(Workbox.MODULE_NAMES[i]);
-            mAllModuleList.add(module);
-        }
+        setTitle("悬浮面板");
     }
 
     private void initModuleList() {
@@ -76,7 +61,7 @@ public class PanelSettingsActivity extends BaseAppCompatActivity {
         int size = enableList.size();
         for (int i = 0; i < size; i++) {
             String enableId = enableList.get(i);
-            for (Module module : mAllModuleList) {
+            for (Module module : WorkboxPanel.MODULE_LIST) {
                 if (TextUtils.equals(enableId, module.getId())) {
                     module.setOrder(i);
                     module.setEnable(true);
@@ -87,11 +72,11 @@ public class PanelSettingsActivity extends BaseAppCompatActivity {
     }
 
     private void sortAllModuleList() {
-        mAllModuleList.removeAll(mEnableModuleList);
-        mAllModuleList.addAll(0, mEnableModuleList);
-        int size = mAllModuleList.size();
+        WorkboxPanel.MODULE_LIST.removeAll(mEnableModuleList);
+        WorkboxPanel.MODULE_LIST.addAll(0, mEnableModuleList);
+        int size = WorkboxPanel.MODULE_LIST.size();
         for (int i = 0; i < size; i++) {
-            mAllModuleList.get(i).setOrder(i);
+            WorkboxPanel.MODULE_LIST.get(i).setOrder(i);
         }
     }
 
@@ -128,11 +113,11 @@ public class PanelSettingsActivity extends BaseAppCompatActivity {
 
     public void edit(@NonNull MenuItem item) {
         mAdapter.mEdit = true;
-        for (Module module : mAllModuleList) {
+        for (Module module : WorkboxPanel.MODULE_LIST) {
             module.setChecked(module.isEnable());
         }
         mHelperCallback.setLongPressDragEnabled(true);
-        mAdapter.setData(mAllModuleList);
+        mAdapter.setData(WorkboxPanel.MODULE_LIST);
         item.setVisible(false);
         mToolbar.getMenu().findItem(R.id.save).setVisible(true);
     }
@@ -150,7 +135,7 @@ public class PanelSettingsActivity extends BaseAppCompatActivity {
 
     private void save() {
         List<String> enableIdList = new ArrayList<>();
-        for (Module module : mAllModuleList) {
+        for (Module module : WorkboxPanel.MODULE_LIST) {
             if (module.isChecked()) {
                 enableIdList.add(module.getId());
             }
@@ -160,7 +145,7 @@ public class PanelSettingsActivity extends BaseAppCompatActivity {
 
     private void updateEnableList() {
         mEnableModuleList.clear();
-        for (Module module : mAllModuleList) {
+        for (Module module : WorkboxPanel.MODULE_LIST) {
             if (module.isChecked()) {
                 module.setEnable(true);
                 mEnableModuleList.add(module);
@@ -171,11 +156,11 @@ public class PanelSettingsActivity extends BaseAppCompatActivity {
     }
 
     private void updateAllList() {
-        mAllModuleList.removeAll(mEnableModuleList);
-        mAllModuleList.addAll(0, mEnableModuleList);
-        int size = mAllModuleList.size();
+        WorkboxPanel.MODULE_LIST.removeAll(mEnableModuleList);
+        WorkboxPanel.MODULE_LIST.addAll(0, mEnableModuleList);
+        int size = WorkboxPanel.MODULE_LIST.size();
         for (int i = 0; i < size; i++) {
-            Module module = mAllModuleList.get(i);
+            Module module = WorkboxPanel.MODULE_LIST.get(i);
             module.setOrder(i);
             module.setChecked(false);
         }

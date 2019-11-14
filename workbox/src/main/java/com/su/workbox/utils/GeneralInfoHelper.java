@@ -46,7 +46,7 @@ public class GeneralInfoHelper {
     private static double sAspectRatio;
 
     private static int sAvailableWidth;
-    private static int sAvailableHeight;
+    private static int sAvailableHeight; // = sScreenHeight - sStatusBarHeight
 
     private static String sVersionName = "";
     private static int sVersionCode;
@@ -170,7 +170,7 @@ public class GeneralInfoHelper {
     }
 
     @NonNull
-    private static String getCurrentProcessName() {
+    public static String getCurrentProcessName() {
         try {
             return IOUtil.streamToString(new FileInputStream("/proc/self/cmdline")).trim();
         } catch (IOException e) {

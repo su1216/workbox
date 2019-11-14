@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.os.Build;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -14,26 +15,35 @@ import android.widget.FrameLayout;
 
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
+import com.su.workbox.entity.Module;
 import com.su.workbox.ui.base.AppLifecycleListener;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.SpHelper;
-import com.su.workbox.widget.ToastBuilder;
+import com.su.workbox.utils.UiHelper;
 import com.su.workbox.widget.TouchProxy;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+/**
+ * Created by su on 19-11-9.
+ */
 public class FloatEntry implements View.OnTouchListener, View.OnClickListener, Observer {
 
     @SuppressLint("StaticFieldLeak")
     private static FloatEntry sFloatEntry;
-    private final TouchProxy mTouchProxy;
-    private final WindowManager mWindowManager;
+    private static WorkboxPanel sWorkboxPanel;
+    private TouchProxy mTouchProxy;
+    private WindowManager mWindowManager;
     private WindowManager.LayoutParams mLayoutParams;
     private ViewGroup mRootView;
     private int mScreenWidth = GeneralInfoHelper.getScreenWidth();
     private int mScreenHeight = GeneralInfoHelper.getScreenHeight();
     private int mViewSize;
+    private List<Module> mModuleList = new ArrayList<>();
+    private boolean mPanelDisplay;
 
     public static FloatEntry getInstance() {
         if (sFloatEntry == null) {
@@ -43,6 +53,32 @@ public class FloatEntry implements View.OnTouchListener, View.OnClickListener, O
     }
 
     private FloatEntry() {
+        AppLifecycleListener.getInstance().addObserver(this);
+    }
+
+    private void createLayoutParams() {
+        Context context = GeneralInfoHelper.getContext();
+        mLayoutParams = new WindowManager.LayoutParams();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else {
+            mLayoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+        }
+        mLayoutParams.format = PixelFormat.TRANSPARENT;
+        mLayoutParams.gravity = Gravity.TOP | Gravity.START;
+        mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        mLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        mLayoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        int viewSize = UiHelper.dp2px(64);
+        int height = mScreenHeight - UiHelper.getStatusBarHeight(context) - UiHelper.getNavigationBarHeight(context);
+        mLayoutParams.x = mScreenWidth - viewSize;
+        mLayoutParams.y = (height - viewSize) / 2;
+    }
+
+    private void init() {
+        if (mWindowManager != null) {
+            return;
+        }
         Context context = GeneralInfoHelper.getContext();
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         createLayoutParams();
@@ -55,26 +91,7 @@ public class FloatEntry implements View.OnTouchListener, View.OnClickListener, O
                 mWindowManager.updateViewLayout(mRootView, mLayoutParams);
             }
         });
-        init();
-        AppLifecycleListener.getInstance().addObserver(this);
-    }
 
-    private void createLayoutParams() {
-        mLayoutParams = new WindowManager.LayoutParams();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        } else {
-            mLayoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
-        }
-        mLayoutParams.format = PixelFormat.TRANSPARENT;
-        mLayoutParams.gravity = Gravity.TOP | Gravity.START;
-        mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        mLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        mLayoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-    }
-
-    private void init() {
-        Context context = GeneralInfoHelper.getContext();
         mRootView = new FrameLayout(context);
         View view = LayoutInflater.from(context).inflate(R.layout.workbox_wm_float_entry, mRootView, false);
         mViewSize = view.getLayoutParams().width;
@@ -82,6 +99,7 @@ public class FloatEntry implements View.OnTouchListener, View.OnClickListener, O
         mRootView.setOnTouchListener(this);
         mRootView.setOnClickListener(this);
         mWindowManager.addView(mRootView, mLayoutParams);
+        sWorkboxPanel = new WorkboxPanel(this);
     }
 
     private void checkBounds(WindowManager.LayoutParams layoutParams) {
@@ -98,16 +116,55 @@ public class FloatEntry implements View.OnTouchListener, View.OnClickListener, O
     }
 
     public void hide() {
-        mRootView.setVisibility(View.GONE);
+        init();
+        if (mPanelDisplay) {
+            sWorkboxPanel.hide();
+        } else {
+            mRootView.setVisibility(View.GONE);
+        }
     }
 
     public void show() {
-        mRootView.setVisibility(View.VISIBLE);
+        init();
+        if (mPanelDisplay) {
+            sWorkboxPanel.show();
+        } else {
+            mRootView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void onClick(View v) {
-        new ToastBuilder("onClick").show();
+        if (sWorkboxPanel.isShown()) {
+            return;
+        }
+        filterModules();
+        hide();
+        mPanelDisplay = true;
+        sWorkboxPanel.show(mModuleList);
+    }
+
+    private void filterModules() {
+        mModuleList.clear();
+        List<String> enableList = SpHelper.getPanelList();
+        for (String enableId : enableList) {
+            for (Module module : WorkboxPanel.MODULE_LIST) {
+                if (TextUtils.equals(module.getId(), enableId)) {
+
+                }
+            }
+        }
+
+        int size = enableList.size();
+        for (int i = 0; i < size; i++) {
+            String enableId = enableList.get(i);
+            for (Module module : WorkboxPanel.MODULE_LIST) {
+                if (TextUtils.equals(enableId, module.getId())) {
+                    mModuleList.add(module);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -120,7 +177,7 @@ public class FloatEntry implements View.OnTouchListener, View.OnClickListener, O
         boolean isForeground = (Boolean) arg;
         if (SpHelper.getWorkboxSharedPreferences().getBoolean(SpHelper.COLUMN_PANEL_ICON, true)
                 && AppHelper.hasSystemWindowPermission(GeneralInfoHelper.getContext())) {
-            getInstance();
+            getInstance().init();
         } else {
             return;
         }
@@ -129,5 +186,15 @@ public class FloatEntry implements View.OnTouchListener, View.OnClickListener, O
         } else {
             hide();
         }
+    }
+
+    void onPanelClick() {
+        mPanelDisplay = false;
+        show();
+    }
+
+    void onPanelOutsideClick() {
+        mPanelDisplay = false;
+        show();
     }
 }

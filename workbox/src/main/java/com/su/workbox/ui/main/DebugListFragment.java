@@ -148,9 +148,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         initOtherPreferences();
 
         mReceiver = new NetworkChangeReceiver(this);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        mActivity.registerReceiver(mReceiver, intentFilter);
     }
 
     private void initWorkboxPreferences() {
@@ -252,6 +249,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     @Override
     public void onResume() {
         super.onResume();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        mActivity.registerReceiver(mReceiver, intentFilter);
         mHost = Workbox.getHost();
         mWebViewHost = Workbox.getWebViewHost();
         initHostPreference(mHostsPreference, mHost, HostsActivity.TYPE_HOST);
@@ -270,8 +270,8 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onPause() {
+        super.onPause();
         mActivity.unregisterReceiver(mReceiver);
     }
 

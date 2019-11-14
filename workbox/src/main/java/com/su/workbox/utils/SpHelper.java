@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.su.workbox.Workbox;
+import com.su.workbox.ui.main.WorkboxPanel;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public class SpHelper {
     public static List<String> getPanelList() {
         String panels = sDefaultSharedPreferences.getString(COLUMN_PANELS, "");
         if (TextUtils.isEmpty(panels)) {
-            return Arrays.asList(Workbox.DEFAULT_PANEL_MODULES);
+            return Arrays.asList(WorkboxPanel.DEFAULT_PANEL_MODULES);
         }
         return Arrays.asList(panels.split(", "));
     }
