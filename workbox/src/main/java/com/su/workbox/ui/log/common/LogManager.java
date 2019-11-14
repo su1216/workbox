@@ -5,6 +5,8 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.support.annotation.NonNull;
 
+import java.lang.ref.WeakReference;
+
 public class LogManager {
 
     public static final String TAG = LogManager.class.getSimpleName();
@@ -13,23 +15,34 @@ public class LogManager {
     private OnLogChangedListener mOnLogChangedListener;
 
     private LogHandler mLogHandler;
-    private Handler mHandler = new Handler() {
+    private Handler mHandler;
+
+    static class LogManagerHandler extends Handler {
+        private final WeakReference<LogManager> mLogManager;
+
+        LogManagerHandler(LogManager manager) {
+            mLogManager = new WeakReference<>(manager);
+        }
+
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage(@NonNull Message msg) {
+            LogManager manager = mLogManager.get();
             switch (msg.what) {
                 case MSG_ADD:
-                    mOnLogChangedListener.onAdded((LogRecord) msg.obj);
+                    manager.mOnLogChangedListener.onAdded((LogRecord) msg.obj);
                     break;
                 case MSG_CLEAR:
-                    mOnLogChangedListener.onClear();
+                    manager.mOnLogChangedListener.onClear();
                     break;
                 default:
                     break;
             }
         }
-    };
+    }
 
-    private LogManager() {}
+    private LogManager() {
+        mHandler = new LogManagerHandler(this);
+    }
 
     public static LogManager getInstance() {
         return new LogManager();

@@ -3,10 +3,14 @@ package com.su.workbox.ui;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.MenuRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.su.workbox.R;
 
@@ -78,5 +82,27 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
 
     public Toolbar getToolbar() {
         return mToolbar;
+    }
+
+    protected void installOnTitleDoubleClickListener(@NonNull OnTitleDoubleClickListener listener) {
+        GestureDetector gestureDetector = new GestureDetector(this, new GestureListener());
+        mToolbar.setOnTouchListener((v, event) -> {
+            boolean intercept = gestureDetector.onTouchEvent(event);
+            if (intercept) {
+                listener.onTitleDoubleClick(v);
+            }
+            return intercept;
+        });
+    }
+
+    private static class GestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            return true;
+        }
+    }
+
+    public interface OnTitleDoubleClickListener {
+        void onTitleDoubleClick(View view);
     }
 }

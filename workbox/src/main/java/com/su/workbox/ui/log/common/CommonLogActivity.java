@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CommonLogActivity extends BaseAppCompatActivity implements LogManager.OnLogChangedListener, View.OnClickListener, SearchView.OnQueryTextListener {
+public class CommonLogActivity extends BaseAppCompatActivity implements LogManager.OnLogChangedListener, View.OnClickListener, SearchView.OnQueryTextListener, BaseAppCompatActivity.OnTitleDoubleClickListener {
 
     private static final String TAG = CommonLogActivity.class.getSimpleName();
     private SearchableHelper mSearchableHelper = new SearchableHelper(LogRecord.class);
@@ -74,7 +74,13 @@ public class CommonLogActivity extends BaseAppCompatActivity implements LogManag
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle("常规日志");
+        installOnTitleDoubleClickListener(this);
         mSearchableHelper.initSearchToolbar(mToolbar, this);
+    }
+
+    @Override
+    public void onTitleDoubleClick(View view) {
+        mRecyclerView.scrollToPosition(0);
     }
 
     @Override
