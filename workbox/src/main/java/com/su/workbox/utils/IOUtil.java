@@ -1,5 +1,7 @@
 package com.su.workbox.utils;
 
+import static android.content.ContentResolver.SCHEME_FILE;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -10,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.system.Os;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
@@ -35,6 +38,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -42,8 +46,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import static android.content.ContentResolver.SCHEME_FILE;
 
 /**
  * Created by su on 15-11-10.
@@ -520,6 +522,11 @@ public final class IOUtil {
                 deleteFiles(file);
             }
         }
+    }
+
+    public static String formatFileSize(long fileLength) {
+        DecimalFormat df = ThreadUtil.getDecimalFormat("#,###");
+        return Formatter.formatShortFileSize(GeneralInfoHelper.getContext(), fileLength) + " (" + df.format(fileLength) + "B)";
     }
 
     @FunctionalInterface

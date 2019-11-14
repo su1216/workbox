@@ -33,7 +33,8 @@ public class DatabaseListActivity extends DataActivity {
     private List<String> mGroupList = new ArrayList<>();
     private List<Database> mDatabaseList = new ArrayList<>();
     private DatabaseAdapter mAdapter;
-    private static File sExportedDatabaseDirFile;
+    private File mExportedDatabaseDirFile;
+    private File mDatabasesDir;
 
     public static Intent getLaunchIntent(@NonNull Context context) {
         return new Intent(context, DatabaseListActivity.class);
@@ -43,7 +44,8 @@ public class DatabaseListActivity extends DataActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.workbox_template_recycler_list);
-        sExportedDatabaseDirFile = new File(mExportedBaseDir, mVersionName + "-databases");
+        mDatabasesDir = new File(mDataDirPath, "databases");
+        mExportedDatabaseDirFile = new File(mExportedBaseDir, mVersionName + "-databases");
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         mAdapter = new DatabaseAdapter(this);
         PreferenceItemDecoration decoration = new PreferenceItemDecoration(this, 0, 0);
@@ -80,7 +82,7 @@ public class DatabaseListActivity extends DataActivity {
             int version = dbInfoProvider.getDatabaseVersion();
             List<Table> tables = getTables(dbInfoProvider.getAllTablesAndViews());
             List<Trigger> triggers = getTriggerSqlList(dbInfoProvider.getAllTriggers());
-            Database database = new Database(dbName, version, tables, triggers);
+            Database database = new Database(mDatabasesDir, dbName, version, tables, triggers);
             mDatabaseList.add(database);
             dbInfoProvider.closeDb();
         }
@@ -130,16 +132,15 @@ public class DatabaseListActivity extends DataActivity {
 
     @Override
     protected void export() {
-        File databasesDir = new File(mDataDirPath, "databases");
-        if (!sExportedDatabaseDirFile.exists()) {
-            sExportedDatabaseDirFile.mkdirs();
+        if (!mExportedDatabaseDirFile.exists()) {
+            mExportedDatabaseDirFile.mkdirs();
         }
         //需要将db/db-shm/db-wal同时导出
-        File[] databases = databasesDir.listFiles();
+        File[] databases = mDatabasesDir.listFiles();
         for (File database : databases) {
-            IOUtil.copyFile(database, new File(sExportedDatabaseDirFile, database.getName()));
+            IOUtil.copyFile(database, new File(mExportedDatabaseDirFile, database.getName()));
         }
-        runOnUiThread(() -> new ToastBuilder("已将数据库文件导出到" + sExportedDatabaseDirFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
+        runOnUiThread(() -> new ToastBuilder("已将数据库文件导出到" + mExportedDatabaseDirFile.getAbsolutePath()).setDuration(Toast.LENGTH_LONG).show());
     }
 
     private static class DatabaseAdapter extends RecyclerView.Adapter<BaseRecyclerAdapter.BaseViewHolder> {
@@ -181,7 +182,7 @@ public class DatabaseListActivity extends DataActivity {
             View triggersView = holder.getView(R.id.triggers);
             TextView versionView = holder.getView(R.id.version);
             TextView tablesView = holder.getView(R.id.tables);
-            databaseNameView.setText(dbPath);
+            databaseNameView.setText(dbPath + " - " + IOUtil.formatFileSize(database.size));
             triggersView.setVisibility(database.triggerCount == 0 ? View.GONE : View.VISIBLE);
             triggersView.setOnClickListener(v -> showAllTriggers(database));
             versionView.setText("version: " + database.version);
@@ -293,6 +294,8 @@ public class DatabaseListActivity extends DataActivity {
     }
 
     private static class Database {
+        private File mDatabasesDir;
+        private long size;
         private String databasePath;
         private int version;
         private List<Table> tableList;
@@ -302,11 +305,13 @@ public class DatabaseListActivity extends DataActivity {
         private boolean collapse;
         private List<Trigger> triggerSqlList;
 
-        private Database(String databasePath, int version, List<Table> tableList, List<Trigger> triggerSqlList) {
+        private Database(@NonNull File databasesDir, String databasePath, int version, List<Table> tableList, List<Trigger> triggerSqlList) {
+            mDatabasesDir = databasesDir;
             this.databasePath = databasePath;
             this.version = version;
             this.tableList = tableList;
             this.triggerSqlList = triggerSqlList;
+            this.size = getDbSize(databasePath);
             if (tableList != null) {
                 int tableCount = 0;
                 int viewCount = 0;
@@ -325,17 +330,26 @@ public class DatabaseListActivity extends DataActivity {
             }
         }
 
-        @NonNull
+        //db + sb-shm + db-wal
+        private long getDbSize(String databasePath) {
+            long mainFileSize = new File(mDatabasesDir, databasePath).length();
+            long shmFileSize = new File(mDatabasesDir, databasePath + "-shm").length();
+            long walFileSize = new File(mDatabasesDir, databasePath + "-wal").length();
+            return mainFileSize + shmFileSize + walFileSize;
+        }
+
         @Override
         public String toString() {
             return "Database{" +
-                    "databasePath='" + databasePath + '\'' +
+                    "size=" + size +
+                    ", databasePath='" + databasePath + '\'' +
                     ", version=" + version +
                     ", tableList=" + tableList +
                     ", tableCount=" + tableCount +
-                    ", triggerSqlList=" + triggerSqlList +
+                    ", viewCount=" + viewCount +
                     ", triggerCount=" + triggerCount +
                     ", collapse=" + collapse +
+                    ", triggerSqlList=" + triggerSqlList +
                     '}';
         }
     }

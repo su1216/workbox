@@ -23,16 +23,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 
 import com.su.workbox.entity.NoteWebViewEntity;
 import com.su.workbox.ui.WebViewActivity;
-import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;
-import com.su.workbox.utils.ThreadUtil;
 import com.su.workbox.widget.ToastBuilder;
 
 import java.io.BufferedReader;
@@ -42,7 +39,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -321,10 +317,9 @@ public final class AppHelper {
     }
 
     public static String formatSize(long fileLength) {
-        DecimalFormat decimalFormat = ThreadUtil.getDecimalFormat("#,###");
         String text;
         if (fileLength >= 1024) {
-            text = Formatter.formatShortFileSize(GeneralInfoHelper.getContext(), fileLength) + " (" + decimalFormat.format(fileLength) + "B)";
+            text = IOUtil.formatFileSize(fileLength);
         } else {
             text = fileLength + "B";
         }

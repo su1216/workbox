@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.text.format.Formatter;
 import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +27,6 @@ import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.RecyclerItemClickListener;
 
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -73,10 +71,9 @@ public class FileActivity extends BaseAppCompatActivity implements RecyclerItemC
 
     private List<Pair<String, String>> makeDataList(@NonNull File file) {
         String filepath = file.getAbsolutePath();
-        DecimalFormat df = new DecimalFormat("#,###");
         List<Pair<String, String>> list = new ArrayList<>();
         list.add(new Pair<>("path", filepath));
-        list.add(new Pair<>("size", Formatter.formatShortFileSize(this, file.length()) + " (" + df.format(file.length()) + "B)"));
+        list.add(new Pair<>("size", IOUtil.formatFileSize(file.length())));
         list.add(new Pair<>("last-modify", ThreadUtil.getSimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(file.lastModified()))));
         int authority = 0;
         if (file.canExecute()) {
