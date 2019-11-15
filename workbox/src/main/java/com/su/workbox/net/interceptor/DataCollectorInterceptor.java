@@ -138,6 +138,7 @@ public class DataCollectorInterceptor implements Interceptor {
 
         if (sDebug) {
             Log.d(TAG, "url: " + url);
+            Log.d(TAG, "newUrl: " + newUrl);
             Log.d(TAG, "host: " + host);
             Log.d(TAG, "path: " + path);
             Log.d(TAG, "method: " + method);
@@ -146,7 +147,7 @@ public class DataCollectorInterceptor implements Interceptor {
             Log.d(TAG, "isMultipartRequestBody: " + entity.isMultipartRequestBody());
             Log.d(TAG, "requestBody: " + bodyString);
         }
-        entity.setUrl(url);
+        entity.setUrl(newUrl);
         entity.setHost(host);
         entity.setPath(path);
         entity.setMethod(method);
