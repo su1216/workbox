@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="import"
-        android:onClick="processImport"
-        android:icon="@drawable/workbox_menu_import"
         android:id="@+id/process_import"
+        android:icon="@drawable/workbox_menu_import"
+        android:onClick="processImport"
+        android:title="import"
         app:showAsAction="always"/>
     <item
         android:id="@+id/search"
@@ -13,4 +13,18 @@
         android:title="search"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="collapseActionView|ifRoom"/>
+    <item
+        android:id="@+id/delete"
+        android:icon="@drawable/workbox_menu_edit"
+        android:onClick="delete"
+        android:title="delete"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/confirm"
+        android:icon="@drawable/workbox_menu_save"
+        android:onClick="confirm"
+        android:title="confirm"
+        android:visible="false"
+        app:showAsAction="always"/>
 </menu>

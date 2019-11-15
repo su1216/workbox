@@ -1,5 +1,6 @@
 package com.su.workbox.ui.mock;
 
+import android.app.AlertDialog;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -9,10 +10,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.util.Pair;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -34,6 +38,7 @@ import java.util.Set;
 public class MockUrlListActivity extends BaseAppCompatActivity implements SearchView.OnQueryTextListener {
 
     public static final String TAG = MockUrlListActivity.class.getSimpleName();
+    private static final SimpleBlockedDialogFragment DIALOG_FRAGMENT = SimpleBlockedDialogFragment.newInstance();
     private RecordAdapter mAdapter;
     private String mHost;
     private String mTitle;
@@ -41,7 +46,6 @@ public class MockUrlListActivity extends BaseAppCompatActivity implements Search
     private SearchableHelper mSearchableHelper = new SearchableHelper();
     private RequestResponseModel mModel;
     private CancelableObserver<List<RequestResponseRecord>> mRequestResponseObserver;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,6 +106,65 @@ public class MockUrlListActivity extends BaseAppCompatActivity implements Search
         MockUtil.startCollection(this, SimpleBlockedDialogFragment.newInstance());
     }
 
+    public void delete(@NonNull MenuItem item) {
+        editMode(mToolbar.getMenu(), true);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    public void confirm(@NonNull MenuItem item) {
+        List<RequestResponseRecord> data = mAdapter.getData();
+        int size = data.size();
+        List<Pair<Integer, Long>> deleteList = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            RequestResponseRecord record = data.get(i);
+            if (record.isChecked()) {
+                deleteList.add(new Pair<>(i, record.getId()));
+            }
+        }
+        editMode(mToolbar.getMenu(), false);
+        if (deleteList.isEmpty()) {
+            mAdapter.notifyDataSetChanged();
+            return;
+        }
+
+        new AlertDialog.Builder(this)
+                .setMessage("确认删除已选中的" + deleteList.size() + "条数据？")
+                .setPositiveButton(R.string.workbox_delete, (dialog, which) -> delete(data, deleteList))
+                .setNegativeButton(R.string.workbox_cancel, (dialog, which) ->  {
+                    for (int i = 0; i < size; i++) {
+                        RequestResponseRecord record = data.get(i);
+                        record.setChecked(false);
+                    }
+                    mAdapter.notifyDataSetChanged();
+                })
+                .show();
+    }
+
+    private void delete(List<RequestResponseRecord> data, List<Pair<Integer, Long>> deleteList) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        DIALOG_FRAGMENT.show(ft, "删除中...");
+        AppExecutors.getInstance().diskIO().execute(() -> {
+            int deleteSize = deleteList.size();
+            for (int i = deleteSize - 1; i >= 0; i--) {
+                Pair<Integer, Long> pair = deleteList.get(i);
+                MockUtil.deleteById(this, pair.second);
+                data.remove((int) pair.first);
+                runOnUiThread(() -> mAdapter.notifyItemRemoved(pair.first));
+            }
+            DIALOG_FRAGMENT.dismissAllowingStateLoss();
+            runOnUiThread(() -> mAdapter.notifyDataSetChanged());
+        });
+    }
+
+    private void editMode(Menu menu, boolean edit) {
+        mAdapter.mEdit = edit;
+        menu.findItem(R.id.process_import).setVisible(!edit);
+        menu.findItem(R.id.search).setVisible(!edit);
+        menu.findItem(R.id.delete).setVisible(!edit);
+        menu.findItem(R.id.confirm).setVisible(edit);
+        menu.findItem(R.id.search).collapseActionView();
+    }
+
     @Override
     public int menuRes() {
         return R.menu.workbox_mock_url_list_menu;
@@ -111,6 +174,7 @@ public class MockUrlListActivity extends BaseAppCompatActivity implements Search
 
         private Context mContext;
         private Resources mResources;
+        boolean mEdit;
 
         RecordAdapter(Context context) {
             super(new ArrayList<>());
@@ -198,13 +262,19 @@ public class MockUrlListActivity extends BaseAppCompatActivity implements Search
                 descLayout.setVisibility(View.VISIBLE);
             }
 
-            checkBox.setChecked(inUse);
-            checkBox.setOnClickListener(v -> {
-                RequestResponseRecord requestResponseRecord = record.clone();
-                requestResponseRecord.setInUse(checkBox.isChecked());
-                AppExecutors.getInstance().diskIO().execute(() -> mModel.updateRequestResponseRecord(requestResponseRecord));
-            });
-            holder.itemView.setOnClickListener(v -> onItemClick(position));
+            if (mEdit) {
+                checkBox.setChecked(record.isChecked());
+                checkBox.setOnClickListener(v -> record.setChecked(checkBox.isChecked()));
+                holder.itemView.setOnClickListener(null);
+            } else {
+                checkBox.setChecked(inUse);
+                checkBox.setOnClickListener(v -> {
+                    RequestResponseRecord requestResponseRecord = record.clone();
+                    requestResponseRecord.setInUse(checkBox.isChecked());
+                    AppExecutors.getInstance().diskIO().execute(() -> mModel.updateRequestResponseRecord(requestResponseRecord));
+                });
+                holder.itemView.setOnClickListener(v -> onItemClick(position));
+            }
         }
 
         private void onItemClick(int position) {

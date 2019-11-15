@@ -2,6 +2,7 @@ package com.su.workbox.ui.mock;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -77,6 +78,8 @@ public final class RequestResponseRecord implements Parcelable, Cloneable {
     private boolean auto;
     @ColumnInfo(name = "inUse")
     private boolean inUse;
+    @Ignore
+    private boolean checked; // 本地多选时使用
 
     public RequestResponseRecord() {
     }
@@ -387,6 +390,14 @@ public final class RequestResponseRecord implements Parcelable, Cloneable {
         this.inUse = inUse;
     }
 
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
+
     public boolean isMockable() {
         return !(isMultipartRequestBody()
                 || (isHasRequestBody() && TextUtils.isEmpty(getRequestBody()))
@@ -466,6 +477,7 @@ public final class RequestResponseRecord implements Parcelable, Cloneable {
                 ", code=" + code +
                 ", auto=" + auto +
                 ", inUse=" + inUse +
+                ", checked=" + checked +
                 '}';
     }
 }
