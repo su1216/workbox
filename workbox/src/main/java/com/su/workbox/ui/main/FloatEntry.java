@@ -34,6 +34,7 @@ public class FloatEntry implements View.OnTouchListener, View.OnClickListener, O
 
     @SuppressLint("StaticFieldLeak")
     private static FloatEntry sFloatEntry;
+    @SuppressLint("StaticFieldLeak")
     private static WorkboxPanel sWorkboxPanel;
     private TouchProxy mTouchProxy;
     private WindowManager mWindowManager;

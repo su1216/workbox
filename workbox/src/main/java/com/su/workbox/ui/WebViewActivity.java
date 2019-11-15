@@ -1,5 +1,6 @@
 package com.su.workbox.ui;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.net.Uri;
@@ -90,6 +91,7 @@ public class WebViewActivity extends BaseAppCompatActivity implements SwipeRefre
         menu.findItem(R.id.clean_up).setVisible(mClearable);
     }
 
+    @SuppressLint("JavascriptInterface")
     private void initWebView() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
