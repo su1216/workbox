@@ -91,7 +91,7 @@ if (BuildConfig.DEBUG) {
 
 
 
-模拟activity传参跳转时，可以对activity进行如下类似配置
+使用任意门功能时，可以使用NoteComponent注解对activity进行如下类似Intent参数配置
 
 ```java
 @NoteComponent(description = "页面传参测试",
@@ -104,7 +104,7 @@ if (BuildConfig.DEBUG) {
 
 其中`type`必须要指定为`activity`，参数不仅可以配置为基本数据类型也可以配置实现Parcelable的类型。
 
-启动service也类似。
+也可通过修改Workbox自动收集的Intent信息进行跳转，Workbox默认收集用户在打开页面时的Intent信息。
 
 
 
@@ -161,8 +161,6 @@ String host = Workbox.getWebViewHost();
 if (!TextUtils.isEmpty(host)) {
     mUrl = Workbox.urlMapping(mUrl, host);
 }
-
-
 ```
 
 更多细节请参阅[wiki](https://github.com/su1216/workbox/wiki)
