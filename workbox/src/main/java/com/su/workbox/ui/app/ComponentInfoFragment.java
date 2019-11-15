@@ -17,14 +17,17 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.su.workbox.R;
 import com.su.workbox.entity.NoteComponentEntity;
 import com.su.workbox.ui.base.BaseFragment;
 import com.su.workbox.utils.ReflectUtil;
+import com.su.workbox.utils.UiHelper;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -136,134 +139,141 @@ public class ComponentInfoFragment extends BaseFragment {
     private void makeActivityInfoList() {
         ActivityInfo info = (ActivityInfo) mComponentInfo;
 //        add(new Pair<>("description", mDesc));
-//        add(new Pair<>("name", mActivityInfo.name));
-        add(new Pair<>("label", info.loadLabel(mActivity.getPackageManager()).toString()));
-        add(new Pair<>("enabled", String.valueOf(info.enabled)));
-        add(new Pair<>("exported", String.valueOf(info.exported)));
-        add(new Pair<>("processName", info.processName));
-        add(new Pair<>("taskAffinity", info.taskAffinity));
-        add(new Pair<>("permission", info.permission));
+        add("label", info.loadLabel(mActivity.getPackageManager()).toString());
+        add("enabled", String.valueOf(info.enabled));
+        add("exported", String.valueOf(info.exported));
+        add("processName", info.processName);
+        add("taskAffinity", info.taskAffinity);
+        add("permission", info.permission);
         List<Field> launchModeFields = ReflectUtil.getFieldsWithPrefix(ActivityInfo.class, "LAUNCH_");
-        add(new Pair<>("launchMode", ReflectUtil.getSingleMatchedFlag(ActivityInfo.class, launchModeFields, info.launchMode).first));
+        add("launchMode", ReflectUtil.getSingleMatchedFlag(ActivityInfo.class, launchModeFields, info.launchMode).first);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             List<Field> documentLaunchModeFields = ReflectUtil.getFieldsWithPrefix(ActivityInfo.class, "DOCUMENT_LAUNCH_");
-            add(new Pair<>("documentLaunchMode", ReflectUtil.getSingleMatchedFlag(ActivityInfo.class, documentLaunchModeFields, info.documentLaunchMode).first));
+            add("documentLaunchMode", ReflectUtil.getSingleMatchedFlag(ActivityInfo.class, documentLaunchModeFields, info.documentLaunchMode).first);
         }
-        add(new Pair<>("parentActivityName", info.parentActivityName));
+        add("parentActivityName", info.parentActivityName);
+        if (info.theme > 0) {
+            add("theme", UiHelper.getThemeName(info.theme));
+        }
         List<Field> screenOrientationFields = ReflectUtil.getFieldsWithPrefix(ActivityInfo.class, "SCREEN_ORIENTATION_");
-        add(new Pair<>("screenOrientation", ReflectUtil.getSingleMatchedFlag(ActivityInfo.class, screenOrientationFields, info.screenOrientation).first));
-        //info.softInputMode
-        List<Field> configChangesFields = ReflectUtil.getFieldsWithPrefix(ActivityInfo.class, "CONFIG_");
-        List<Pair<String, String>> configChanges = ReflectUtil.getMatchedFlags(ActivityInfo.class, configChangesFields, info.configChanges);
-        StringBuilder configChangeDesc = new StringBuilder();
-        for (Pair<String, String> configChange : configChanges) {
-            configChangeDesc.append(configChange.first + ", ");
+        add("screenOrientation", ReflectUtil.getSingleMatchedFlag(ActivityInfo.class, screenOrientationFields, info.screenOrientation).first);
+        add("softInputMode", makeMultipleChoiceStringResult(WindowManager.LayoutParams.class, "SOFT_INPUT_", info.softInputMode));
+        add("configChanges", makeMultipleChoiceStringResult(ActivityInfo.class, "CONFIG_", info.configChanges));
+        // allowTaskReparenting/alwaysRetainTaskState/autoRemoveFromRecents
+        // allowEmbedded/clearTaskOnLaunch/excludeFromRecents/finishOnTaskLaunch
+        // hardwareAccelerated/immersive/multiprocess/supportsPictureInPicture
+        // noHistory/relinquishTaskIdentity/stateNotNeeded
+        add("flags",makeMultipleChoiceStringResult(ActivityInfo.class, "FLAG_", info.flags));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            add("directBootAware", info.directBootAware);
         }
-        if (!configChanges.isEmpty()) {
-            configChangeDesc.delete(configChangeDesc.length() - 2, configChangeDesc.length());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            List<Field> colorModeFields = ReflectUtil.getFieldsWithPrefix(ActivityInfo.class, "COLOR_MODE_");
+            add("colorMode", ReflectUtil.getSingleMatchedFlag(ActivityInfo.class, colorModeFields, info.colorMode).first);
         }
-        add(new Pair<>("configChanges", configChangeDesc.toString()));
-
-        List<Field> flagsFields = ReflectUtil.getFieldsWithPrefix(ActivityInfo.class, "FLAG_");
-        List<Pair<String, String>> flags = ReflectUtil.getMatchedFlags(ActivityInfo.class, flagsFields, info.flags);
-        StringBuilder flagDesc = new StringBuilder(64);
-        for (Pair<String, String> flag : flags) {
-            flagDesc.append(flag.first + ", ");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            add("maxRecents", info.maxRecents);
+            List<Field> persistableModeFields = ReflectUtil.getFieldsWithPrefix(ActivityInfo.class, "PERSIST_");
+            add("persistableMode", ReflectUtil.getSingleMatchedFlag(ActivityInfo.class, persistableModeFields, info.persistableMode).first);
         }
-        if (!flags.isEmpty()) {
-            flagDesc.delete(flagDesc.length() - 2, flagDesc.length());
+        if (info.uiOptions > 0) {
+            List<Field> uiOptionsFields = ReflectUtil.getFieldsWithPrefix(ActivityInfo.class, "UIOPTION_");
+            add("uiOptions", ReflectUtil.getSingleMatchedFlag(ActivityInfo.class, uiOptionsFields, info.uiOptions).first);
         }
-        add(new Pair<>("flags", flagDesc.toString()));
-    }
-
-    private boolean add(Pair<String, String> pair) {
-        if (!TextUtils.isEmpty(pair.second)) {
-            return mList.add(pair);
-        }
-        return false;
+//        android:lockTaskMode=["normal" | "never" | "if_whitelisted" | "always"] //hide
+//        android:maxAspectRatio="float" //hide
+//        android:resizeableActivity=["true" | "false"] //UnsupportedAppUsage
+//        android:showForAllUsers=["true" | "false"] //UnsupportedAppUsage
     }
 
     private void makeServiceInfoList() {
         ServiceInfo info = (ServiceInfo) mComponentInfo;
 //        add(new Pair<>("description", mDesc));
-//        add(new Pair<>("name", mActivityInfo.name));
-        add(new Pair<>("label", info.loadLabel(mActivity.getPackageManager()).toString()));
-        add(new Pair<>("enabled", String.valueOf(info.enabled)));
-        add(new Pair<>("exported", String.valueOf(info.exported)));
-        add(new Pair<>("processName", info.processName));
-        add(new Pair<>("permission", info.permission));
-        List<Field> flagsFields = ReflectUtil.getFieldsWithPrefix(ServiceInfo.class, "FLAG_");
-        List<Pair<String, String>> flags = ReflectUtil.getMatchedFlags(ServiceInfo.class, flagsFields, info.flags);
-        StringBuilder flagDesc = new StringBuilder(64);
-        for (Pair<String, String> flag : flags) {
-            flagDesc.append(flag.first + ", ");
+        add("label", info.loadLabel(mActivity.getPackageManager()).toString());
+        add("enabled", String.valueOf(info.enabled));
+        add("exported", String.valueOf(info.exported));
+        add("processName", info.processName);
+        add("permission", info.permission);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            add("directBootAware", info.directBootAware);
         }
-        if (!flags.isEmpty()) {
-            flagDesc.delete(flagDesc.length() - 2, flagDesc.length());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            add("foregroundServiceType", makeMultipleChoiceStringResult(ServiceInfo.class, "FOREGROUND_SERVICE_TYPE_", info.getForegroundServiceType()));
         }
-        add(new Pair<>("flags", flagDesc.toString()));
+        add("isolatedProcess", makeMultipleChoiceStringResult(ServiceInfo.class, "FLAG_", info.flags));
     }
 
     private void makeProviderInfoList() {
         ProviderInfo info = (ProviderInfo) mComponentInfo;
 //        add(new Pair<>("description", mDesc));
-//        add(new Pair<>("name", mActivityInfo.name));
-        add(new Pair<>("label", info.loadLabel(mActivity.getPackageManager()).toString()));
-        add(new Pair<>("enabled", String.valueOf(info.enabled)));
-        add(new Pair<>("exported", String.valueOf(info.exported)));
-        add(new Pair<>("processName", info.processName));
-        add(new Pair<>("authority", info.authority));
-        add(new Pair<>("readPermission", info.readPermission));
-        add(new Pair<>("writePermission", info.writePermission));
-        add(new Pair<>("pathPermissions", Arrays.toString(info.pathPermissions)));
-        add(new Pair<>("uriPermissionPatterns", Arrays.toString(info.uriPermissionPatterns)));
-        add(new Pair<>("grantUriPermissions", String.valueOf(info.grantUriPermissions)));
-        add(new Pair<>("initOrder", String.valueOf(info.initOrder)));
-
-        List<Field> flagsFields = ReflectUtil.getFieldsWithPrefix(ProviderInfo.class, "FLAG_");
-        List<Pair<String, String>> flags = ReflectUtil.getMatchedFlags(ProviderInfo.class, flagsFields, info.flags);
-        StringBuilder flagDesc = new StringBuilder(64);
-        for (Pair<String, String> flag : flags) {
-            flagDesc.append(flag.first + ", ");
+        add("label", info.loadLabel(mActivity.getPackageManager()).toString());
+        add("enabled", info.enabled);
+        add("exported", info.exported);
+        add("processName", info.processName);
+        add("authority", info.authority);
+        add("initOrder", info.initOrder);
+        add("multiprocess", info.multiprocess);
+        add("readPermission", info.readPermission);
+        add("writePermission", info.writePermission);
+        add("pathPermissions", info.pathPermissions);
+        add("uriPermissionPatterns", info.uriPermissionPatterns);
+        add("grantUriPermissions", info.grantUriPermissions);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            add("forceUriPermissions", info.forceUriPermissions);
         }
-        if (!flags.isEmpty()) {
-            flagDesc.delete(flagDesc.length() - 2, flagDesc.length());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            add("directBootAware", info.directBootAware);
         }
-        add(new Pair<>("flags", flagDesc.toString()));
+        add("flags", makeMultipleChoiceStringResult(ProviderInfo.class, "FLAG_", info.flags));
     }
 
     private void makeReceiverInfoList() {
         ActivityInfo info = (ActivityInfo) mComponentInfo;
 //        add(new Pair<>("description", mDesc));
-//        add(new Pair<>("name", mActivityInfo.name));
-        add(new Pair<>("label", info.loadLabel(mActivity.getPackageManager()).toString()));
-        add(new Pair<>("enabled", String.valueOf(info.enabled)));
-        add(new Pair<>("exported", String.valueOf(info.exported)));
-        add(new Pair<>("processName", info.processName));
-        add(new Pair<>("taskAffinity", info.taskAffinity));
-        add(new Pair<>("permission", info.permission));
-//        mActivityInfo.softInputMode
-        List<Field> configChangesFields = ReflectUtil.getFieldsWithPrefix(ActivityInfo.class, "CONFIG_");
-        List<Pair<String, String>> configChanges = ReflectUtil.getMatchedFlags(ActivityInfo.class, configChangesFields, info.configChanges);
-        StringBuilder configChangeDesc = new StringBuilder();
-        for (Pair<String, String> configChange : configChanges) {
-            configChangeDesc.append(configChange.first + ", ");
+        add("label", info.loadLabel(mActivity.getPackageManager()).toString());
+        add("enabled", String.valueOf(info.enabled));
+        add("exported", String.valueOf(info.exported));
+        add("processName", info.processName);
+        add("permission", info.permission);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            add("directBootAware", info.directBootAware);
         }
-        if (!configChanges.isEmpty()) {
-            configChangeDesc.delete(configChangeDesc.length() - 2, configChangeDesc.length());
-        }
-        add(new Pair<>("configChanges", configChangeDesc.toString()));
+        // flags/taskAffinity/configChanges activity属性
+    }
 
-        List<Field> flagsFields = ReflectUtil.getFieldsWithPrefix(ActivityInfo.class, "FLAG_");
-        List<Pair<String, String>> flags = ReflectUtil.getMatchedFlags(ActivityInfo.class, flagsFields, info.flags);
+    private boolean add(String first, Object second) {
+        if (second == null) {
+            return false;
+        }
+        if (second instanceof String) {
+            String secondString = (String) second;
+            if (TextUtils.isEmpty(secondString)) {
+                return false;
+            }
+            return mList.add(new Pair<>(first, (String) second));
+        } else if (second.getClass().isArray()) {
+            int length = Array.getLength(second);
+            Object[] objects = new Object[length];
+            for (int i = 0; i < length; i ++) {
+                objects[i] = Array.get(second, i);
+            }
+            return mList.add(new Pair<>(first, Arrays.toString(objects)));
+        } else {
+            return mList.add(new Pair<>(first, second.toString()));
+        }
+    }
+
+    private String makeMultipleChoiceStringResult(Class<?> searchIn, String prefix, int flags) {
+        List<Field> flagsFields = ReflectUtil.getFieldsWithPrefix(searchIn, prefix);
+        List<Pair<String, String>> resultList = ReflectUtil.getMatchedFlags(ServiceInfo.class, flagsFields, flags);
         StringBuilder flagDesc = new StringBuilder(64);
-        for (Pair<String, String> flag : flags) {
+        for (Pair<String, String> flag : resultList) {
             flagDesc.append(flag.first + ", ");
         }
-        if (!flags.isEmpty()) {
+        if (!resultList.isEmpty()) {
             flagDesc.delete(flagDesc.length() - 2, flagDesc.length());
         }
-        add(new Pair<>("flags", flagDesc.toString()));
+        return flagDesc.toString();
     }
 
     private static class RecyclerViewAdapter extends BaseRecyclerAdapter<Pair<String, String>> {

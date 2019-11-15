@@ -63,7 +63,7 @@ public class ReflectUtil {
         } catch (IllegalAccessException e) {
             Log.e(TAG, "object class: " + clazz.getName(), e);
         }
-        return new Pair<>("未知flag", String.valueOf(flag));
+        return new Pair<>("unknown", String.valueOf(flag));
     }
 
     @NonNull

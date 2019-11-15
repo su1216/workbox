@@ -2,6 +2,8 @@ package com.su.workbox.utils;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -206,5 +208,13 @@ public final class UiHelper {
 
     public static int getTextBaseline(int viewHeight, Paint.FontMetricsInt fontMetricsInt) {
         return (viewHeight - (fontMetricsInt.descent - fontMetricsInt.ascent)) / 2 - fontMetricsInt.ascent;
+    }
+
+    public static String getThemeName(int theme) {
+        try {
+            return GeneralInfoHelper.getContext().getResources().getResourceEntryName(theme);
+        } catch (Resources.NotFoundException e) {
+            return "unknown";
+        }
     }
 }
