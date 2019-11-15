@@ -330,12 +330,13 @@ public class DatabaseListActivity extends DataActivity {
             }
         }
 
-        //db + sb-shm + db-wal
+        //db + sb-shm + db-wal + db-journal
         private long getDbSize(String databasePath) {
             long mainFileSize = new File(mDatabasesDir, databasePath).length();
             long shmFileSize = new File(mDatabasesDir, databasePath + "-shm").length();
             long walFileSize = new File(mDatabasesDir, databasePath + "-wal").length();
-            return mainFileSize + shmFileSize + walFileSize;
+            long journalFileSize = new File(mDatabasesDir, databasePath + "-journal").length();
+            return mainFileSize + shmFileSize + walFileSize + journalFileSize;
         }
 
         @Override

@@ -281,16 +281,15 @@ public final class AppHelper {
     }
 
     public static int getDatabasesCount(@NonNull Context context) {
+        int count = 0;
         String[] dbList = context.getApplicationContext().databaseList();
         if (dbList == null) {
-            return 0;
+            return count;
         }
-        int count = 0;
         for (String dbName : dbList) {
-            if (dbName.endsWith("-journal")) {
-                continue;
+            if (dbName.endsWith(".db")) {
+                count++;
             }
-            count++;
         }
         return count;
     }

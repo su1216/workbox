@@ -62,7 +62,6 @@ public class DataListActivity extends BaseAppCompatActivity {
     public static class ItemListFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener {
         private FragmentActivity mActivity;
         private String mDataDirPath;
-        private FilenameFilter mDbFilenameFilter = (dir, name) -> name.endsWith(".db");
         private FilenameFilter mSpFilenameFilter = (dir, name) -> name.endsWith(".xml");
         private AppExecutors mAppExecutors = AppExecutors.getInstance();
 
@@ -120,10 +119,10 @@ public class DataListActivity extends BaseAppCompatActivity {
 
             Preference databasePreference = findPreference("database");
             databasePreference.setOnPreferenceClickListener(this);
-            File databasesDir = new File(mDataDirPath, "databases");
-            if (IOUtil.hasFilesInDir(databasesDir, mDbFilenameFilter)) {
+            int dbCount = AppHelper.getDatabasesCount(mActivity);
+            if (dbCount > 0) {
                 databasePreference.setEnabled(true);
-                databasePreference.setSummary("共" + databasesDir.list(mDbFilenameFilter).length + "个数据库文件");
+                databasePreference.setSummary("共" + dbCount + "个数据库文件");
             } else {
                 databasePreference.setEnabled(false);
                 databasePreference.setSummary("暂无数据库文件");
