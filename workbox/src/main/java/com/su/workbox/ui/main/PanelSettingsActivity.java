@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.su.workbox.R;
+import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.entity.Module;
 import com.su.workbox.ui.BaseAppCompatActivity;
 import com.su.workbox.utils.SpHelper;
@@ -30,6 +31,7 @@ public class PanelSettingsActivity extends BaseAppCompatActivity {
 
     public static final String TAG = PanelSettingsActivity.class.getSimpleName();
     private List<Module> mEnableModuleList = new ArrayList<>();
+    private List<Module> mAllModuleList = new ArrayList<>(WorkboxPanel.MODULE_LIST);
     private ModuleAdapter mAdapter;
     private ItemTouchHelperCallback mHelperCallback;
 
@@ -37,6 +39,8 @@ public class PanelSettingsActivity extends BaseAppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.workbox_template_recycler_list);
+        //添加自定义模块
+        mAllModuleList.addAll(WorkboxSupplier.getInstance().getCustomModules());
         initModuleList();
         sortAllModuleList();
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
@@ -57,26 +61,27 @@ public class PanelSettingsActivity extends BaseAppCompatActivity {
     }
 
     private void initModuleList() {
-        List<String> enableList = SpHelper.getPanelList();
+        List<String> enableList = WorkboxPanel.getEnableModuleList();
         int size = enableList.size();
         for (int i = 0; i < size; i++) {
             String enableId = enableList.get(i);
-            for (Module module : WorkboxPanel.MODULE_LIST) {
+            for (Module module : mAllModuleList) {
                 if (TextUtils.equals(enableId, module.getId())) {
                     module.setOrder(i);
                     module.setEnable(true);
                     mEnableModuleList.add(module);
+                    break;
                 }
             }
         }
     }
 
     private void sortAllModuleList() {
-        WorkboxPanel.MODULE_LIST.removeAll(mEnableModuleList);
-        WorkboxPanel.MODULE_LIST.addAll(0, mEnableModuleList);
-        int size = WorkboxPanel.MODULE_LIST.size();
+        mAllModuleList.removeAll(mEnableModuleList);
+        mAllModuleList.addAll(0, mEnableModuleList);
+        int size = mAllModuleList.size();
         for (int i = 0; i < size; i++) {
-            WorkboxPanel.MODULE_LIST.get(i).setOrder(i);
+            mAllModuleList.get(i).setOrder(i);
         }
     }
 
@@ -113,11 +118,11 @@ public class PanelSettingsActivity extends BaseAppCompatActivity {
 
     public void edit(@NonNull MenuItem item) {
         mAdapter.mEdit = true;
-        for (Module module : WorkboxPanel.MODULE_LIST) {
+        for (Module module : mAllModuleList) {
             module.setChecked(module.isEnable());
         }
         mHelperCallback.setLongPressDragEnabled(true);
-        mAdapter.setData(WorkboxPanel.MODULE_LIST);
+        mAdapter.setData(mAllModuleList);
         item.setVisible(false);
         mToolbar.getMenu().findItem(R.id.save).setVisible(true);
     }
@@ -135,7 +140,7 @@ public class PanelSettingsActivity extends BaseAppCompatActivity {
 
     private void save() {
         List<String> enableIdList = new ArrayList<>();
-        for (Module module : WorkboxPanel.MODULE_LIST) {
+        for (Module module : mAllModuleList) {
             if (module.isChecked()) {
                 enableIdList.add(module.getId());
             }
@@ -145,7 +150,7 @@ public class PanelSettingsActivity extends BaseAppCompatActivity {
 
     private void updateEnableList() {
         mEnableModuleList.clear();
-        for (Module module : WorkboxPanel.MODULE_LIST) {
+        for (Module module : mAllModuleList) {
             if (module.isChecked()) {
                 module.setEnable(true);
                 mEnableModuleList.add(module);
@@ -156,11 +161,11 @@ public class PanelSettingsActivity extends BaseAppCompatActivity {
     }
 
     private void updateAllList() {
-        WorkboxPanel.MODULE_LIST.removeAll(mEnableModuleList);
-        WorkboxPanel.MODULE_LIST.addAll(0, mEnableModuleList);
-        int size = WorkboxPanel.MODULE_LIST.size();
+        mAllModuleList.removeAll(mEnableModuleList);
+        mAllModuleList.addAll(0, mEnableModuleList);
+        int size = mAllModuleList.size();
         for (int i = 0; i < size; i++) {
-            Module module = WorkboxPanel.MODULE_LIST.get(i);
+            Module module = mAllModuleList.get(i);
             module.setOrder(i);
             module.setChecked(false);
         }

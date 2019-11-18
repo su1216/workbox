@@ -4,9 +4,12 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.su.workbox.Workbox;
+import com.su.workbox.utils.GeneralInfoHelper;
+import com.su.workbox.utils.IOUtil;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +26,9 @@ public class SampleApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sContext = this;
-        initWorkbox(this);
+        if (TextUtils.equals(GeneralInfoHelper.getCurrentProcessName(), BuildConfig.APPLICATION_ID)) {
+            initWorkbox(this);
+        }
         if (BuildConfig.DEBUG) {
             Thread.setDefaultUncaughtExceptionHandler(Workbox.newLogUncaughtExceptionHandler(true));
         }

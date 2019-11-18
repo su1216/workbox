@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
+import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.entity.Module;
 import com.su.workbox.ui.base.AppLifecycleListener;
 import com.su.workbox.utils.GeneralInfoHelper;
@@ -43,6 +44,7 @@ public class FloatEntry implements View.OnTouchListener, View.OnClickListener, O
     private int mScreenWidth = GeneralInfoHelper.getScreenWidth();
     private int mScreenHeight = GeneralInfoHelper.getScreenHeight();
     private int mViewSize;
+    private List<Module> mAllModuleList = new ArrayList<>(WorkboxPanel.MODULE_LIST);
     private List<Module> mModuleList = new ArrayList<>();
     private boolean mPanelDisplay;
 
@@ -55,6 +57,9 @@ public class FloatEntry implements View.OnTouchListener, View.OnClickListener, O
 
     private FloatEntry() {
         AppLifecycleListener.getInstance().addObserver(this);
+        //添加自定义模块
+        mAllModuleList.addAll(WorkboxSupplier.getInstance().getCustomModules());
+        filterModules();
     }
 
     private void createLayoutParams() {
@@ -147,24 +152,24 @@ public class FloatEntry implements View.OnTouchListener, View.OnClickListener, O
 
     private void filterModules() {
         mModuleList.clear();
-        List<String> enableList = SpHelper.getPanelList();
-        for (String enableId : enableList) {
-            for (Module module : WorkboxPanel.MODULE_LIST) {
-                if (TextUtils.equals(module.getId(), enableId)) {
-
-                }
-            }
-        }
-
-        int size = enableList.size();
-        for (int i = 0; i < size; i++) {
-            String enableId = enableList.get(i);
-            for (Module module : WorkboxPanel.MODULE_LIST) {
-                if (TextUtils.equals(enableId, module.getId())) {
+        List<String> enabledList = WorkboxPanel.getEnableModuleList();
+        List<String> invalidList = new ArrayList<>();
+        for (String id : enabledList) {
+            boolean find = false;
+            for (Module module : mAllModuleList) {
+                if (TextUtils.equals(id, module.getId())) {
                     mModuleList.add(module);
+                    find = true;
                     break;
                 }
             }
+            if (!find) {
+                invalidList.add(id);
+            }
+        }
+        if (!invalidList.isEmpty()) {
+            enabledList.removeAll(invalidList);
+            SpHelper.setPanelList(enabledList);
         }
     }
 

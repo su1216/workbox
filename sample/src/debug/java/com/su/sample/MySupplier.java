@@ -1,12 +1,16 @@
 package com.su.sample;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.su.sample.web.JsCommunication;
 import com.su.workbox.WorkboxSupplier;
+import com.su.workbox.entity.Module;
+import com.su.workbox.utils.GeneralInfoHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,5 +66,22 @@ public class MySupplier extends WorkboxSupplier {
         List<String> key = new ArrayList<>();
         keys.add(key);
         return keys;
+    }
+
+    @NonNull
+    @Override
+    public List<Module> getCustomModules() {
+        Context context = GeneralInfoHelper.getContext();
+        List<Module> list = new ArrayList<>();
+        Module module = new Module();
+        module.setName("自定义哦");
+        module.setOnClickListener(v -> {
+            Intent intent = new Intent(context, LifecycleActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        });
+        module.setId("test");
+        list.add(module);
+        return list;
     }
 }

@@ -1,5 +1,7 @@
 package com.su.workbox.entity;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
 import android.view.View;
 
 import java.util.Objects;
@@ -13,7 +15,7 @@ public class Module {
     private int order = 1024;
     private boolean enable;
     private boolean checked;
-    private boolean extra;
+    private boolean internal = true;
     private View.OnClickListener onClickListener;
 
     public String getId() {
@@ -44,6 +46,7 @@ public class Module {
         return enable;
     }
 
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     public void setEnable(boolean enable) {
         this.enable = enable;
     }
@@ -60,16 +63,12 @@ public class Module {
         return onClickListener;
     }
 
-    public void setOnClickListener(View.OnClickListener onClickListener) {
+    public void setOnClickListener(@NonNull View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }
 
-    public boolean isExtra() {
-        return extra;
-    }
-
-    public void setExtra(boolean extra) {
-        this.extra = extra;
+    public boolean isInternal() {
+        return internal;
     }
 
     @Override
@@ -93,7 +92,7 @@ public class Module {
                 ", order=" + order +
                 ", enable=" + enable +
                 ", checked=" + checked +
-                ", extra=" + extra +
+                ", internal=" + internal +
                 ", onClickListener=" + onClickListener +
                 '}';
     }

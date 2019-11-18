@@ -8,6 +8,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -21,11 +22,13 @@ import com.su.workbox.R;
 import com.su.workbox.Workbox;
 import com.su.workbox.entity.Module;
 import com.su.workbox.utils.GeneralInfoHelper;
+import com.su.workbox.utils.SpHelper;
 import com.su.workbox.utils.UiHelper;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.GridItemSpaceDecoration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,13 +36,14 @@ import java.util.List;
  */
 public class WorkboxPanel implements View.OnClickListener {
 
-    public static final String[] DEFAULT_PANEL_MODULES = {Workbox.MODULE_CRASH_LOG,
+    public static final List<String> DEFAULT_PANEL_MODULES = Arrays.asList(Workbox.MODULE_CRASH_LOG,
             Workbox.MODULE_APP_INFO,
             Workbox.MODULE_DEVICE_INFO,
             Workbox.MODULE_LAUNCHER,
-            Workbox.MODULE_MAIN};
+            Workbox.MODULE_MAIN);
 
     public static final List<Module> MODULE_LIST = new ArrayList<>();
+
     static {
         Context context = GeneralInfoHelper.getContext();
         Module dataExportModule = new Module();
@@ -57,7 +61,6 @@ public class WorkboxPanel implements View.OnClickListener {
         Module activitiesModule = new Module();
         activitiesModule.setId(Workbox.MODULE_LAUNCHER);
         activitiesModule.setName("任意门");
-        activitiesModule.setEnable(true);
         activitiesModule.setOnClickListener(v -> startActivity(Workbox.MODULE_LAUNCHER, context));
         MODULE_LIST.add(activitiesModule);
 
@@ -76,14 +79,12 @@ public class WorkboxPanel implements View.OnClickListener {
         Module appInfoModule = new Module();
         appInfoModule.setId(Workbox.MODULE_APP_INFO);
         appInfoModule.setName("应用信息");
-        appInfoModule.setEnable(true);
         appInfoModule.setOnClickListener(v -> startActivity(Workbox.MODULE_APP_INFO, context));
         MODULE_LIST.add(appInfoModule);
 
         Module deviceInfoModule = new Module();
         deviceInfoModule.setId(Workbox.MODULE_DEVICE_INFO);
         deviceInfoModule.setName("设备信息");
-        deviceInfoModule.setEnable(true);
         deviceInfoModule.setOnClickListener(v -> startActivity(Workbox.MODULE_DEVICE_INFO, context));
         MODULE_LIST.add(deviceInfoModule);
 
@@ -114,9 +115,10 @@ public class WorkboxPanel implements View.OnClickListener {
         Module mainModule = new Module();
         mainModule.setId(Workbox.MODULE_MAIN);
         mainModule.setName("功能列表");
-        mainModule.setEnable(true);
         mainModule.setOnClickListener(v -> startActivity(Workbox.MODULE_MAIN, context));
         MODULE_LIST.add(mainModule);
+
+        intModulesState();
     }
 
     private ViewGroup mRootView;
@@ -125,6 +127,29 @@ public class WorkboxPanel implements View.OnClickListener {
     private List<Module> mModuleList = new ArrayList<>();
     private boolean mShown;
     private FloatEntry mFloatEntry;
+
+    public static List<String> getEnableModuleList() {
+        List<String> panelList = SpHelper.getPanelList();
+        List<String> enabledList;
+        if (panelList.isEmpty()) {
+            enabledList = WorkboxPanel.DEFAULT_PANEL_MODULES;
+        } else {
+            enabledList = panelList;
+        }
+        return enabledList;
+    }
+
+    static void intModulesState() {
+        List<String> enabledList = getEnableModuleList();
+        for (String id : enabledList) {
+            for (Module module : MODULE_LIST) {
+                if (TextUtils.equals(id, module.getId())) {
+                    module.setEnable(true);
+                    break;
+                }
+            }
+        }
+    }
 
     private static void startActivity(@NonNull String module, @NonNull Context context) {
         Intent intent = Workbox.getWorkboxModuleIntent(module, context);

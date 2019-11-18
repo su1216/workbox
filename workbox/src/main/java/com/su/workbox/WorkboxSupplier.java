@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
+import com.su.workbox.entity.Module;
+
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -129,5 +131,10 @@ public class WorkboxSupplier {
 
     public static WorkboxSupplier getInstance() {
         return sSupplier;
+    }
+
+    @NonNull
+    public List<Module> getCustomModules() {
+        return new ArrayList<>();
     }
 }
