@@ -1,9 +1,7 @@
 package com.su.workbox.ui.ui;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -22,12 +20,6 @@ public class RulerActivity extends BaseAppCompatActivity {
 
     public static final String TAG = RulerActivity.class.getSimpleName();
     private static boolean sShowing;
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            finish();
-        }
-    };
 
     public static Intent getLaunchIntent(@NonNull Context context) {
         return new Intent(context, RulerActivity.class);
@@ -36,9 +28,6 @@ public class RulerActivity extends BaseAppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.su.workbox.FINISH_RULER");
-        registerReceiver(mReceiver, intentFilter);
         Window window = getWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setNavigationBarColor(Color.TRANSPARENT);
@@ -72,12 +61,6 @@ public class RulerActivity extends BaseAppCompatActivity {
     protected void onPause() {
         super.onPause();
         sShowing = false;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(mReceiver);
     }
 
     @Override

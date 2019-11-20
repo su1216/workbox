@@ -11,9 +11,7 @@ import com.su.workbox.ui.ui.RulerActivity;
 public class MeasureService extends TileService {
     @Override
     public void onClick() {
-        if (RulerActivity.isShowing()) {
-            sendBroadcast(new Intent("com.su.workbox.FINISH_RULER"));
-        } else {
+        if (!RulerActivity.isShowing()) {
             Intent intent = new Intent(this, RulerActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivityAndCollapse(intent);
