@@ -105,6 +105,14 @@ public final class IOUtil {
     }
 
     public static boolean isRoot() {
+        String roSecure = AppHelper.shellExec("/bin/sh", "-c", "getprop ro.secure");
+        //eng/userdebug版本
+        if (!TextUtils.isEmpty(roSecure)) {
+            roSecure = roSecure.replaceAll("\n", "");
+        }
+        if (TextUtils.equals("0", roSecure)) {
+            return true;
+        }
         List<String> pathList = IOUtil.environmentPathList();
         for (String path : pathList) {
             if (new File(path, "su").exists()) {
