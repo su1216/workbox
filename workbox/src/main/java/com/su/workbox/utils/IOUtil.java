@@ -10,16 +10,13 @@ import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.system.Os;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-import com.su.workbox.AppHelper;
 import com.su.workbox.entity.FileSystem;
-import com.su.workbox.entity.PidInfo;
 import com.su.workbox.widget.ToastBuilder;
 
 import java.io.BufferedReader;
@@ -34,18 +31,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by su on 15-11-10.
@@ -104,83 +94,10 @@ public final class IOUtil {
         return details;
     }
 
-    public static boolean isRoot() {
-        String roSecure = AppHelper.shellExec("/bin/sh", "-c", "getprop ro.secure");
-        //eng/userdebug版本
-        if (!TextUtils.isEmpty(roSecure)) {
-            roSecure = roSecure.replaceAll("\n", "");
-        }
-        if (TextUtils.equals("0", roSecure)) {
-            return true;
-        }
-        List<String> pathList = IOUtil.environmentPathList();
-        for (String path : pathList) {
-            if (new File(path, "su").exists()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Nullable
     public static String getFileType(String filepath) {
         String ext = MimeTypeMap.getFileExtensionFromUrl(filepath);
         return MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext);
-    }
-
-    public static String getFileMd5(String filepath) {
-        String md5 = AppHelper.shellExec("/bin/sh", "-c", "md5sum " + filepath);
-        return processDigestResult(md5);
-    }
-
-    public static String getFileSha1(String filepath) {
-        String sha1 = AppHelper.shellExec("/bin/sh", "-c", "sha1sum " + filepath);
-        return processDigestResult(sha1);
-    }
-
-    public static List<String> getInstalledApp() {
-        String packagesString = AppHelper.shellExec("/bin/sh", "-c", "pm list packages | cut -d ':' -f 2");
-        if (TextUtils.isEmpty(packagesString)) {
-            return new ArrayList<>();
-        }
-        return Arrays.asList(packagesString.split("\n"));
-    }
-
-    public static String getFileSha256(String filepath) {
-        String sha256 = AppHelper.shellExec("/bin/sh", "-c", "sha256sum " + filepath);
-        return processDigestResult(sha256);
-    }
-
-    private static boolean isEmptyResult(@Nullable String result, boolean hasTitleLine) {
-        if (TextUtils.isEmpty(result)) {
-            return true;
-        }
-        if (hasTitleLine) {
-            String[] lines = result.split("\n");
-            int length = lines.length;
-            return length < 2;
-        }
-        return false;
-    }
-
-    public static List<String> getShellVariables() {
-        String variables = AppHelper.shellExec("/bin/sh", "-c", "set");
-        return Arrays.asList(variables.split("\n"));
-    }
-
-    @NonNull
-    public static List<FileSystem> getFileSystemList() {
-        List<FileSystem> list = new ArrayList<>();
-        String result = AppHelper.shellExec("/bin/sh", "-c", "df -h");
-        if (isEmptyResult(result, true)) {
-            return list;
-        }
-        String[] lines = result.split("\n");
-        int length = lines.length;
-        for (int i = 1; i < length; i++) {
-            list.add(FileSystem.fromShellLine(lines[i]));
-        }
-        return list;
     }
 
     public static void fillFileSystemType(@NonNull List<FileSystem> list) {
@@ -198,81 +115,6 @@ public final class IOUtil {
         } catch (IOException e) {
             Log.w(TAG, e);
         }
-    }
-
-    @Nullable
-    public static PidInfo getProcessInfo(int pid) {
-        String result = AppHelper.shellExec("/bin/sh", "-c", "ps " + pid);
-        if (isEmptyResult(result, true)) {
-            return null;
-        }
-        String[] lines = result.split("\n");
-        PidInfo pidInfo = PidInfo.fromShellLine(lines[1]);
-
-        String userProcessResult = AppHelper.shellExec("/bin/sh", "-c", "ps -U " + pidInfo.getFormatUid());
-        String[] userProcessLines = userProcessResult.split("\n");
-        int userProcessLength = userProcessLines.length;
-        if (userProcessLength < 2) {
-            return pidInfo;
-        }
-        List<PidInfo> userProcessList = new ArrayList<>();
-        for (int i = 1; i < userProcessLength; i++) {
-            PidInfo userProcessPidInfo = PidInfo.fromShellLine(userProcessLines[i]);
-            if (pidInfo.equals(userProcessPidInfo)) {
-                userProcessList.add(0, userProcessPidInfo);
-            } else {
-                userProcessList.add(userProcessPidInfo);
-            }
-        }
-        pidInfo.setUserPidInfo(userProcessList);
-        return pidInfo;
-    }
-
-    private static String processDigestResult(String result) {
-        if (!TextUtils.isEmpty(result)) {
-            result = result.replace("\n", "").replaceFirst("\\s.+", "");
-        }
-        return result;
-    }
-
-    public static List<String> environmentPathList() {
-        List<String> list = new ArrayList<>();
-        String result = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            result = Os.getenv("PATH");
-        } else {
-            try {
-                Class<?> clazz = Class.forName("libcore.io.Libcore");
-                Field osField = clazz.getDeclaredField("os");
-                Object os = osField.get(null);
-                Class<?> osClazz = Class.forName("libcore.io.Os");
-                Method getenvMethod = osClazz.getDeclaredMethod("getenv", String.class);
-                result = (String) getenvMethod.invoke(os, "PATH");
-            } catch (ClassNotFoundException e) {
-                Log.w(TAG, e);
-            } catch (NoSuchFieldException e) {
-                Log.w(TAG, e);
-            } catch (IllegalAccessException e) {
-                Log.w(TAG, e);
-            } catch (NoSuchMethodException e) {
-                Log.w(TAG, e);
-            } catch (InvocationTargetException e) {
-                Log.w(TAG, e);
-            }
-        }
-        if (TextUtils.isEmpty(result)) {
-            return list;
-        }
-
-        Set<String> pathSet = new HashSet<>();
-        String[] pathArray = result.split(":");
-        for (String path : pathArray) {
-            if (!pathSet.contains(path)) {
-                pathSet.add(path);
-                list.add(path);
-            }
-        }
-        return list;
     }
 
     /**

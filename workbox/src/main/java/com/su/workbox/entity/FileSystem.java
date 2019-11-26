@@ -8,9 +8,10 @@ public class FileSystem {
     private String size;
     private String used;
     private String avail;
-    private String use;
+    private String use = "";
     private String mountedOn;
     private String fileSystemType;
+    private boolean hasPermission = true;
 
     public String getFileSystem() {
         return fileSystem;
@@ -68,15 +69,33 @@ public class FileSystem {
         this.fileSystemType = fileSystemType;
     }
 
+    public boolean isHasPermission() {
+        return hasPermission;
+    }
+
+    public void setHasPermission(boolean hasPermission) {
+        this.hasPermission = hasPermission;
+    }
+
     public static FileSystem fromShellLine(@NonNull String line) {
         String[] info = line.split("\\s+");
         FileSystem fileSystem = new FileSystem();
-        fileSystem.fileSystem = info[0];
-        fileSystem.size = info[1];
-        fileSystem.used = info[2];
-        fileSystem.avail = info[3];
-        fileSystem.use = info[4];
-        fileSystem.mountedOn = info[5];
+        if (info.length == 6) {
+            fileSystem.fileSystem = info[0];
+            fileSystem.size = info[1];
+            fileSystem.used = info[2];
+            fileSystem.avail = info[3];
+            fileSystem.use = info[4];
+            fileSystem.mountedOn = info[5];
+        } else if (info.length == 5) {
+            fileSystem.fileSystem = info[0];
+            fileSystem.size = info[1];
+            fileSystem.used = info[2];
+            fileSystem.avail = info[3];
+        } else {
+            fileSystem.fileSystem = info[0].replaceFirst(":$", "");
+            fileSystem.hasPermission = false;
+        }
         return fileSystem;
     }
 
@@ -90,6 +109,7 @@ public class FileSystem {
                 ", use='" + use + '\'' +
                 ", mountedOn='" + mountedOn + '\'' +
                 ", fileSystemType='" + fileSystemType + '\'' +
+                ", hasPermission=" + hasPermission +
                 '}';
     }
 }

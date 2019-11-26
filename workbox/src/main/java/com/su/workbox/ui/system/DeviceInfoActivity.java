@@ -45,6 +45,7 @@ import android.widget.TextView;
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.entity.SystemInfo;
+import com.su.workbox.shell.ShellUtil;
 import com.su.workbox.ui.PermissionRequiredActivity;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
@@ -759,7 +760,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         }
 
         private String getEnvironmentPathInfo() {
-            List<String> pathList = IOUtil.environmentPathList();
+            List<String> pathList = ShellUtil.environmentPathList();
             return TextUtils.join("\n", pathList);
         }
 
@@ -787,7 +788,7 @@ public class DeviceInfoActivity extends PermissionRequiredActivity {
         }
 
         private List<String> getShellVariables() {
-            List<String> list = IOUtil.getShellVariables();
+            List<String> list = ShellUtil.getShellVariables();
             List<String> variableList = new ArrayList<>();
             for (String variable : list) {
                 variableList.add(variable.replaceFirst("=", ": "));

@@ -7,10 +7,12 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.UserHandle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.text.style.ForegroundColorSpan;
@@ -29,6 +31,7 @@ import android.widget.Toast;
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.entity.PidInfo;
+import com.su.workbox.shell.ShellUtil;
 import com.su.workbox.ui.data.DataActivity;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;
@@ -114,7 +117,7 @@ public class AppInfoListActivity extends DataActivity implements ExpandableListV
 
     private List<Pair<String, CharSequence>> makeGroup2Info() {
         List<Pair<String, CharSequence>> group = new ArrayList<>();
-        PidInfo pidInfo = IOUtil.getProcessInfo(GeneralInfoHelper.getProcessId());
+        PidInfo pidInfo = ShellUtil.getProcessInfo(GeneralInfoHelper.getProcessId());
         if (pidInfo == null) {
             getProcessInfoWithReflect(group);
         } else {
@@ -194,30 +197,42 @@ public class AppInfoListActivity extends DataActivity implements ExpandableListV
         group.add(new Pair<>("PPid", String.valueOf(pidInfo.getPpid())));
         group.add(new Pair<>("Uid", pidInfo.getFormatUid() + " / " + pidInfo.getUid()));
         if (!justShowSelfProcess(list)) {
-            StringBuilder sb = new StringBuilder();
-            int start = 0;
-            int length = 0;
+            SpannableStringBuilder ssb = new SpannableStringBuilder();
             for (PidInfo info : list) {
-                if (TextUtils.equals(info.getName(), "ps")) {
+                String name = info.getName();
+                if (TextUtils.equals(name, "ps")) {
+                    continue;
+                }
+                //sh进程，用于执行脚本，
+                if (TextUtils.equals(name, "sh")) {
                     continue;
                 }
                 if (info.getPid() == pidInfo.getPid()) {
-                    start = sb.length();
-                    length = info.getName().length() + 3 + String.valueOf(info.getPid()).length();
+                    setProcessColor(ssb, info, getResources().getColor(R.color.workbox_color_primary));
+                    continue;
                 }
-                sb.append(info.getName());
-                sb.append(" / ");
-                sb.append(info.getPid());
-                sb.append("\n");
+                ssb.append(name);
+                ssb.append(" / ");
+                ssb.append(String.valueOf(info.getPid()));
+                ssb.append("\n");
             }
-            if (sb.length() == 0) {
+            if (ssb.length() == 0) {
                 return;
             }
-            sb.deleteCharAt(sb.length() - 1);
-            SpannableString ss = new SpannableString(sb.toString());
-            ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.workbox_color_primary)), start, start + length, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            group.add(new Pair<>("User's Process(es)", ss));
+            ssb.delete(ssb.length() - 1, ssb.length());
+            group.add(new Pair<>("User's Process(es)", ssb));
         }
+    }
+
+    private void setProcessColor(SpannableStringBuilder ssb, PidInfo info, @ColorInt int color) {
+        String name = info.getName();
+        int start = ssb.length();
+        int length = name.length() + 3 + String.valueOf(info.getPid()).length();
+        ssb.append(name);
+        ssb.append(" / ");
+        ssb.append(String.valueOf(info.getPid()));
+        ssb.append("\n");
+        ssb.setSpan(new ForegroundColorSpan(color), start, start + length, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
     }
 
     private boolean justShowSelfProcess(List<PidInfo> list) {
@@ -249,15 +264,15 @@ public class AppInfoListActivity extends DataActivity implements ExpandableListV
         File apkFile = new File(apkFilePath);
         String sizeContent = Formatter.formatShortFileSize(this, apkFile.length()) + " (" + df.format(apkFile.length()) + "B)";
         group.add(new Pair<>("Apk大小", sizeContent));
-        String md5 = IOUtil.getFileMd5(apkFilePath);
+        String md5 = ShellUtil.getFileMd5(apkFilePath);
         if (!TextUtils.isEmpty(md5)) {
             group.add(new Pair<>("Apk MD5", md5));
         }
-        String sha1 = IOUtil.getFileSha1(apkFilePath);
+        String sha1 = ShellUtil.getFileSha1(apkFilePath);
         if (!TextUtils.isEmpty(sha1)) {
             group.add(new Pair<>("Apk SHA1", sha1));
         }
-        String sha256 = IOUtil.getFileSha256(apkFilePath);
+        String sha256 = ShellUtil.getFileSha256(apkFilePath);
         if (!TextUtils.isEmpty(sha256)) {
             group.add(new Pair<>("Apk SHA256", sha256));
         }

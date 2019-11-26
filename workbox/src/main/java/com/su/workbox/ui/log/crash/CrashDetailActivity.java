@@ -10,8 +10,8 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.su.workbox.AppHelper;
 import com.su.workbox.R;
+import com.su.workbox.shell.ShellUtil;
 import com.su.workbox.ui.BaseAppCompatActivity;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.ThreadUtil;
@@ -32,7 +32,7 @@ public class CrashDetailActivity extends BaseAppCompatActivity {
         Intent intent = getIntent();
         mCrashLogRecord = intent.getParcelableExtra("log");
         String apkFilePath = GeneralInfoHelper.getSourceDir();
-        mMd5 = AppHelper.shellExec("/bin/sh", "-c", "md5sum " + apkFilePath);
+        mMd5 = ShellUtil.getFileMd5(apkFilePath);
         if (!TextUtils.isEmpty(mMd5)) {
             mMd5 = mMd5.replaceFirst("\\s[\\s\\S]+", "");
         }

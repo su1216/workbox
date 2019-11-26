@@ -38,6 +38,7 @@ import com.su.workbox.R;
 import com.su.workbox.Workbox;
 import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.net.interceptor.DataUsageInterceptor;
+import com.su.workbox.shell.ShellUtil;
 import com.su.workbox.ui.HostsActivity;
 import com.su.workbox.ui.JsInterfaceListActivity;
 import com.su.workbox.ui.JsListActivity;
@@ -68,7 +69,6 @@ import com.su.workbox.ui.ui.ScreenColorViewManager;
 import com.su.workbox.ui.usage.RecordListActivity;
 import com.su.workbox.ui.wifi.LanDeviceListActivity;
 import com.su.workbox.utils.GeneralInfoHelper;
-import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.NetworkUtil;
 import com.su.workbox.utils.ReflectUtil;
 import com.su.workbox.utils.SpHelper;
@@ -192,7 +192,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
 
     private void initSystemPreferences() {
         Preference rootPreference = findPreference("system_root");
-        rootPreference.setSummary(IOUtil.isRoot() ? "已ROOT" : "未ROOT");
+        rootPreference.setSummary(ShellUtil.isRoot() ? "已ROOT" : "未ROOT");
         mProxyPreference = findPreference("system_proxy");
         mLanDevicesPreference = findPreference("lan_devices");
         mLanDevicesPreference.setOnPreferenceClickListener(this);

@@ -29,8 +29,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.su.workbox.AppHelper;
 import com.su.workbox.R;
+import com.su.workbox.shell.ShellUtil;
 import com.su.workbox.ui.BaseAppCompatActivity;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.NetworkUtil;
@@ -43,7 +43,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -210,11 +209,21 @@ public class LanDeviceListActivity extends BaseAppCompatActivity {
                 mExecutorService.awaitTermination(5, TimeUnit.MINUTES);
 
                 if (mIsWifiConnected && !isFinishing()) {
-                    readArp();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        Log.w(TAG, "can't read arp in android 10");
+                    } else {
+                        readArp();
+                    }
                     fillDeviceMac();
                     runOnUiThread(() -> {
                         mDeviceMacView.setText(mMacMap.get(mIp));
                         mRouterMacView.setText(mMacMap.get(mRouterIp));
+                        Collections.sort(mLanDeviceList, (o1, o2) -> {
+                            String ip1 = o1.getIp();
+                            String ip2 = o2.getIp();
+                            return stringIp2Int(ip1.split("\\.")) - stringIp2Int(ip2.split("\\."));
+                        });
+                        mAdapter.notifyDataSetChanged();
                     });
                 } else {
                     runOnUiThread(() -> {
@@ -297,49 +306,34 @@ public class LanDeviceListActivity extends BaseAppCompatActivity {
 
     //read mac from arp
     private void readArp() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            Log.w(TAG, "can't read arp in android 10");
-            return;
-        }
-        String arp = AppHelper.shellExec("/bin/sh", "-c", "cat /proc/net/arp | sort | sed '$ d'");
-        if (TextUtils.isEmpty(arp)) {
+        List<String> lines = ShellUtil.readArp();
+        if (lines.isEmpty()) {
             Log.e(TAG, "read arp error!");
-            return;
-        }
-        Scanner scanner = new Scanner(arp);
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            if (TextUtils.isEmpty(line)) {
-                continue;
-            }
-            String[] results = line.split("\\s+");
-            if (results.length >= 4 && !TextUtils.equals("00:00:00:00:00:00", results[3])) {
-                mMacMap.put(results[0], results[3]);
-                LanDevice device = new LanDevice();
-                device.setIp(results[0]);
-                device.setMac(results[3]);
-                if (!contains(device.getIp())) {
-                    runOnUiThread(() -> {
-                        mLanDeviceList.add(device);
-                        mAdapter.notifyItemInserted(mLanDeviceList.size() - 1);
-                    });
+        } else {
+            for (String line : lines) {
+                if (TextUtils.isEmpty(line)) {
+                    continue;
                 }
-            } else if (!TextUtils.equals("00:00:00:00:00:00", results[3])) {
-                Log.d(TAG, "wrong result: " + line);
+                String[] results = line.split("\\s+");
+                if (results.length >= 4 && !TextUtils.equals("00:00:00:00:00:00", results[3])) {
+                    mMacMap.put(results[0], results[3]);
+                    LanDevice device = new LanDevice();
+                    device.setIp(results[0]);
+                    device.setMac(results[3]);
+                    if (!contains(device.getIp())) {
+                        runOnUiThread(() -> {
+                            mLanDeviceList.add(device);
+                            mAdapter.notifyItemInserted(mLanDeviceList.size() - 1);
+                        });
+                    }
+                } else if (!TextUtils.equals("00:00:00:00:00:00", results[3])) {
+                    Log.d(TAG, "wrong result: " + line);
+                }
+            }
+            if (TextUtils.isEmpty(mMacMap.get(mIp))) {
+                mMacMap.put(mIp, NetworkUtil.getMacAddress());
             }
         }
-        if (TextUtils.isEmpty(mMacMap.get(mIp))) {
-            mMacMap.put(mIp, NetworkUtil.getMacAddress());
-        }
-        runOnUiThread(() -> {
-            Collections.sort(mLanDeviceList, (o1, o2) -> {
-                String ip1 = o1.getIp();
-                String ip2 = o2.getIp();
-                return stringIp2Int(ip1.split("\\.")) - stringIp2Int(ip2.split("\\."));
-            });
-            mAdapter.notifyDataSetChanged();
-        });
-        scanner.close();
     }
 
     private int stringIp2Int(@NonNull String[] ip) {

@@ -26,11 +26,11 @@ import android.widget.TextView;
 
 import com.su.workbox.R;
 import com.su.workbox.entity.AppInfo;
+import com.su.workbox.shell.ShellUtil;
 import com.su.workbox.ui.BaseAppCompatActivity;
 import com.su.workbox.ui.base.BaseFragment;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
-import com.su.workbox.utils.IOUtil;
 import com.su.workbox.utils.SearchableHelper;
 import com.su.workbox.widget.SimpleOnTabSelectedListener;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
@@ -177,7 +177,7 @@ public class AppListActivity extends BaseAppCompatActivity implements SearchView
     }
 
     private void initAppInfoListWithCommandPm() {
-        List<String> packageList = IOUtil.getInstalledApp();
+        List<String> packageList = ShellUtil.getInstalledApp();
         PackageManager pm = getPackageManager();
         for (String packageName : packageList) {
             try {

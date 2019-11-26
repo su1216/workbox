@@ -4,10 +4,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.View;
 import android.widget.TextView;
 
 import com.su.workbox.R;
 import com.su.workbox.entity.FileSystem;
+import com.su.workbox.shell.ShellUtil;
 import com.su.workbox.ui.BaseAppCompatActivity;
 import com.su.workbox.utils.IOUtil;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
@@ -37,9 +40,15 @@ public class FileSystemActivity extends BaseAppCompatActivity {
     }
 
     private List<FileSystem> getFileSystemList() {
-        List<FileSystem> list = IOUtil.getFileSystemList();
+        List<FileSystem> list = ShellUtil.getFileSystemList();
         IOUtil.fillFileSystemType(list);
-        Collections.sort(list, (o1, o2) -> o1.getMountedOn().compareTo(o2.getMountedOn()));
+        Collections.sort(list, (o1, o2) -> {
+            if (TextUtils.isEmpty(o1.getMountedOn())) {
+                return o1.getFileSystem().compareTo(o2.getFileSystem());
+            } else {
+                return o1.getMountedOn().compareTo(o2.getMountedOn());
+            }
+        });
         return list;
     }
 
@@ -60,9 +69,22 @@ public class FileSystemActivity extends BaseAppCompatActivity {
             TextView mountedOnView =  holder.getView(R.id.mounted_on);
             TextView fileSystemView =  holder.getView(R.id.file_system);
             TextView usedInfoView =  holder.getView(R.id.used_info);
-            mountedOnView.setText(fileSystem.getMountedOn());
-            fileSystemView.setText(fileSystem.getFileSystem() + " (" + fileSystem.getFileSystemType() + ")");
-            usedInfoView.setText(fileSystem.getUsed() + " / " + fileSystem.getSize() + "  " + fileSystem.getUse());
+            if (TextUtils.isEmpty(fileSystem.getMountedOn())) {
+                mountedOnView.setVisibility(View.GONE);
+            } else {
+                mountedOnView.setText(fileSystem.getMountedOn());
+                mountedOnView.setVisibility(View.VISIBLE);
+            }
+            if (TextUtils.isEmpty(fileSystem.getFileSystemType())) {
+                fileSystemView.setText(fileSystem.getFileSystem());
+            } else {
+                fileSystemView.setText(fileSystem.getFileSystem() + " (" + fileSystem.getFileSystemType() + ")");
+            }
+            if (fileSystem.isHasPermission()) {
+                usedInfoView.setText(fileSystem.getUsed() + " / " + fileSystem.getSize() + "  " + fileSystem.getUse());
+            } else {
+                usedInfoView.setText("Permission denied");
+            }
         }
     }
 

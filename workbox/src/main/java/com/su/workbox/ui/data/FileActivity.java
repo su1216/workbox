@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.Workbox;
+import com.su.workbox.shell.ShellUtil;
 import com.su.workbox.ui.BaseAppCompatActivity;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;
@@ -92,15 +93,15 @@ public class FileActivity extends BaseAppCompatActivity implements RecyclerItemC
         if (!TextUtils.isEmpty(fileType)) {
             list.add(new Pair<>("type", fileType));
         }
-        String md5 = IOUtil.getFileMd5(filepath);
+        String md5 = ShellUtil.getFileMd5(filepath);
         if (!TextUtils.isEmpty(md5)) {
             list.add(new Pair<>("md5", md5));
         }
-        String sha1 = IOUtil.getFileSha1(filepath);
+        String sha1 = ShellUtil.getFileSha1(filepath);
         if (!TextUtils.isEmpty(sha1)) {
             list.add(new Pair<>("sha1", sha1));
         }
-        String sha256 = IOUtil.getFileSha256(filepath);
+        String sha256 = ShellUtil.getFileSha256(filepath);
         if (!TextUtils.isEmpty(sha256)) {
             list.add(new Pair<>("sha256", sha256));
         }

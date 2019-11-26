@@ -32,9 +32,6 @@ import com.su.workbox.ui.WebViewActivity;
 import com.su.workbox.utils.IOUtil;
 import com.su.workbox.widget.ToastBuilder;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -254,26 +251,6 @@ public final class AppHelper {
         }
     }
 
-    public static String shellExec(@NonNull String... cmd) {
-        Runtime runtime = Runtime.getRuntime();
-        BufferedReader reader = null;
-        try {
-            Process process = runtime.exec(cmd);
-            reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            StringBuilder stringBuilder = new StringBuilder();
-            char[] buff = new char[1024];
-            int ch;
-            while ((ch = reader.read(buff)) != -1) {
-                stringBuilder.append(buff, 0, ch);
-            }
-            return stringBuilder.toString();
-        } catch (IOException e) {
-            Log.e(TAG, "cmd: " + Arrays.toString(cmd), e);
-        } finally {
-            IOUtil.closeQuietly(reader);
-        }
-        return null;
-    }
 
     public static void copyToClipboard(@NonNull Context context, String label, String text) {
         ClipboardManager cmb = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
