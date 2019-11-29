@@ -3,6 +3,7 @@ package com.su.workbox.ui.app.record;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import com.su.workbox.database.HttpDataDatabase;
 import com.su.workbox.ui.base.SimpleActivityLifecycleCallbacks;
@@ -45,17 +46,17 @@ public class ActivityLifecycleListener extends SimpleActivityLifecycleCallbacks 
     }
 
     @Override
-    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+    public void onActivityCreated(@NonNull Activity activity, Bundle savedInstanceState) {
         save(activity, "created");
     }
 
     @Override
-    public void onActivityStarted(Activity activity) {
+    public void onActivityStarted(@NonNull Activity activity) {
         save(activity, "started");
     }
 
     @Override
-    public void onActivityResumed(Activity activity) {
+    public void onActivityResumed(@NonNull Activity activity) {
         save(activity, "resumed");
         mTopActivity = activity;
         if (mCurrentActivityView.isShowing()) {
@@ -64,22 +65,22 @@ public class ActivityLifecycleListener extends SimpleActivityLifecycleCallbacks 
     }
 
     @Override
-    public void onActivityPaused(Activity activity) {
+    public void onActivityPaused(@NonNull Activity activity) {
         save(activity, "paused");
     }
 
     @Override
-    public void onActivityStopped(Activity activity) {
+    public void onActivityStopped(@NonNull Activity activity) {
         save(activity, "stopped");
     }
 
     @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+    public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
         save(activity, "saveInstanceState");
     }
 
     @Override
-    public void onActivityDestroyed(Activity activity) {
+    public void onActivityDestroyed(@NonNull Activity activity) {
         save(activity, "destroyed");
         if (mTopActivity == activity) {
             mTopActivity = null;

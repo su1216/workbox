@@ -80,4 +80,21 @@ public class AppExecutors {
             mainThreadHandler.post(command);
         }
     }
+
+    /**
+     * Executor that runs a task on a new background thread.
+     */
+    private static class DiskIOThreadExecutor implements Executor {
+
+        private final Executor mDiskIO;
+
+        DiskIOThreadExecutor() {
+            mDiskIO = Executors.newSingleThreadExecutor();
+        }
+
+        @Override
+        public void execute(@NonNull Runnable command) {
+            mDiskIO.execute(command);
+        }
+    }
 }

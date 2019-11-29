@@ -127,7 +127,7 @@ public class IntentDataCollector extends SimpleActivityLifecycleCallbacks {
     }
 
     @Override
-    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+    public void onActivityCreated(@NonNull Activity activity, Bundle savedInstanceState) {
         if (!SpHelper.getWorkboxSharedPreferences().getBoolean("activity_launcher", true)) {
             return;
         }

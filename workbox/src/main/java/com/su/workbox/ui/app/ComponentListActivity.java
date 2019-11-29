@@ -127,7 +127,6 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
             }
             str = buf.toString();
         } catch (IOException e) {
-            new ToastBuilder("请检查文件assets/generated/components.json").setDuration(Toast.LENGTH_LONG).show();
             Log.w(TAG, e);
         } finally {
             IOUtil.close(reader);
