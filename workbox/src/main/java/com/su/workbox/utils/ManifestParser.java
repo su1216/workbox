@@ -12,7 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.su.workbox.ui.app.PermissionListActivity;
+import com.su.workbox.entity.PermissionInfoWrapper;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -377,7 +377,7 @@ public class ManifestParser {
     }
 
     private static String getProtectionLevel(int level) {
-        return PermissionListActivity.protectionToString(level);
+        return PermissionInfoWrapper.protectionToString(level);
     }
 
     /**

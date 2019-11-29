@@ -212,6 +212,10 @@ public final class AppHelper {
         context.startActivity(intent);
     }
 
+    public static void goAppSettings(@NonNull Context context, String packageName) {
+        context.startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null)));
+    }
+
     public static void startActivity(@NonNull Context context, @Nullable Intent intent) {
         if (intent != null) {
             try {
