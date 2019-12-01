@@ -9,7 +9,7 @@
               android:padding="13dip">
     <TextView
         android:id="@+id/key"
-        android:layout_width="120dp"
+        android:layout_width="128dp"
         android:layout_height="wrap_content"
         android:textColor="@color/workbox_first_text"
         android:textSize="12sp"

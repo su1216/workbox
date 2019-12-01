@@ -65,7 +65,13 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"/>
-        <!--App信息列表-->
+        <!--证书信息-->
+        <activity
+            android:name=".ui.app.CertificateDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxListTheme"/>
+        <!--文件浏览-->
         <activity
             android:name=".ui.app.FilesInAppExplorerActivity"
             android:exported="false"

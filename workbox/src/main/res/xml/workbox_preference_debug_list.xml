@@ -30,6 +30,9 @@
             android:key="app_info"
             android:title="应用信息"/>
         <android.support.v7.preference.Preference
+            android:key="certificate_info"
+            android:title="证书信息"/>
+        <android.support.v7.preference.Preference
             android:key="app_component_info"
             android:summary="activity/service/receiver/provider"
             android:title="组件信息"/>

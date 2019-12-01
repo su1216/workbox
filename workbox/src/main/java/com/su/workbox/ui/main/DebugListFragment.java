@@ -45,6 +45,7 @@ import com.su.workbox.ui.JsListActivity;
 import com.su.workbox.ui.WebViewListActivity;
 import com.su.workbox.ui.app.AppComponentActivity;
 import com.su.workbox.ui.app.AppInfoListActivity;
+import com.su.workbox.ui.app.CertificateDetailActivity;
 import com.su.workbox.ui.app.ComponentListActivity;
 import com.su.workbox.ui.app.FeatureListActivity;
 import com.su.workbox.ui.app.FilesInAppExplorerActivity;
@@ -167,6 +168,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         appInfoPreference.setSummary("debuggable: " + GeneralInfoHelper.isDebuggable() + "    "
                 + "版本:" + GeneralInfoHelper.getVersionName()
                 + "(" + GeneralInfoHelper.getVersionCode() + ")");
+        findPreference("certificate_info").setOnPreferenceClickListener(this);
         findPreference("app_component_info").setOnPreferenceClickListener(this);
         findPreference("activity_launcher").setOnPreferenceClickListener(this);
         findPreference("data_view_export").setOnPreferenceClickListener(this);
@@ -567,6 +569,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 return true;
             case "file_system":
                 startActivity(new Intent(mActivity, FileSystemActivity.class));
+                return true;
+            case "certificate_info":
+                startActivity(new Intent(mActivity, CertificateDetailActivity.class));
                 return true;
             case "app_component_info":
                 startActivity(new Intent(mActivity, AppComponentActivity.class));
