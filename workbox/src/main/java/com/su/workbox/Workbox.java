@@ -18,6 +18,7 @@ import com.su.workbox.net.interceptor.MockInterceptor;
 import com.su.workbox.ui.JsInterfaceListActivity;
 import com.su.workbox.ui.app.AppInfoListActivity;
 import com.su.workbox.ui.app.ComponentListActivity;
+import com.su.workbox.ui.app.ComponentListFragment;
 import com.su.workbox.ui.app.PermissionListActivity;
 import com.su.workbox.ui.app.activity.ExcludeTypes;
 import com.su.workbox.ui.app.activity.IntentDataCollector;
@@ -157,7 +158,7 @@ public class Workbox {
             case MODULE_PERMISSIONS:
                 return PermissionListActivity.getLaunchIntent(context);
             case MODULE_LAUNCHER:
-                return ComponentListActivity.getLaunchIntent(context, ComponentListActivity.TYPE_LAUNCHER);
+                return ComponentListActivity.getLaunchIntent(context, ComponentListFragment.TYPE_LAUNCHER);
             case MODULE_MOCK_DATA:
                 return MockGroupHostActivity.getLaunchIntent(context, "数据模拟接口列表");
             case MODULE_JS_INTERFACES:
