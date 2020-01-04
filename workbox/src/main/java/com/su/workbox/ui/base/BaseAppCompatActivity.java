@@ -1,4 +1,4 @@
-package com.su.workbox.ui;
+package com.su.workbox.ui.base;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.su.workbox.R;
+import com.su.workbox.ui.WebViewActivity;
 
 /**
  * Created by su on 18-1-2.

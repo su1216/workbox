@@ -94,12 +94,6 @@ public class WorkboxPanel implements View.OnClickListener {
         databasesModule.setOnClickListener(v -> startActivity(Workbox.MODULE_DATABASES, context));
         MODULE_LIST.add(databasesModule);
 
-        Module rulerModule = new Module();
-        rulerModule.setId(Workbox.MODULE_RULER);
-        rulerModule.setName("测距");
-        rulerModule.setOnClickListener(v -> startActivity(Workbox.MODULE_RULER, context));
-        MODULE_LIST.add(rulerModule);
-
         Module lifecycleModule = new Module();
         lifecycleModule.setId(Workbox.MODULE_LIFECYCLE);
         lifecycleModule.setName("生命周期");

@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 
 import com.su.workbox.R;
 import com.su.workbox.entity.NoteComponentEntity;
-import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.ui.base.BaseAppCompatActivity;
 
 /**
  * Created by su on 17-5-27.

@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.su.workbox.R;
-import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.ui.base.BaseAppCompatActivity;
 import com.su.workbox.utils.SpHelper;
 import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;

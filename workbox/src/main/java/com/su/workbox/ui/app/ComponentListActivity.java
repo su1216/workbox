@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.SearchView;
 
 import com.su.workbox.R;
-import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.ui.base.BaseAppCompatActivity;
 import com.su.workbox.utils.SearchableHelper;
 
 /**

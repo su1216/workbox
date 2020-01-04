@@ -8,11 +8,9 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.su.workbox.BuildConfig;
-import com.su.workbox.entity.FileSystem;
 import com.su.workbox.entity.PidInfo;
 
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -28,24 +26,6 @@ public class ShellUtil {
 
     public static final String TAG = ShellUtil.class.getSimpleName();
 
-    public static boolean isRoot() {
-        String roSecure = shellExecIgnoreExitCode("getprop ro.secure");
-        //eng/userdebug版本
-        if (!TextUtils.isEmpty(roSecure)) {
-            roSecure = roSecure.replaceAll("\n", "");
-        }
-        if (TextUtils.equals("0", roSecure)) {
-            return true;
-        }
-        List<String> pathList = environmentPathList();
-        for (String path : pathList) {
-            if (new File(path, "su").exists()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static String getFileMd5(String filepath) {
         String md5 = shellExecIgnoreExitCode("md5sum " + filepath);
         return processDigestResult(md5);
@@ -56,14 +36,6 @@ public class ShellUtil {
         return processDigestResult(sha1);
     }
 
-    public static List<String> getInstalledApp() {
-        String packagesString = shellExecIgnoreExitCode("pm list packages | cut -d ':' -f 2");
-        if (TextUtils.isEmpty(packagesString)) {
-            return new ArrayList<>();
-        }
-        return Arrays.asList(packagesString.split("\n"));
-    }
-
     public static String getFileSha256(String filepath) {
         String sha256 = shellExecIgnoreExitCode("sha256sum " + filepath);
         return processDigestResult(sha256);
@@ -72,27 +44,6 @@ public class ShellUtil {
     public static List<String> getShellVariables() {
         String variables = shellExecIgnoreExitCode("set");
         return Arrays.asList(variables.split("\n"));
-    }
-
-    @NonNull
-    public static List<FileSystem> getFileSystemList() {
-        List<FileSystem> list = new ArrayList<>();
-        CommandResult result = shellExec("df -h");
-        String resultString = result.getLinesString();
-        if (result.getExitCode() != 0 || isEmptyResult(resultString, true)) {
-            //retry
-            result = shellExec("df");
-            resultString = result.getLinesString();
-        }
-        if (isEmptyResult(resultString, true)) {
-            return list;
-        }
-        String[] lines = resultString.split("\n");
-        int length = lines.length;
-        for (int i = 1; i < length; i++) {
-            list.add(FileSystem.fromShellLine(lines[i]));
-        }
-        return list;
     }
 
     private static boolean isEmptyResult(@Nullable String result, boolean hasTitleLine) {

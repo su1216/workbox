@@ -34,7 +34,6 @@ import com.su.workbox.ui.main.FloatEntry;
 import com.su.workbox.ui.main.WorkboxMainActivity;
 import com.su.workbox.ui.mock.MockGroupHostActivity;
 import com.su.workbox.ui.system.DeviceInfoActivity;
-import com.su.workbox.ui.ui.RulerActivity;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.SpHelper;
 
@@ -56,7 +55,6 @@ public class Workbox {
     public static final String MODULE_APP_INFO = "app_info";
     public static final String MODULE_DEVICE_INFO = "device_info";
     public static final String MODULE_DATABASES = "databases";
-    public static final String MODULE_RULER = "ruler";
     public static final String MODULE_LIFECYCLE = "lifecycle";
     public static final String MODULE_CRASH_LOG = "crash_log";
     public static final String MODULE_MAIN = "main";
@@ -169,8 +167,6 @@ public class Workbox {
                 return DeviceInfoActivity.getLaunchIntent(context);
             case MODULE_DATABASES:
                 return DatabaseListActivity.getLaunchIntent(context);
-            case MODULE_RULER:
-                return RulerActivity.getLaunchIntent(context);
             case MODULE_LIFECYCLE:
                 return LifecycleRecordListActivity.getLaunchIntent(context);
             case MODULE_CRASH_LOG:

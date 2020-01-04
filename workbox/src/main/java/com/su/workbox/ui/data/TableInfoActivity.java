@@ -18,7 +18,7 @@ import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.database.DbInfoProvider;
 import com.su.workbox.entity.database.TableColumn;
-import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.ui.base.BaseAppCompatActivity;
 import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;

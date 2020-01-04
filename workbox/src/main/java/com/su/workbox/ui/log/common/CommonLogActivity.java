@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
-import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.ui.base.BaseAppCompatActivity;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.SearchableHelper;
 import com.su.workbox.widget.ToastBuilder;

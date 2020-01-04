@@ -21,15 +21,6 @@
     <string name="workbox_edit">编辑</string>
     <string name="workbox_cancel">取消</string>
     <string name="workbox_type">类型</string>
-    <string name="workbox_status">状态</string>
-    <string name="workbox_health">健康</string>
-    <string name="workbox_remaining_power">电量</string>
-    <string name="workbox_voltage">电压</string>
-    <string name="workbox_temperature">温度</string>
-    <string name="workbox_capacity">容量</string>
-    <string name="workbox_plugged_usb">充电中 (USB)</string>
-    <string name="workbox_plugged_ac">充电中 (AC)</string>
-    <string name="workbox_no_qualifier">无限定符</string>
     <string name="workbox_can_not_get">无法获取</string>
     <string name="workbox_yes">是</string>
     <string name="workbox_no">否</string>

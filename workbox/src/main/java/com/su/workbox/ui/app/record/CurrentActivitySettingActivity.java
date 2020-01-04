@@ -6,7 +6,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
 
 import com.su.workbox.R;
-import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.ui.base.BaseAppCompatActivity;
 import com.su.workbox.utils.SpHelper;
 
 public class CurrentActivitySettingActivity extends BaseAppCompatActivity {

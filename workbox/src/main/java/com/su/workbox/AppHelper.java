@@ -11,8 +11,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.FeatureInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Binder;
@@ -36,8 +34,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,51 +46,9 @@ public final class AppHelper {
 
     private AppHelper() {}
 
-    public static void startLauncher(@NonNull Context context) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_HOME);
-        context.startActivity(intent);
-    }
-
     public static boolean isPhone(@NonNull Context context) {
         PackageManager pm = context.getPackageManager();
         return pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
-    }
-
-    public static List<FeatureInfo> getRequiredFeatures(@NonNull Context context) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_CONFIGURATIONS);
-            if (packageInfo.reqFeatures == null) {
-                return new ArrayList<>();
-            }
-            //需要去重
-            ArrayList<FeatureInfo> list = new ArrayList<>();
-            for (FeatureInfo featureInfo : packageInfo.reqFeatures) {
-                if (list.isEmpty()) {
-                    list.add(featureInfo);
-                    continue;
-                }
-
-                boolean find = false;
-                int size = list.size();
-                for (int i = 0; i < size; i++) {
-                    FeatureInfo fi = list.get(i);
-                    if (TextUtils.equals(fi.name, featureInfo.name)) {
-                        find = true;
-                        break;
-                    }
-                }
-                if (!find) {
-                    list.add(featureInfo);
-                }
-            }
-
-            return Arrays.asList(packageInfo.reqFeatures);
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.w(TAG, e);
-        }
-        return new ArrayList<>();
     }
 
     public static String encodeString(@Nullable String str) {
@@ -241,10 +195,6 @@ public final class AppHelper {
         intent.putExtra("sharable", true);
         intent.putExtra("clearable", true);
         context.startActivity(intent);
-    }
-
-    public static boolean isEmulator() {
-        return Build.FINGERPRINT.contains("generic");
     }
 
     public static void hideSoftInputFromWindow(@Nullable Window window) {

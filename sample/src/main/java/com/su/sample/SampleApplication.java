@@ -4,14 +4,21 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.su.workbox.Workbox;
-import com.su.workbox.utils.GeneralInfoHelper;
-import com.su.workbox.utils.IOUtil;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,13 +27,14 @@ import java.util.Set;
 
 public class SampleApplication extends Application {
 
+    public static final String TAG = SampleApplication.class.getSimpleName();
     public static Context sContext;
 
     @Override
     public void onCreate() {
         super.onCreate();
         sContext = this;
-        if (TextUtils.equals(GeneralInfoHelper.getCurrentProcessName(), BuildConfig.APPLICATION_ID)) {
+        if (TextUtils.equals(getCurrentProcessName(), BuildConfig.APPLICATION_ID)) {
             initWorkbox(this);
         }
         if (BuildConfig.DEBUG) {
@@ -63,6 +71,31 @@ public class SampleApplication extends Application {
                 .putString("string_test", "string...")
                 .putStringSet("set_test", set)
                 .apply();
+    }
+
+    @NonNull
+    private static String getCurrentProcessName() {
+        try {
+            return TextUtils.join("\n", streamToLines(new FileInputStream("/proc/self/cmdline"))).trim();
+        } catch (IOException e) {
+            Log.e(TAG, "can't get current process name!", e);
+            return "";
+        }
+    }
+
+    @NonNull
+    private static List<String> streamToLines(@NonNull InputStream input) throws IOException {
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(input), 8192);
+        try {
+            String line;
+            final List<String> buffer = new LinkedList<>();
+            while ((line = reader.readLine()) != null) {
+                buffer.add(line);
+            }
+            return buffer;
+        } finally {
+            reader.close();
+        }
     }
 
     public static Context getContext() {

@@ -9,7 +9,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.view.View;
 
 import com.su.workbox.R;
-import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.ui.base.BaseAppCompatActivity;
 import com.su.workbox.widget.recycler.PreferenceItemDecoration;
 
 /**

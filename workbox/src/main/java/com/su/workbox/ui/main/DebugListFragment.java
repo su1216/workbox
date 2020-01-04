@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.NotificationChannel;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,12 +11,9 @@ import android.content.IntentFilter;
 import android.content.pm.ComponentInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.media.projection.MediaProjectionManager;
-import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -29,7 +25,6 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.SwitchPreferenceCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 
@@ -38,16 +33,13 @@ import com.su.workbox.R;
 import com.su.workbox.Workbox;
 import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.net.interceptor.DataUsageInterceptor;
-import com.su.workbox.shell.ShellUtil;
 import com.su.workbox.ui.HostsActivity;
 import com.su.workbox.ui.JsInterfaceListActivity;
 import com.su.workbox.ui.JsListActivity;
 import com.su.workbox.ui.WebViewListActivity;
 import com.su.workbox.ui.app.AppComponentActivity;
 import com.su.workbox.ui.app.AppInfoListActivity;
-import com.su.workbox.ui.app.CertificateDetailActivity;
 import com.su.workbox.ui.app.ComponentListActivity;
-import com.su.workbox.ui.app.FeatureListActivity;
 import com.su.workbox.ui.app.FilesInAppExplorerActivity;
 import com.su.workbox.ui.app.PermissionListActivity;
 import com.su.workbox.ui.app.record.ActivityLifecycleListener;
@@ -59,16 +51,8 @@ import com.su.workbox.ui.data.DatabaseListActivity;
 import com.su.workbox.ui.log.common.CommonLogActivity;
 import com.su.workbox.ui.log.crash.CrashLogActivity;
 import com.su.workbox.ui.mock.MockGroupHostActivity;
-import com.su.workbox.ui.system.AppListActivity;
-import com.su.workbox.ui.system.ConfigQualifiersActivity;
 import com.su.workbox.ui.system.DeviceInfoActivity;
-import com.su.workbox.ui.system.FileSystemActivity;
-import com.su.workbox.ui.ui.GridLineSettingActivity;
-import com.su.workbox.ui.ui.GridLineView;
-import com.su.workbox.ui.ui.RulerSettingActivity;
-import com.su.workbox.ui.ui.ScreenColorViewManager;
 import com.su.workbox.ui.usage.RecordListActivity;
-import com.su.workbox.ui.wifi.LanDeviceListActivity;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.NetworkUtil;
 import com.su.workbox.utils.ReflectUtil;
@@ -90,12 +74,10 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     public static final String TAG = DebugListFragment.class.getSimpleName();
     private static final int REQUEST_HOST = 1;
     private static final int REQUEST_WEB_VIEW_HOST = 2;
-    private static final int REQUEST_MEDIA_PROJECTION = 3;
     private SwitchPreferenceCompat mPanelIconPreference;
     private CurrentActivityView mCurrentActivityView;
     private SwitchPreferenceCompat mCurrentActivityPreference;
     private Preference mProxyPreference;
-    private Preference mLanDevicesPreference;
     private Preference mNotificationPreference;
     private ListPreference mMockPolicyPreference;
     private Preference mHostsPreference;
@@ -104,35 +86,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     private String mWebViewHost;
     private FragmentActivity mActivity;
     private String mEntryClassName;
-    //ui
-    private GridLineView mGridLineView;
-    private SwitchPreferenceCompat mGridLinePreference;
-    private SwitchPreferenceCompat mColorPickerPreference;
-
-    private NetworkChangeReceiver mReceiver;
-
-    private static class NetworkChangeReceiver extends BroadcastReceiver {
-        private DebugListFragment mFragment;
-
-        public NetworkChangeReceiver(DebugListFragment fragment) {
-            mFragment = fragment;
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(action)) {
-                Parcelable parcelableExtra = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                if (parcelableExtra != null) {
-                    NetworkInfo networkInfo = (NetworkInfo) parcelableExtra;
-                    NetworkInfo.State state = networkInfo.getState();
-                    boolean isWifiConnected = state == NetworkInfo.State.CONNECTED;// 当然，这边可以更精确的确定状态
-                    Log.i(TAG, "isConnected: " + isWifiConnected);
-                    mFragment.mLanDevicesPreference.setEnabled(isWifiConnected);
-                }
-            }
-        }
-    }
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -146,10 +99,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         initAppPreferences();
         initSystemPreferences();
         initNetworkPreferences();
-        initUiPreference();
         initOtherPreferences();
-
-        mReceiver = new NetworkChangeReceiver(this);
     }
 
     private void initWorkboxPreferences() {
@@ -168,15 +118,11 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         appInfoPreference.setSummary("debuggable: " + GeneralInfoHelper.isDebuggable() + "    "
                 + "版本:" + GeneralInfoHelper.getVersionName()
                 + "(" + GeneralInfoHelper.getVersionCode() + ")");
-        findPreference("certificate_info").setOnPreferenceClickListener(this);
         findPreference("app_component_info").setOnPreferenceClickListener(this);
         findPreference("activity_launcher").setOnPreferenceClickListener(this);
         findPreference("data_view_export").setOnPreferenceClickListener(this);
         findPreference("app_files").setOnPreferenceClickListener(this);
         findPreference("permission").setOnPreferenceClickListener(this);
-        Preference featurePreference = findPreference("feature");
-        featurePreference.setOnPreferenceClickListener(this);
-        featurePreference.setVisible(!AppHelper.getRequiredFeatures(mActivity).isEmpty());
         mCurrentActivityView = CurrentActivityView.getInstance();
         mCurrentActivityPreference = (SwitchPreferenceCompat) findPreference("current_activity");
         mCurrentActivityPreference.setChecked(mCurrentActivityView.isShowing());
@@ -193,11 +139,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     }
 
     private void initSystemPreferences() {
-        Preference rootPreference = findPreference("system_root");
-        rootPreference.setSummary(ShellUtil.isRoot() ? "已ROOT" : "未ROOT");
         mProxyPreference = findPreference("system_proxy");
-        mLanDevicesPreference = findPreference("lan_devices");
-        mLanDevicesPreference.setOnPreferenceClickListener(this);
         Preference softwareInfoPreference = findPreference("software_info");
         softwareInfoPreference.setSummary("Android " + Build.VERSION.RELEASE + "    " + SystemInfoHelper.getSystemVersionName(Build.VERSION.SDK_INT) + "    "
                 + "API " + Build.VERSION.SDK_INT);
@@ -209,9 +151,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 + "密度: " + SystemInfoHelper.getDpiInfo(metrics.densityDpi) + " / " + metrics.density + "x   "
                 + "CPU 位数: " + SystemInfoHelper.getCpuBit());
         findPreference("more_phone_info").setOnPreferenceClickListener(this);
-        findPreference("config_qualifier").setOnPreferenceClickListener(this);
-        findPreference("app_list").setOnPreferenceClickListener(this);
-        findPreference("file_system").setOnPreferenceClickListener(this);
     }
 
     private void initNetworkPreferences() {
@@ -255,7 +194,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         super.onResume();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        mActivity.registerReceiver(mReceiver, intentFilter);
         mHost = Workbox.getHost();
         mWebViewHost = Workbox.getWebViewHost();
         initHostPreference(mHostsPreference, mHost, HostsActivity.TYPE_HOST);
@@ -271,12 +209,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         } else {
             mProxyPreference.setSummary(proxySetting[0] + ":" + proxySetting[1]);
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mActivity.unregisterReceiver(mReceiver);
     }
 
     private void initHostPreference(@NonNull Preference preference, String currentHost, int hostType) {
@@ -341,34 +273,8 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         } else if (TextUtils.equals(key, SpHelper.COLUMN_MOCK_POLICY)) {
             initMockPolicy(newValue.toString());
             return true;
-        } else if (TextUtils.equals(key, "grid_line")) {
-            if (!AppHelper.hasSystemWindowPermission(mActivity)) {
-                AppHelper.gotoManageOverlayPermission(mActivity);
-                mGridLinePreference.setChecked(false);
-                return false;
-            }
-            mGridLineView.toggle();
-            return true;
         } else if (TextUtils.equals(key, "data_usage")) {
             DataUsageInterceptor.setRecording((boolean) newValue);
-            return true;
-        } else if (TextUtils.equals(key, "color_picker")) {
-            if (!AppHelper.hasSystemWindowPermission(mActivity)) {
-                new ToastBuilder("请授予悬浮窗权限").show();
-                AppHelper.gotoManageOverlayPermission(mActivity);
-                mColorPickerPreference.setChecked(false);
-                return false;
-            }
-
-            Boolean state = (Boolean) newValue;
-            if (state == null || !state) {
-                mColorPickerPreference.setChecked(false);
-                ScreenColorViewManager.getInstance().performDestroy();
-                return true;
-            }
-            requestMediaProjection();
-            return false;
-        } else if (TextUtils.equals(key, "measure")) {
             return true;
         }
         return false;
@@ -383,25 +289,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 break;
             }
         }
-    }
-
-    private void initUiPreference() {
-        mColorPickerPreference = (SwitchPreferenceCompat) findPreference("color_picker");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mColorPickerPreference.setChecked(ScreenColorViewManager.isInitialized());
-            mColorPickerPreference.setOnPreferenceClickListener(this);
-            mColorPickerPreference.setOnPreferenceChangeListener(this);
-        } else {
-            mColorPickerPreference.getParent().removePreference(mColorPickerPreference);
-        }
-
-        mGridLineView = GridLineView.getInstance();
-        mGridLinePreference = (SwitchPreferenceCompat) findPreference("grid_line");
-        mGridLinePreference.setChecked(mGridLineView.isShowing());
-        mGridLinePreference.setOnPreferenceClickListener(this);
-        mGridLinePreference.setOnPreferenceChangeListener(this);
-
-        findPreference("measure").setOnPreferenceClickListener(this);
     }
 
     public static void enableEntry(Context context, String className, boolean enabled) {
@@ -485,13 +372,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         }
     }
 
-    private void requestMediaProjection() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            MediaProjectionManager mediaProjectionManager = (MediaProjectionManager) mActivity.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-            startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(), REQUEST_MEDIA_PROJECTION);
-        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if ((requestCode == REQUEST_HOST || requestCode == REQUEST_WEB_VIEW_HOST) && resultCode == Activity.RESULT_OK) {
@@ -506,10 +386,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                         .setNegativeButton(R.string.workbox_cancel, null)
                         .show();
             }
-        } else if (requestCode == REQUEST_MEDIA_PROJECTION && resultCode == Activity.RESULT_OK) {
-            ScreenColorViewManager controller = ScreenColorViewManager.getInstance();
-            controller.init(data);
-            mColorPickerPreference.setChecked(true);
         }
     }
 
@@ -526,10 +402,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             case "app_log":
                 startActivity(new Intent(mActivity, CommonLogActivity.class));
                 return true;
-            case "lan_devices":
-                Intent lanDeviceIntent = new Intent(mActivity, LanDeviceListActivity.class);
-                startActivity(lanDeviceIntent);
-                return true;
             case "hosts":
                 Intent hostIntent = new Intent(mActivity, HostsActivity.class);
                 hostIntent.putExtra("type", HostsActivity.TYPE_HOST);
@@ -545,9 +417,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 return true;
             case "permission":
                 startActivity(PermissionListActivity.getLaunchIntent(mActivity));
-                return true;
-            case "feature":
-                startActivity(new Intent(mActivity, FeatureListActivity.class));
                 return true;
             case "data_view_export":
                 startActivity(DataListActivity.getLaunchIntent(mActivity));
@@ -567,12 +436,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             case "app_info":
                 startActivity(AppInfoListActivity.getLaunchIntent(mActivity));
                 return true;
-            case "file_system":
-                startActivity(new Intent(mActivity, FileSystemActivity.class));
-                return true;
-            case "certificate_info":
-                startActivity(new Intent(mActivity, CertificateDetailActivity.class));
-                return true;
             case "app_component_info":
                 startActivity(new Intent(mActivity, AppComponentActivity.class));
                 return true;
@@ -583,12 +446,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 return true;
             case "more_phone_info":
                 startActivity(DeviceInfoActivity.getLaunchIntent(mActivity));
-                return true;
-            case "config_qualifier":
-                startActivity(new Intent(mActivity, ConfigQualifiersActivity.class));
-                return true;
-            case "app_list":
-                startActivity(new Intent(mActivity, AppListActivity.class));
                 return true;
             case "data_usage":
                 startActivity(new Intent(mActivity, RecordListActivity.class));
@@ -613,15 +470,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                     return true;
                 }
                 startActivity(new Intent(mActivity, JsListActivity.class));
-                return true;
-            case "color_picker":
-                onPreferenceChange(mColorPickerPreference, !mColorPickerPreference.isChecked());
-                return true;
-            case "grid_line":
-                startActivity(new Intent(mActivity, GridLineSettingActivity.class));
-                return true;
-            case "measure":
-                startActivity(new Intent(mActivity, RulerSettingActivity.class));
                 return true;
             default:
                 return false;

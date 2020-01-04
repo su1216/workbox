@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.entity.PermissionInfoWrapper;
-import com.su.workbox.ui.PermissionRequiredActivity;
+import com.su.workbox.ui.base.PermissionRequiredActivity;
 import com.su.workbox.utils.UiHelper;
 import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;

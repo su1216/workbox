@@ -30,9 +30,6 @@
             android:key="app_info"
             android:title="应用信息"/>
         <android.support.v7.preference.Preference
-            android:key="certificate_info"
-            android:title="证书信息"/>
-        <android.support.v7.preference.Preference
             android:key="app_component_info"
             android:summary="activity/service/receiver/provider"
             android:title="组件信息"/>
@@ -53,10 +50,6 @@
             android:key="permission"
             android:summary="应用所需权限与用户授权情况"
             android:title="权限列表"/>
-        <android.support.v7.preference.Preference
-            android:key="feature"
-            android:summary="应用所必须的feature列表"
-            android:title="Feature列表"/>
         <com.su.workbox.widget.preference.SwitchPreference
             android:defaultValue="false"
             android:key="current_activity"
@@ -76,18 +69,10 @@
     <android.support.v7.preference.PreferenceCategory
         android:title="System">
         <android.support.v7.preference.Preference
-            android:key="system_root"
-            android:enabled="false"
-            android:title="ROOT"/>
-        <android.support.v7.preference.Preference
             android:key="system_proxy"
             android:title="系统代理">
             <intent android:action="android.settings.WIFI_SETTINGS"/>
         </android.support.v7.preference.Preference>
-        <android.support.v7.preference.Preference
-            android:key="lan_devices"
-            android:summary="查看热点相关信息"
-            android:title="局域网设备"/>
         <android.support.v7.preference.Preference
             android:enabled="false"
             android:key="software_info"
@@ -102,16 +87,6 @@
             android:key="more_phone_info"
             android:summary="分辨率、存储、网络、硬件、系统属性、环境变量等信息"
             android:title="更多信息"/>
-        <android.support.v7.preference.Preference
-            android:key="config_qualifier"
-            android:summary="系统按此表顺序查找应用资源"
-            android:title="配置限定符"/>
-        <android.support.v7.preference.Preference
-            android:key="app_list"
-            android:title="应用列表"/>
-        <android.support.v7.preference.Preference
-            android:key="file_system"
-            android:title="文件系统"/>
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory
         android:title="Network">
@@ -135,21 +110,6 @@
         <android.support.v7.preference.Preference
             android:key="web_view_hosts"
             android:title="WebView域名列表"/>
-    </android.support.v7.preference.PreferenceCategory>
-    <android.support.v7.preference.PreferenceCategory
-        android:title="UI">
-        <com.su.workbox.widget.preference.SwitchPreference
-            android:key="color_picker"
-            android:summary="每次使用前，需要用户您授权屏幕截取"
-            android:title="屏幕拾色"/>
-        <android.support.v7.preference.Preference
-            android:key="measure"
-            android:summary="可调整颜色以及是否可测状态栏与导航栏"
-            android:title="测距设置"/>
-        <com.su.workbox.widget.preference.SwitchPreference
-            android:key="grid_line"
-            android:summary="可调整格子大小与颜色等"
-            android:title="网格线"/>
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory
         android:title="Others">

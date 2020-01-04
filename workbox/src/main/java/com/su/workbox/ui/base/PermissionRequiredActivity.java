@@ -1,4 +1,4 @@
-package com.su.workbox.ui;
+package com.su.workbox.ui.base;
 
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;

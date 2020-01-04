@@ -17,7 +17,7 @@ import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.Workbox;
 import com.su.workbox.WorkboxSupplier;
-import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.ui.base.BaseAppCompatActivity;
 import com.su.workbox.ui.app.AppInfoListActivity;
 import com.su.workbox.ui.app.PermissionListActivity;
 import com.su.workbox.utils.AppExecutors;

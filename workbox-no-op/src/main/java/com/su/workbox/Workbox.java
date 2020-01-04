@@ -23,7 +23,6 @@ public class Workbox {
     public static final String MODULE_APP_INFO = "app_info";
     public static final String MODULE_DEVICE_INFO = "device_info";
     public static final String MODULE_DATABASES = "databases";
-    public static final String MODULE_RULER = "ruler";
     public static final String MODULE_LIFECYCLE = "lifecycle";
     public static final String MODULE_CRASH_LOG = "crash_log";
     public static final String MODULE_MAIN = "main";

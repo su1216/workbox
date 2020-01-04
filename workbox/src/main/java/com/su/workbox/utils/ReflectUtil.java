@@ -1,6 +1,5 @@
 package com.su.workbox.utils;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -17,17 +16,6 @@ import java.util.List;
  */
 public class ReflectUtil {
     private static final String TAG = ReflectUtil.class.getSimpleName();
-
-    public static Object getFieldValue(@NonNull Class<?> clazz, @Nullable Object object, @NonNull String fieldName) {
-        try {
-            Field field = clazz.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return field.get(object);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            Log.e(TAG, "object class: " + clazz.getName(), e);
-        }
-        return null;
-    }
 
     @NonNull
     public static List<Pair<String, String>> getMatchedFlags(@NonNull Class<?> clazz, @NonNull List<Field> fields, int flags) {
@@ -88,26 +76,6 @@ public class ReflectUtil {
             Log.w(TAG, "no default constructor clazz: " + clazz);
             return false;
         }
-    }
-
-    public static int getBatteryCapacity(Context context) {
-        Object powerProfile;
-        double batteryCapacity = 0;
-        final String POWER_PROFILE_CLASS = "com.android.internal.os.PowerProfile";
-        try {
-            powerProfile = Class.forName(POWER_PROFILE_CLASS)
-                    .getConstructor(Context.class)
-                    .newInstance(context);
-
-            batteryCapacity = (double) Class.forName(POWER_PROFILE_CLASS)
-                    .getMethod("getBatteryCapacity")
-                    .invoke(powerProfile);
-
-        } catch (Exception e) {
-            Log.w(TAG, e);
-        }
-
-        return (int) batteryCapacity;
     }
 
     public static boolean isUseOkHttp3() {

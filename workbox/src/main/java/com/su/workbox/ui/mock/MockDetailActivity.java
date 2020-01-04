@@ -33,7 +33,7 @@ import com.su.workbox.R;
 import com.su.workbox.net.Method;
 import com.su.workbox.net.RequestHelper;
 import com.su.workbox.net.SimpleCallback;
-import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.ui.base.BaseAppCompatActivity;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.SearchableHelper;
 import com.su.workbox.widget.AllowChildInterceptTouchEventDrawerLayout;

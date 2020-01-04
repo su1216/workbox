@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.MenuItem;
 
 import com.su.workbox.R;
-import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.ui.base.BaseAppCompatActivity;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.UiHelper;
 

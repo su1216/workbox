@@ -24,7 +24,7 @@ import com.su.workbox.R;
 import com.su.workbox.Workbox;
 import com.su.workbox.entity.FileResults;
 import com.su.workbox.entity.Line;
-import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.ui.base.BaseAppCompatActivity;
 import com.su.workbox.ui.base.BaseFragment;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.utils.GeneralInfoHelper;

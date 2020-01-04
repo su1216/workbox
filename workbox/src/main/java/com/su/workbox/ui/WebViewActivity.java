@@ -31,6 +31,7 @@ import com.su.workbox.R;
 import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.entity.NoteWebViewEntity;
 import com.su.workbox.entity.SimpleParameter;
+import com.su.workbox.ui.base.BaseAppCompatActivity;
 import com.su.workbox.widget.ToastBuilder;
 
 import java.util.HashMap;

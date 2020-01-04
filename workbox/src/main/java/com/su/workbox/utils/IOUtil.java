@@ -1,7 +1,5 @@
 package com.su.workbox.utils;
 
-import static android.content.ContentResolver.SCHEME_FILE;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -16,7 +14,6 @@ import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-import com.su.workbox.entity.FileSystem;
 import com.su.workbox.widget.ToastBuilder;
 
 import java.io.BufferedReader;
@@ -36,6 +33,8 @@ import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+
+import static android.content.ContentResolver.SCHEME_FILE;
 
 /**
  * Created by su on 15-11-10.
@@ -98,23 +97,6 @@ public final class IOUtil {
     public static String getFileType(String filepath) {
         String ext = MimeTypeMap.getFileExtensionFromUrl(filepath);
         return MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext);
-    }
-
-    public static void fillFileSystemType(@NonNull List<FileSystem> list) {
-        try {
-            List<String> lines = IOUtil.streamToLines(new FileInputStream("/proc/mounts"));
-            for (FileSystem fileSystem : list) {
-                for (String line : lines) {
-                    String[] info = line.split("\\s+");
-                    if (TextUtils.equals(fileSystem.getFileSystem(), info[0])) {
-                        fileSystem.setFileSystemType(info[2]);
-                        break;
-                    }
-                }
-            }
-        } catch (IOException e) {
-            Log.w(TAG, e);
-        }
     }
 
     /**

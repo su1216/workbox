@@ -26,6 +26,7 @@ import com.su.workbox.R;
 import com.su.workbox.Workbox;
 import com.su.workbox.entity.JsFunction;
 import com.su.workbox.entity.NoteJsFunction;
+import com.su.workbox.ui.base.BaseAppCompatActivity;
 import com.su.workbox.utils.IOUtil;
 import com.su.workbox.widget.ToastBuilder;
 import com.su.workbox.widget.recycler.BaseRecyclerAdapter;

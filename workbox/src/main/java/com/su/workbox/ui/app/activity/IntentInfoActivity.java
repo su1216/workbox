@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.su.workbox.R;
 import com.su.workbox.database.HttpDataDatabase;
-import com.su.workbox.ui.BaseAppCompatActivity;
+import com.su.workbox.ui.base.BaseAppCompatActivity;
 import com.su.workbox.utils.AppExecutors;
 import com.su.workbox.widget.SimpleOnTabSelectedListener;
 import com.su.workbox.widget.ToastBuilder;
