@@ -18,10 +18,10 @@ Android 4.4+ (API level 19+)
 ## Workbox
 
 ```groovy
-debugApi 'com.su:workbox.annotations:0.9.5'
-debugAnnotationProcessor 'com.su:workbox.compiler:0.9.5'
-debugImplementation 'com.su:workbox:0.9.5'
-releaseImplementation 'com.su:workbox-no-op:0.9.5'
+debugApi 'com.su:workbox.annotations:0.9.6'
+debugAnnotationProcessor 'com.su:workbox.compiler:0.9.6'
+debugImplementation 'com.su:workbox:0.9.6'
+releaseImplementation 'com.su:workbox-no-op:0.9.6'
 
 ```
 
