@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+def moduleName =  project.getName()
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -12,7 +14,7 @@ android {
         versionName "1.0"
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [MODULE_NAME: project.getName()]
+                arguments = [MODULE_NAME: moduleName]
             }
         }
     }
