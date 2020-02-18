@@ -1,6 +1,6 @@
 ## Requirements
 
-Android 4.4+ (API level 19+)
+Android 5.0+ (API level 21+)
 
 
 
@@ -18,21 +18,23 @@ Android 4.4+ (API level 19+)
 ## Workbox
 
 ```groovy
-debugApi 'com.su:workbox.annotations:0.9.6'
-debugAnnotationProcessor 'com.su:workbox.compiler:0.9.6'
-debugImplementation 'com.su:workbox:0.9.6'
-releaseImplementation 'com.su:workbox-no-op:0.9.6'
+debugApi 'com.su:workbox.annotations:0.9.7'
+debugAnnotationProcessor 'com.su:workbox.compiler:0.9.7'
+debugImplementation 'com.su:workbox:0.9.7'
+releaseImplementation 'com.su:workbox-no-op:0.9.7'
 
 ```
 
 需要将module名称传给compiler
 
 ```groovy
+def moduleName =  project.getName()
+
 defaultConfig {
     ...
     javaCompileOptions {
         annotationProcessorOptions {
-            arguments = [MODULE_NAME: project.getName()]
+            arguments = [MODULE_NAME: moduleName]
         }
     }
 }
