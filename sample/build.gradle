@@ -57,6 +57,6 @@ dependencies {
     api 'com.squareup.okhttp3:logging-interceptor:' + rootProject.ext.okhttp
     debugApi 'com.readystatesoftware.chuck:library:1.1.0'
     releaseApi 'com.readystatesoftware.chuck:library-no-op:1.1.0'
-    api 'org.mozilla:rhino:1.7.11'
+    api 'org.mozilla:rhino:1.7.12'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
 }
