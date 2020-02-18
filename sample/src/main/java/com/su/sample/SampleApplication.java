@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.squareup.leakcanary.LeakCanary;
 import com.su.workbox.Workbox;
 
 import java.io.BufferedReader;
@@ -41,16 +40,6 @@ public class SampleApplication extends Application {
             Thread.setDefaultUncaughtExceptionHandler(Workbox.newLogUncaughtExceptionHandler(true));
         }
         initSharedPreference();
-        initLeakCanary();
-    }
-
-    private void initLeakCanary() {
-        if (LeakCanary.isInAnalyzerProcess(this)) {//1
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return;
-        }
-        LeakCanary.install(this);
     }
 
     private static void initWorkbox(Application application) {
