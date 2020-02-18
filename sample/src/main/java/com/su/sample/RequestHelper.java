@@ -25,7 +25,7 @@ public class RequestHelper {
         logging.setLevel(LOG_LEVEL);
         OkHttpClient client = new OkHttpClient();
         OkHttpClient.Builder builder = client.newBuilder()
-                .protocols(Util.immutableList(Protocol.HTTP_1_1, Protocol.HTTP_2))//just for http1.1
+                .protocols(Util.immutableListOf(Protocol.HTTP_1_1, Protocol.HTTP_2))//just for http1.1
                 .connectTimeout(30L, TimeUnit.SECONDS)
                 .readTimeout(30L, TimeUnit.SECONDS)
                 .writeTimeout(30L, TimeUnit.SECONDS);
