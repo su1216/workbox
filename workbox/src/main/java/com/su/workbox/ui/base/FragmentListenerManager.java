@@ -15,7 +15,6 @@ public class FragmentListenerManager {
             mListenerFragment = new ListenerFragment();
         }
         mListenerFragment.setFragmentLifecycleListener(FragmentLifecycleListener.getInstance());
-        // 由于Fragment的bug，必须将mChildFragmentManager的accessible设为true
         compatibleFragment(fragment);
         fragment.getChildFragmentManager()
                 .beginTransaction()
@@ -28,6 +27,15 @@ public class FragmentListenerManager {
      * https://issuetracker.google.com/issues/36963722
      */
     private void compatibleFragment(@NonNull Fragment fragment) {
+        //androidx无需处理
+        try {
+            Class<?> clazz = Class.forName("androidx.fragment.app.Fragment");
+            if (clazz.isAssignableFrom(fragment.getClass())) {
+                return;
+            }
+        } catch (ClassNotFoundException e) {
+            //ignore
+        }
         try {
             Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
             childFragmentManager.setAccessible(true);
