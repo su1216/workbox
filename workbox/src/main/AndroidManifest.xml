@@ -52,6 +52,7 @@
             android:name=".ui.log.crash.entry.CrashLogActivity"
             android:enabled="false"
             android:exported="true"
+            android:label="崩溃日志"
             android:screenOrientation="portrait"
             android:targetActivity=".ui.log.crash.CrashLogActivity"
             android:theme="@style/WorkboxListTheme">
