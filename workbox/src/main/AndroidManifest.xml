@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.su.workbox">
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW"/>
+    package="com.su.workbox">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
     <!--9.0获取ssid-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <application>
@@ -19,7 +20,7 @@
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
         <!-- Debug调试功能列表入口 -->
         <activity-alias
             android:name=".ui.DebugEntryActivity"
@@ -30,8 +31,8 @@
             android:targetActivity=".ui.main.WorkboxMainActivity"
             android:theme="@style/WorkboxListTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
         <!--面板设置-->
@@ -39,218 +40,231 @@
             android:name=".ui.main.PanelSettingsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
         <!--崩溃日志列表-->
         <activity
             android:name=".ui.log.crash.CrashLogActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
+        <!--崩溃日志列表-->
+        <activity-alias
+            android:name=".ui.log.crash.entry.CrashLogActivity"
+            android:enabled="false"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:targetActivity=".ui.log.crash.CrashLogActivity"
+            android:theme="@style/WorkboxListTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
         <!--崩溃日志详情-->
         <activity
             android:name=".ui.log.crash.CrashDetailActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
         <!--常规日志列表-->
         <activity
             android:name=".ui.log.common.CommonLogActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxSearchViewToolbar"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <!--App信息列表-->
         <activity
             android:name=".ui.app.AppInfoListActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
         <!--文件浏览-->
         <activity
             android:name=".ui.app.FilesInAppExplorerActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
         <!--应用数据导出-->
         <activity
             android:name=".ui.data.DataListActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
         <!--文件浏览-->
         <activity
             android:name=".ui.data.ExplorerActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxSearchViewToolbar"/>
+            android:theme="@style/WorkboxSearchViewToolbar" />
         <!--搜索-->
         <activity
             android:name=".ui.data.SearchActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxSearchViewToolbar"/>
+            android:theme="@style/WorkboxSearchViewToolbar" />
         <!--文件信息-->
         <activity
             android:name=".ui.data.FileActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
         <!--切换host弹窗-->
         <activity
             android:name=".ui.HostsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxCustomDialog"/>
+            android:theme="@style/WorkboxCustomDialog" />
         <!--js接口列表-->
         <activity
             android:name=".ui.JsInterfaceListActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxSearchViewToolbar"/>
+            android:theme="@style/WorkboxSearchViewToolbar" />
         <!-- Debug调试WebView列表 -->
         <activity
             android:name=".ui.WebViewListActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxSearchViewToolbar"/>
+            android:theme="@style/WorkboxSearchViewToolbar" />
         <!-- App信息 -->
         <activity
             android:name=".ui.app.AppComponentActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <!-- 组件列表 -->
         <activity
             android:name=".ui.app.ComponentListActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxSearchViewToolbar"/>
+            android:theme="@style/WorkboxSearchViewToolbar" />
         <!-- 组件信息 -->
         <activity
             android:name=".ui.app.ComponentActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
         <!-- 组件信息 -->
         <activity
             android:name=".ui.app.activity.IntentInfoActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
         <!-- Permission列表 -->
         <activity
             android:name=".ui.app.PermissionListActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
         <!-- SharedPreference列表 -->
         <activity
             android:name=".ui.data.SharedPreferenceListActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
         <!-- SharedPreference详情 -->
         <activity
             android:name=".ui.data.SharedPreferenceDetailActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
         <!-- 当前Activity信息展示设置 -->
         <activity
             android:name=".ui.app.record.CurrentActivitySettingActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
         <!-- Activity历史记录 -->
         <activity
             android:name=".ui.app.record.LifecycleRecordListActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxSearchViewToolbar"/>
+            android:theme="@style/WorkboxSearchViewToolbar" />
         <!-- Database列表 -->
         <activity
             android:name=".ui.data.DatabaseListActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
         <!-- table信息 -->
         <activity
             android:name=".ui.data.TableInfoActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
         <!-- 系统信息 -->
         <activity
             android:name=".ui.system.DeviceInfoActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <!-- js文件与函数列表 -->
         <activity
             android:name=".ui.JsListActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
         <!-- 调试js -->
         <activity
             android:name=".ui.ExecJsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <!-- 流量监控记录列表 -->
         <activity
             android:name=".ui.usage.RecordListActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxSearchViewToolbar"/>
+            android:theme="@style/WorkboxSearchViewToolbar" />
         <!-- 流量监控记录分组 -->
         <activity
             android:name=".ui.usage.UrlGroupActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxSearchViewToolbar"/>
+            android:theme="@style/WorkboxSearchViewToolbar" />
         <!-- 流量监控记录详情 -->
         <activity
             android:name=".ui.usage.RecordDetailActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme"/>
+            android:theme="@style/WorkboxListTheme" />
         <!-- mock数据host分组列表 -->
         <activity
             android:name=".ui.mock.MockGroupHostActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxSearchViewToolbar"/>
+            android:theme="@style/WorkboxSearchViewToolbar" />
         <!-- mock数据列表 -->
         <activity
             android:name=".ui.mock.MockUrlListActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/WorkboxSearchViewToolbar"/>
+            android:theme="@style/WorkboxSearchViewToolbar" />
         <!--mock数据详情-->
         <activity
             android:name=".ui.mock.MockDetailActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxSearchViewToolbar"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <!-- WebView -->
         <activity
             android:name=".ui.WebViewActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <!-- 文本浏览 -->
         <activity
             android:name=".ui.data.XmlViewerActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <!--android 7.0+ status bar快速入口-->
         <service
             android:name=".service.QuickSettingService"
@@ -258,7 +272,7 @@
             android:label="workbox"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
-                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
     </application>

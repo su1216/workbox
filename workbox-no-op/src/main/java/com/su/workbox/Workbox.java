@@ -79,6 +79,8 @@ public class Workbox {
         return "";
     }
 
+    public static void enableCrashLogEntry(boolean enable) {}
+
     @NonNull
     public static String urlMapping(@NonNull String url, @NonNull String newHost) {
         return url;

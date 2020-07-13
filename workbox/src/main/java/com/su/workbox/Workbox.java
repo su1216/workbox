@@ -2,8 +2,10 @@ package com.su.workbox;
 
 import android.app.Application;
 import android.arch.lifecycle.ProcessLifecycleOwner;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -185,6 +187,15 @@ public class Workbox {
             return;
         }
         context.startActivity(intent);
+    }
+
+    public static void enableCrashLogEntry(@NonNull Context context, boolean enable) {
+        PackageManager pm = context.getPackageManager();
+        ComponentName componentName = new ComponentName(context, "com.su.workbox.ui.log.crash.entry.CrashLogActivity");
+        pm.setComponentEnabledSetting(componentName,
+                enable ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                        : PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
     }
 
     @NonNull
