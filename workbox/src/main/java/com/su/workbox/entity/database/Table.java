@@ -1,6 +1,6 @@
 package com.su.workbox.entity.database;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class Table implements Comparable<Table> {
 

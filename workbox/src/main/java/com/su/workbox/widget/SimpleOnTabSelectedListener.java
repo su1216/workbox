@@ -1,6 +1,6 @@
 package com.su.workbox.widget;
 
-import android.support.design.widget.TabLayout;
+import com.google.android.material.tabs.TabLayout;
 
 public class SimpleOnTabSelectedListener implements TabLayout.BaseOnTabSelectedListener {
 

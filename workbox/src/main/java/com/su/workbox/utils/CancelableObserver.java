@@ -1,6 +1,6 @@
 package com.su.workbox.utils;
 
-import android.arch.lifecycle.Observer;
+import androidx.lifecycle.Observer;
 
 public abstract class CancelableObserver<T> implements Observer<T> {
     private volatile boolean cancel;

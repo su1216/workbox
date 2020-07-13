@@ -19,7 +19,7 @@
     <View android:layout_width="match_parent"
           android:layout_height="1px"
           android:background="@color/workbox_divider_normal"/>
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dip"
@@ -28,7 +28,7 @@
         android:drawSelectorOnTop="false"
         android:orientation="vertical"
         android:overScrollMode="never"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
     <View android:layout_width="match_parent"
           android:layout_height="1px"
           android:background="@color/workbox_divider_normal"/>

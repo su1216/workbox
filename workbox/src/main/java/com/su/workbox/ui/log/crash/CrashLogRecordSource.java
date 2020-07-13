@@ -1,6 +1,6 @@
 package com.su.workbox.ui.log.crash;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.su.workbox.utils.AppExecutors;
 

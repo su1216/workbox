@@ -19,7 +19,7 @@
         android:textSize="12sp"
         tools:text="FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET" />
 
-    <android.support.v7.widget.AppCompatCheckBox
+    <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/check_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -3,7 +3,7 @@ package com.su.workbox.ui.base;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class SimpleActivityLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
     @Override

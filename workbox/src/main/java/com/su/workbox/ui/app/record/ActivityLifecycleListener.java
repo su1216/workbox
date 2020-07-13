@@ -3,7 +3,7 @@ package com.su.workbox.ui.app.record;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.su.workbox.database.HttpDataDatabase;
 import com.su.workbox.ui.base.SimpleActivityLifecycleCallbacks;

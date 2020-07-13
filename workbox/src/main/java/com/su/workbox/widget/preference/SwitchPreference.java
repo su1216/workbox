@@ -1,9 +1,9 @@
 package com.su.workbox.widget.preference;
 
 import android.content.Context;
-import android.support.v7.preference.PreferenceViewHolder;
-import android.support.v7.preference.SwitchPreferenceCompat;
-import android.support.v7.widget.SwitchCompat;
+import androidx.preference.PreferenceViewHolder;
+import androidx.preference.SwitchPreferenceCompat;
+import androidx.appcompat.widget.SwitchCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Checkable;
@@ -23,7 +23,7 @@ public class SwitchPreference extends SwitchPreferenceCompat {
     }
 
     public SwitchPreference(Context context, AttributeSet attrs) {
-        this(context, attrs, android.support.v7.preference.R.attr.switchPreferenceCompatStyle);
+        this(context, attrs, androidx.preference.R.attr.switchPreferenceCompatStyle);
     }
 
     public SwitchPreference(Context context) {
@@ -36,7 +36,7 @@ public class SwitchPreference extends SwitchPreferenceCompat {
     @Override
     public void onBindViewHolder(PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
-        View switchView = holder.findViewById(android.support.v7.preference.R.id.switchWidget);
+        View switchView = holder.findViewById(androidx.preference.R.id.switchWidget);
         switchView.setClickable(true);
         switchView.setFocusable(true);
         syncSwitchView(switchView);

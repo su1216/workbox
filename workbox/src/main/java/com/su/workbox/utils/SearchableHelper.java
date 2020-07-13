@@ -1,10 +1,10 @@
 package com.su.workbox.utils;
 
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -246,8 +246,8 @@ public class SearchableHelper {
     public void initSearchToolbar(@NonNull Toolbar toolbar, @Nullable String queryHint, @NonNull SearchView.OnQueryTextListener listener) {
         MenuItem menuItem = toolbar.getMenu().findItem(R.id.search);
         mSearchView = (SearchView) menuItem.getActionView();
-        EditText searchEdit = mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        mSearchView.findViewById(android.support.v7.appcompat.R.id.search_plate)
+        EditText searchEdit = mSearchView.findViewById(R.id.search_src_text);
+        mSearchView.findViewById(R.id.search_plate)
                 .setBackgroundResource(android.R.color.transparent);
         searchEdit.setTextColor(toolbar.getResources().getColor(android.R.color.white));
         searchEdit.setHintTextColor(Color.WHITE);

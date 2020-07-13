@@ -1,7 +1,7 @@
 package com.su.workbox.ui.app.activity;
 
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;

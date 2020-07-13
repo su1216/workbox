@@ -15,5 +15,5 @@
         android:drawSelectorOnTop="false"
         android:orientation="vertical"
         android:overScrollMode="never"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 </LinearLayout>

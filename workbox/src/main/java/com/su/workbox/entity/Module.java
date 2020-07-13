@@ -1,7 +1,7 @@
 package com.su.workbox.entity;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 import android.view.View;
 
 import java.util.Objects;

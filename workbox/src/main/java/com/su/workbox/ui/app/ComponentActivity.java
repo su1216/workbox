@@ -3,8 +3,8 @@ package com.su.workbox.ui.app;
 import android.content.Intent;
 import android.content.pm.ComponentInfo;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.su.workbox.R;
 import com.su.workbox.entity.NoteComponentEntity;

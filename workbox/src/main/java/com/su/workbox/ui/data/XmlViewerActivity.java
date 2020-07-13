@@ -2,7 +2,7 @@ package com.su.workbox.ui.data;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;

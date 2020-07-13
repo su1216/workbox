@@ -42,7 +42,7 @@
             android:text="Auto:"
             android:textColor="@color/workbox_first_text"
             android:textSize="18sp"/>
-        <android.support.v7.widget.SwitchCompat
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/auto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

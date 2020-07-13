@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.preference.PreferenceScreen
+<androidx.preference.PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <android.support.v7.preference.Preference
+    <androidx.preference.Preference
         android:title="SharedPreference"
         android:key="shared_preference"/>
-    <android.support.v7.preference.Preference
+    <androidx.preference.Preference
         android:title="sqlite3 db"
         android:key="database"/>
-    <android.support.v7.preference.Preference
+    <androidx.preference.Preference
         android:title="Manifest"
         android:key="manifest"
         android:summary="查看、导出当前manifest"/>
-    <android.support.v7.preference.Preference
+    <androidx.preference.Preference
         android:title="私有数据"
         android:key="private_dir"/>
-    <android.support.v7.preference.Preference
+    <androidx.preference.Preference
         android:title="apk"
         android:key="apk"
         android:summary="查看、导出当前使用的apk"/>
-    <android.support.v7.preference.Preference
+    <androidx.preference.Preference
         android:title="so"
         android:key="so"/>
-    <android.support.v7.preference.Preference
+    <androidx.preference.Preference
         android:key="clean_data"
         android:summary="清理内外部缓存目录与自定义目录"
         android:title="缓存清理" />
-</android.support.v7.preference.PreferenceScreen>
+</androidx.preference.PreferenceScreen>

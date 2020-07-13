@@ -13,7 +13,7 @@
         android:textColor="@color/workbox_first_text"
         android:textSize="16sp"
         tools:text="已导入"/>
-    <android.support.v7.widget.AppCompatCheckBox
+    <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/check_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

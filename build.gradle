@@ -6,6 +6,7 @@ buildscript {
         jcenter()
         maven { url 'https://dl.google.com/dl/android/maven2/' }
         maven{ url uri('repo') }
+        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.3'

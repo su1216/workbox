@@ -1,9 +1,9 @@
 package com.su.workbox.ui.app.record;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.PreferenceManager;
+import androidx.annotation.Nullable;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import com.su.workbox.R;
 import com.su.workbox.ui.base.BaseAppCompatActivity;

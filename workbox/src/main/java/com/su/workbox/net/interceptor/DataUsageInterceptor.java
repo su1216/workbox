@@ -1,7 +1,7 @@
 package com.su.workbox.net.interceptor;
 
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.su.workbox.database.HttpDataDatabase;

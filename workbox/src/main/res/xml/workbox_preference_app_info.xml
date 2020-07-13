@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.preference.PreferenceScreen
+<androidx.preference.PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <android.support.v7.preference.Preference
+    <androidx.preference.Preference
         android:title="Activity列表"
         android:key="activity"/>
-    <android.support.v7.preference.Preference
+    <androidx.preference.Preference
         android:title="Service列表"
         android:key="service"/>
-    <android.support.v7.preference.Preference
+    <androidx.preference.Preference
         android:title="BroadcastReceiver列表"
         android:key="receiver"/>
-    <android.support.v7.preference.Preference
+    <androidx.preference.Preference
         android:title="Provider列表"
         android:key="provider"/>
-</android.support.v7.preference.PreferenceScreen>
+</androidx.preference.PreferenceScreen>

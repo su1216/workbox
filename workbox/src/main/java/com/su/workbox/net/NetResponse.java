@@ -1,6 +1,6 @@
 package com.su.workbox.net;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Created by su on 17-4-11.

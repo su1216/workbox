@@ -2,7 +2,7 @@ package com.su.sample;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Created by su on 2018/1/25.

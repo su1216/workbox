@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.preference.PreferenceScreen
+<androidx.preference.PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
     <com.su.workbox.widget.preference.SwitchPreference
         android:defaultValue="true"
         android:key="panel_icon"
         android:summary="配置悬浮面板内容"
         android:title="悬浮面板"/>
-    <android.support.v7.preference.SwitchPreferenceCompat
+    <androidx.preference.SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="debug_entry"
         android:summary="桌面添加Workbox入口，状态变化延迟15秒左右"
         android:thumb="@drawable/workbox_switch_button"
         android:title="桌面入口"
         android:track="@drawable/workbox_switch_track_selector"/>
-    <android.support.v7.preference.PreferenceCategory
+    <androidx.preference.PreferenceCategory
         android:title="Log">
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="crash_log"
             android:summary="查看崩溃日志详情并可分享日志"
             android:title="崩溃日志"/>
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="app_log"
             android:summary="查看当前app日志，请及时清理日志"
             android:title="应用日志"/>
-    </android.support.v7.preference.PreferenceCategory>
-    <android.support.v7.preference.PreferenceCategory
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory
         android:title="App">
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="app_info"
             android:title="应用信息"/>
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="app_component_info"
             android:summary="activity/service/receiver/provider"
             android:title="组件信息"/>
@@ -38,15 +38,15 @@
             android:key="activity_launcher"
             android:summary="自动收集启动Activity时Intent信息"
             android:title="任意门"/>
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="data_view_export"
             android:summary="manifest/shared preference/sqlite db/apk/so ..."
             android:title="数据查看与导出"/>
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="app_files"
             android:summary="查看apk中的文件目录结构"
             android:title="应用内文件"/>
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="permission"
             android:summary="应用所需权限与用户授权情况"
             android:title="权限列表"/>
@@ -57,43 +57,43 @@
             android:thumb="@drawable/workbox_switch_button"
             android:title="当前Activity"
             android:track="@drawable/workbox_switch_track_selector"/>
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="lifecycle_history"
             android:summary="不包含workbox相关activity/fragment记录"
             android:title="生命周期历史纪录"/>
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="system_notification"
             android:summary="系统的通知设置情况"
             android:title="通知设置"/>
-    </android.support.v7.preference.PreferenceCategory>
-    <android.support.v7.preference.PreferenceCategory
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory
         android:title="System">
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="system_proxy"
             android:title="系统代理">
             <intent android:action="android.settings.WIFI_SETTINGS"/>
-        </android.support.v7.preference.Preference>
-        <android.support.v7.preference.Preference
+        </androidx.preference.Preference>
+        <androidx.preference.Preference
             android:enabled="false"
             android:key="software_info"
             android:selectable="false"
             android:title="软件信息"/>
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:enabled="false"
             android:key="hardware_info"
             android:selectable="false"
             android:title="硬件信息"/>
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="more_phone_info"
             android:summary="分辨率、存储、网络、硬件、系统属性、环境变量等信息"
             android:title="更多信息"/>
-    </android.support.v7.preference.PreferenceCategory>
-    <android.support.v7.preference.PreferenceCategory
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory
         android:title="Network">
         <com.su.workbox.widget.preference.SwitchPreference
             android:key="data_usage"
             android:title="流量监控"/>
-        <android.support.v7.preference.ListPreference
+        <androidx.preference.ListPreference
             android:defaultValue="none"
             android:dialogTitle="模拟数据策略"
             android:entries="@array/workbox_mock_names"
@@ -101,29 +101,29 @@
             android:key="mock_policy"
             android:summary="无"
             android:title="数据模拟策略"/>
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="mock_data_list"
             android:title="数据模拟接口列表"/>
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="hosts"
             android:title="接口域名列表"/>
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="web_view_hosts"
             android:title="WebView域名列表"/>
-    </android.support.v7.preference.PreferenceCategory>
-    <android.support.v7.preference.PreferenceCategory
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory
         android:title="Others">
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="web_view_debug"
             android:summary="展示WebView加载的url、header、cookie等"
             android:title="WebView调试"/>
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="js_interface"
             android:summary="展示通过注解JavascriptInterface暴露给WebView的接口以及接口调试"
             android:title="@JavascriptInterface接口调试"/>
-        <android.support.v7.preference.Preference
+        <androidx.preference.Preference
             android:key="js_rhino"
             android:summary="使用rhino执行js"
             android:title="rhino调试"/>
-    </android.support.v7.preference.PreferenceCategory>
-</android.support.v7.preference.PreferenceScreen>
+    </androidx.preference.PreferenceCategory>
+</androidx.preference.PreferenceScreen>

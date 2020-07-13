@@ -1,6 +1,6 @@
 package com.su.workbox.entity;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Created by su on 17-10-25.

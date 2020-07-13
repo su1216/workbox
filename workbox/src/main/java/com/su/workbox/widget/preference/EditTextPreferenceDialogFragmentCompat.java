@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-public class EditTextPreferenceDialogFragmentCompat extends android.support.v7.preference.EditTextPreferenceDialogFragmentCompat {
+public class EditTextPreferenceDialogFragmentCompat extends androidx.preference.EditTextPreferenceDialogFragmentCompat {
 
     private EditText mEditText;
     private int mInputType;
