@@ -18,11 +18,10 @@ Android 5.0+ (API level 21+)
 ## Workbox
 
 ```groovy
-debugApi 'com.su:workbox.annotations:0.9.7'
-debugAnnotationProcessor 'com.su:workbox.compiler:0.9.7'
-debugImplementation 'com.su:workbox:0.9.7'
-releaseImplementation 'com.su:workbox-no-op:0.9.7'
-
+debugApi 'com.su:workbox.annotations:0.9.9'
+debugAnnotationProcessor 'com.su:workbox.compiler:0.9.9'
+debugImplementation 'com.su:workbox:0.9.9'
+releaseImplementation 'com.su:workbox-no-op:0.9.9'
 ```
 
 需要将module名称传给compiler

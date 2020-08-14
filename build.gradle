@@ -49,5 +49,5 @@ ext {
     desc = 'debug and mock for android'
     licences = ['Apache-2.0']
     groupId = 'com.su' // 组名
-    version = '0.9.8' // 版本号
+    version = '0.9.9' // 版本号
 }
