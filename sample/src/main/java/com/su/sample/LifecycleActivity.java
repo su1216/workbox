@@ -28,7 +28,7 @@ public class LifecycleActivity extends BaseAppCompatActivity {
     public static class LifecycleFragment extends Fragment {
 
         @Override
-        public void onAttach(Context context) {
+        public void onAttach(@NonNull Context context) {
             super.onAttach(context);
             Workbox.registerFragment(this);
         }

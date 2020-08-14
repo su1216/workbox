@@ -4,13 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Space;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.su.workbox.R;
 
@@ -18,22 +19,15 @@ public class ListenerFragment extends Fragment {
 
     private FragmentLifecycleListener mListener;
 
-    public FragmentLifecycleListener getFragmentLifecycleListener() {
-        return mListener;
-    }
-
-    public void setFragmentLifecycleListener(FragmentLifecycleListener listener) {
-        this.mListener = listener;
-    }
-
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        mListener = FragmentLifecycleListener.getInstance();
         mListener.onAttach(this, context);
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(@NonNull Activity activity) {
         super.onAttach(activity);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             mListener.onAttach(this, activity);

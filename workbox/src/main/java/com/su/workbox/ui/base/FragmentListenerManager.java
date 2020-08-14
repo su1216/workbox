@@ -1,5 +1,7 @@
 package com.su.workbox.ui.base;
 
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
@@ -11,10 +13,22 @@ public class FragmentListenerManager {
     private ListenerFragment mListenerFragment;
 
     public void registerFragment(@NonNull Fragment fragment) {
+        //以防重复注入
+        Bundle bundle = fragment.getArguments();
+        if (bundle == null) {
+            bundle = new Bundle();
+        } else {
+            boolean injection = bundle.getBoolean("workbox_injection");
+            if (injection) {
+                return;
+            }
+        }
+        bundle.putBoolean("workbox_injection", true);
+        fragment.setArguments(bundle);
+
         if (mListenerFragment == null) {
             mListenerFragment = new ListenerFragment();
         }
-        mListenerFragment.setFragmentLifecycleListener(FragmentLifecycleListener.getInstance());
         compatibleFragment(fragment);
         fragment.getChildFragmentManager()
                 .beginTransaction()
