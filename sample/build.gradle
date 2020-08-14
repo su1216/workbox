@@ -47,12 +47,12 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     debugAnnotationProcessor project(':compiler')
     debugApi project(':workbox')
     releaseApi project(':workbox-no-op')
     api project(':annotations')
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.preference:preference:1.1.1'
     api 'com.alibaba:fastjson:' + rootProject.ext.fastjson
     //OkHttp
@@ -61,5 +61,5 @@ dependencies {
     debugApi 'com.readystatesoftware.chuck:library:1.1.0'
     releaseApi 'com.readystatesoftware.chuck:library-no-op:1.1.0'
     api 'org.mozilla:rhino:1.7.12'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
 }
