@@ -1,6 +1,6 @@
 package com.su.sample;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.su.workbox.Workbox;
 
 import java.util.concurrent.TimeUnit;
@@ -33,7 +33,7 @@ public class RequestHelper {
             builder.addInterceptor(Workbox.getHostInterceptor());
             builder.addNetworkInterceptor(logging);
             builder.addInterceptor(Workbox.getMockInterceptor());
-            builder.addInterceptor(new ChuckInterceptor(SampleApplication.getContext()));
+            builder.addInterceptor(new ChuckerInterceptor(SampleApplication.getContext()));
             builder.addInterceptor(Workbox.getDataCollectorInterceptor());
             builder.addInterceptor(Workbox.getDataUsageInterceptorInterceptor());
         }
