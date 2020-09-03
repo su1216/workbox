@@ -106,10 +106,12 @@ public class IntentFragment extends IntentBaseInfoFragment implements View.OnCli
         String type = mCloneExtras.getType();
         intentData.setType(type);
         intentData.setData(data);
-        if (TextUtils.isEmpty(data)) {
-            intent.setType(type);
-        } else {
+        if (!TextUtils.isEmpty(data) && !TextUtils.isEmpty(type)) {
             intent.setDataAndType(Uri.parse(data), type);
+        } else if (TextUtils.isEmpty(data) && !TextUtils.isEmpty(type)) {
+            intent.setType(type);
+        } else if (TextUtils.isEmpty(type) && !TextUtils.isEmpty(data)) {
+            intent.setType(data);
         }
     }
 
