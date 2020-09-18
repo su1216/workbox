@@ -150,6 +150,10 @@ public class Workbox {
         FragmentListenerManager.setEnableLog(enableLog);
     }
 
+    public static void enableActivityLifecycleLog(boolean enableLog) {
+        ActivityLifecycleListener.setEnableLog(enableLog);
+    }
+
     @Nullable
     public static Intent getWorkboxModuleIntent(@NonNull String module, @NonNull Context context) {
         switch (module) {

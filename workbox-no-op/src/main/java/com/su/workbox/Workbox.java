@@ -67,6 +67,8 @@ public class Workbox {
 
     public static void enableFragmentLifecycleLog(boolean enableLog) {}
 
+    public static void enableActivityLifecycleLog(boolean enableLog) {}
+
     @Nullable
     public static Intent getWorkboxModuleIntent(@NonNull String module, @NonNull Context context) {
         return null;

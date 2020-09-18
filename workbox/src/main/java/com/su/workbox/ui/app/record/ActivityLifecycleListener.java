@@ -3,6 +3,8 @@ package com.su.workbox.ui.app.record;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.su.workbox.database.HttpDataDatabase;
@@ -12,6 +14,7 @@ import com.su.workbox.utils.GeneralInfoHelper;
 
 public class ActivityLifecycleListener extends SimpleActivityLifecycleCallbacks {
 
+    private static boolean sEnableLog = false;
     @SuppressLint("StaticFieldLeak")
     private static ActivityLifecycleListener sActivityLifecycleListener;
     private Activity mTopActivity;
@@ -26,6 +29,9 @@ public class ActivityLifecycleListener extends SimpleActivityLifecycleCallbacks 
     }
 
     private void save(Activity activity, String event) {
+        if (sEnableLog) {
+            Log.d(activity.getClass().getSimpleName(), event);
+        }
         Class<?> clazz = activity.getClass();
         if (clazz.getName().startsWith(GeneralInfoHelper.LIB_PACKAGE_NAME)) {
             return;
@@ -98,5 +104,9 @@ public class ActivityLifecycleListener extends SimpleActivityLifecycleCallbacks 
         } else {
             throw new IllegalStateException("ActivityLifecycleListener has already initialized.");
         }
+    }
+
+    public static void setEnableLog(boolean enableLog) {
+        sEnableLog = enableLog;
     }
 }
