@@ -24,4 +24,5 @@
     <string name="workbox_can_not_get">无法获取</string>
     <string name="workbox_yes">是</string>
     <string name="workbox_no">否</string>
+    <string name="workbox_app_setttings_not_found">未找到应用设置页面</string>
 </resources>

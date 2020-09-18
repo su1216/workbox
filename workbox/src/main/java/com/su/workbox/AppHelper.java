@@ -24,6 +24,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.su.workbox.entity.NoteWebViewEntity;
 import com.su.workbox.ui.WebViewActivity;
@@ -118,10 +119,37 @@ public final class AppHelper {
 
     public static void gotoManageOverlayPermission(@NonNull Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setData(Uri.parse("package:" + context.getPackageName()));
-            context.startActivity(intent);
+            if (Build.BRAND.equalsIgnoreCase("Meizu")) {
+                try {
+                    Intent intent = new Intent("com.meizu.safe.security.SHOW_APPSEC");
+                    intent.putExtra("packageName", context.getPackageName());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                    return;
+                } catch (ActivityNotFoundException e) {
+                    //ignore 继续尝试下一种方式
+                }
+            }
+            try {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setData(Uri.parse("package:" + context.getPackageName()));
+                context.startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                //In some cases, a matching Activity may not exist, so ensure you safeguard against this.
+                //ROKR Z6 7.1.1 / MStar Android TV 8.0.0
+                goAppSettings(context, context.getPackageName());
+            }
+        } else {
+            goAppSettings(context, context.getPackageName());
+        }
+    }
+
+    public static void goAppSettings(@NonNull Context context, String packageName) {
+        try {
+            context.startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null)));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(context, R.string.workbox_app_setttings_not_found, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -164,10 +192,6 @@ public final class AppHelper {
             intent.setData(Uri.parse("package:" + context.getPackageName()));
         }
         context.startActivity(intent);
-    }
-
-    public static void goAppSettings(@NonNull Context context, String packageName) {
-        context.startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null)));
     }
 
     public static void startActivity(@NonNull Context context, @Nullable Intent intent) {
