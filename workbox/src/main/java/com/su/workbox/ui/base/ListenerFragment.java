@@ -30,6 +30,7 @@ public class ListenerFragment extends Fragment {
     public void onAttach(@NonNull Activity activity) {
         super.onAttach(activity);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            mListener = FragmentLifecycleListener.getInstance();
             mListener.onAttach(this, activity);
         }
     }
