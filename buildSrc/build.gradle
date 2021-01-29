@@ -1,0 +1,16 @@
+apply plugin: 'groovy'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation "com.android.tools.build:gradle:3.6.3"
+    implementation 'com.google.code.gson:gson:2.8.6'
+}
+
+repositories {
+    //https://developer.android.com/topic/libraries/support-library/setup.html
+    //https://maven.google.com 会 301 跳转到 https://dl.google.com/dl/android/maven2/
+    maven { url 'https://dl.google.com/dl/android/maven2/' }
+    jcenter()
+}

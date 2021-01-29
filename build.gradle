@@ -5,8 +5,6 @@ buildscript {
         //https://maven.google.com 会 301 跳转到 https://dl.google.com/dl/android/maven2/
         jcenter()
         maven { url 'https://dl.google.com/dl/android/maven2/' }
-        maven{ url uri('repo') }
-        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.6.3'
@@ -21,9 +19,9 @@ allprojects {
         maven { url "https://dl.google.com/dl/android/maven2/" }
         jcenter()
         maven { url "https://jitpack.io" }
-        google()
         maven{ url uri('../repo') }
     }
+
 //    tasks.withType(Javadoc) {
 //        options.addStringOption('Xdoclint:none', '-quiet')
 //        options.addStringOption('encoding', 'UTF-8')
@@ -51,3 +49,5 @@ ext {
     groupId = 'com.su' // 组名
     version = '0.9.9.1' // 版本号
 }
+
+apply plugin: 'workbox.plugin'
