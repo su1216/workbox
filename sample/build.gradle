@@ -58,8 +58,8 @@ dependencies {
     //OkHttp
     api 'com.squareup.okhttp3:okhttp:' + rootProject.ext.okhttp
     api 'com.squareup.okhttp3:logging-interceptor:' + rootProject.ext.okhttp
-    debugApi "com.github.ChuckerTeam.Chucker:library:3.2.0"
-    releaseApi "com.github.ChuckerTeam.Chucker:library-no-op:3.2.0"
-    api 'org.mozilla:rhino:1.7.12'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
+    debugApi "com.github.ChuckerTeam.Chucker:library:3.4.0"
+    releaseApi "com.github.ChuckerTeam.Chucker:library-no-op:3.4.0"
+    api 'org.mozilla:rhino:1.7.13'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
 }
