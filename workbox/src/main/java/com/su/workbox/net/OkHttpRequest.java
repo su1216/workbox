@@ -1,9 +1,10 @@
 package com.su.workbox.net;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -45,7 +46,7 @@ class OkHttpRequest<T> extends NetRequest<T> {
 
     private static OkHttpClient sClient;
     private Call mCall;
-    private FormBody.Builder mFormBodyBuilder = new FormBody.Builder();
+    private final FormBody.Builder mFormBodyBuilder = new FormBody.Builder();
 
     static {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -105,7 +106,6 @@ class OkHttpRequest<T> extends NetRequest<T> {
             Map.Entry<String, Object> entry = it.next();
             Object value = entry.getValue();
             jsonObject.put(entry.getKey(), value);
-
         }
         String jsonString = jsonObject.toJSONString();
         return RequestBody.create(type, jsonString);
@@ -115,9 +115,6 @@ class OkHttpRequest<T> extends NetRequest<T> {
     public String getMediaType() {
         if (TextUtils.isEmpty(mMediaType)) {
             MediaType mediaType = mFormBodyBuilder.build().contentType();
-            if (mediaType == null) {
-                return null;
-            }
             return mediaType.toString();
         } else {
             return mMediaType;
@@ -181,7 +178,7 @@ class OkHttpRequest<T> extends NetRequest<T> {
             mCall.enqueue(new okhttp3.Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException ioException) {
-                    sHandler.post(new OnFailure(ioException));
+                    OkHttpRequest.this.onFailure(ioException);
                 }
 
                 @Override
@@ -192,13 +189,15 @@ class OkHttpRequest<T> extends NetRequest<T> {
         } catch (RuntimeException e) {
             showRequestErrorToast();
             Log.d(TAG, "url: " + mUrl + " method: " + mMethod, e);
-            sHandler.post(new OnFailure(new IOException("build request failed!")));
+            OkHttpRequest.this.onFailure(new IOException("build request failed!"));
         }
     }
 
     private void showRequestErrorToast() {
-        String content = "请求错误: " + mUrl + "\n请求方式: " + mMethod + "\nheader: " + mHeaderMap;
-        new ToastBuilder(content).show();
+        sHandler.post(() -> {
+            String content = "请求错误: " + mUrl + "\n请求方式: " + mMethod + "\nheader: " + mHeaderMap;
+            new ToastBuilder(content).show();
+        });
     }
 
     @Override
@@ -210,11 +209,11 @@ class OkHttpRequest<T> extends NetRequest<T> {
             onResponse(response);
         } catch (IOException e) {
             Log.d(TAG, "url: " + mUrl, e);
-            sHandler.post(new OnFailure(e));
+            OkHttpRequest.this.onFailure(e);
         } catch (RuntimeException e) {
             showRequestErrorToast();
             Log.d(TAG, "url: " + mUrl + " method: " + mMethod, e);
-            sHandler.post(new OnFailure(new IOException("build request failed!")));
+            OkHttpRequest.this.onFailure(new IOException("build request failed!"));
         }
     }
 
@@ -222,9 +221,10 @@ class OkHttpRequest<T> extends NetRequest<T> {
         Log.d(TAG, "response: " + response);
         try {
             T result = parseNetworkResponse(response.body().string());
-            sHandler.post(new OnResponse(new NetResponse<>(result, response.request().url().toString(), response.code(), makeErrorResponseMessage(response))));
+            onResponse(new NetResponse<>(result, response.request().url().toString(), response.code(), makeErrorResponseMessage(response)));
         } catch (ParseException e) {
-            sHandler.post(new OnResponse(new NetResponse<>(null, false, response.request().url().toString(), response.code(), makeErrorResponseMessage(response))));
+            Log.w(TAG, e);
+            onResponse(new NetResponse<>(null, false, response.request().url().toString(), response.code(), makeErrorResponseMessage(response)));
         }
     }
 
@@ -245,8 +245,9 @@ class OkHttpRequest<T> extends NetRequest<T> {
 
     @Override
     public boolean isCanceled() {
-        if (mCall != null)
+        if (mCall != null) {
             return mCall.isCanceled();
+        }
         return false;
     }
 
@@ -254,16 +255,11 @@ class OkHttpRequest<T> extends NetRequest<T> {
         if (GeneralInfoHelper.getContext() != null) {
             StringBuilder sb = new StringBuilder();
             sb.append("url: " + mUrl + "\n");
-
             if (response.code() > 0) {
                 sb.append("statusCode: " + response.code() + "\n");
             }
-
             sb.append("message: " + response.message() + "\n");
-            if (response.headers() != null) {
-                sb.append("headers: " + response.headers() + "\n");
-            }
-
+            sb.append("headers: " + response.headers() + "\n");
             return sb.toString();
         }
         return "";

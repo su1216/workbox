@@ -32,7 +32,7 @@ public abstract class NetRequest<T> {
     Map<String, Object> mFormBodyMap = new HashMap<>();
     Map<String, MultipartFile> mMultipartMap = new HashMap<>();
 
-    private Callback<T> mCallback;
+    private final Callback<T> mCallback;
 
     NetRequest(String url, String method, TypeReference<T> typeReference, Callback<T> callback) {
         if (!"POST".equals(method) && !"GET".equals(method)) {
@@ -78,6 +78,7 @@ public abstract class NetRequest<T> {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     T parseNetworkResponse(String json) {
         try {
             Type type = mType.getType();
@@ -113,41 +114,23 @@ public abstract class NetRequest<T> {
         }
     }
 
-    class OnFailure implements Runnable {
-        private IOException mException;
-
-        OnFailure(IOException e) {
-            mException = e;
-        }
-
-        @Override
-        public void run() {
-            if (isCanceled()) {
-                mCallback.onCancel();
-            } else {
-                mCallback.onFailure(mException);
-            }
+    protected void onFailure(IOException ioException) {
+        if (isCanceled()) {
+            mCallback.onCancel();
+        } else {
+            mCallback.onFailure(ioException);
         }
     }
 
-    class OnResponse implements Runnable {
-        private NetResponse<T> mResponse;
-
-        OnResponse(NetResponse<T> response) {
-            mResponse = response;
-        }
-
-        @Override
-        public void run() {
-            try {
-                if (mResponse.isSuccessful()) {
-                    mCallback.onResponse(mResponse);
-                } else {
-                    mCallback.onError(mResponse);
-                }
-            } catch (IOException e) {
-                Log.d(TAG, "url: " + mUrl, e);
+    protected void onResponse(NetResponse<T> response) {
+        try {
+            if (response.isSuccessful()) {
+                mCallback.onResponse(response);
+            } else {
+                mCallback.onError(response);
             }
+        } catch (IOException e) {
+            Log.d(TAG, "url: " + mUrl, e);
         }
     }
 }
