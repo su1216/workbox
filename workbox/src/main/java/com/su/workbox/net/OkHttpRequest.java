@@ -159,8 +159,8 @@ class OkHttpRequest<T> extends NetRequest<T> {
                 .tag(mTag)
                 .headers(createHeaders());
 
-        MediaType mediaType = MediaType.parse(mMediaType);
         if (HttpMethod.requiresRequestBody(mMethod)) {
+            MediaType mediaType = MediaType.parse(mMediaType);
             if (TextUtils.isEmpty(mMediaType) || CONTENT_TYPE.equals(mediaType)) {
                 checkParamsIsNull(mFormBodyMap);
                 builder.method(mMethod, createFormBody());
