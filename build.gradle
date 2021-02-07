@@ -42,7 +42,7 @@ ext {
     minSdkVersion = 21
     buildToolsVersion = '30.0.3'
     fastjson = '1.1.71.android'
-    okhttp = '4.9.0'
+    okhttp = '4.9.1'
 
     userOrg = 'su1216'
     repoName = 'maven'
