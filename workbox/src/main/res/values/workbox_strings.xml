@@ -25,4 +25,7 @@
     <string name="workbox_yes">是</string>
     <string name="workbox_no">否</string>
     <string name="workbox_app_setttings_not_found">未找到应用设置页面</string>
+    <string name="workbox_stable_newest">最新稳定版: %s</string>
+    <string name="workbox_unstable_newest">最新版: %s</string>
+    <string name="workbox_update_time">更新时间: %s</string>
 </resources>

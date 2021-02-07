@@ -41,6 +41,12 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme" />
+        <!--Lib-->
+        <activity
+            android:name=".ui.app.lib.LibActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxSearchViewToolbar" />
         <!--崩溃日志列表-->
         <activity
             android:name=".ui.log.crash.CrashLogActivity"

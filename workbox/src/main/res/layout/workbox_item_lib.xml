@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dip">
+
+    <TextView
+        android:id="@+id/used_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/workbox_first_text"
+        android:textSize="14sp"
+        tools:text="android.arch:lifecycle_runtime:1.1.0" />
+
+    <TextView
+        android:id="@+id/stable_newest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/workbox_second_text"
+        android:textSize="12sp"
+        tools:text="最新稳定版:1.1.0" />
+
+    <TextView
+        android:id="@+id/unstable_newest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/workbox_second_text"
+        android:textSize="12sp"
+        tools:text="最新版:1.1.0" />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/workbox_second_text"
+        android:textSize="12sp"
+        tools:text="更新时间:1999.4.4 12:12" />
+
+    <TextView
+        android:id="@+id/repo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/workbox_second_text"
+        android:textSize="12sp"
+        tools:text="google" />
+</LinearLayout>

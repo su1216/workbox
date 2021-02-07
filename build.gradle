@@ -1,5 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
+    ext.kotlin_version = '1.4.21'
     repositories {
         //https://developer.android.com/topic/libraries/support-library/setup.html
         //https://maven.google.com 会 301 跳转到 https://dl.google.com/dl/android/maven2/
@@ -9,6 +10,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.6.3'
         classpath 'com.novoda:bintray-release:0.9.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 

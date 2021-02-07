@@ -42,6 +42,7 @@ import com.su.workbox.ui.app.AppInfoListActivity;
 import com.su.workbox.ui.app.ComponentListActivity;
 import com.su.workbox.ui.app.FilesInAppExplorerActivity;
 import com.su.workbox.ui.app.PermissionListActivity;
+import com.su.workbox.ui.app.lib.LibActivity;
 import com.su.workbox.ui.app.record.ActivityLifecycleListener;
 import com.su.workbox.ui.app.record.CurrentActivitySettingActivity;
 import com.su.workbox.ui.app.record.CurrentActivityView;
@@ -103,13 +104,14 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     }
 
     private void initWorkboxPreferences() {
-        SwitchPreferenceCompat entryPreference = (SwitchPreferenceCompat) findPreference("debug_entry");
+        SwitchPreferenceCompat entryPreference = findPreference("debug_entry");
         mEntryClassName = Workbox.class.getPackage().getName() + ".ui.DebugEntryActivity";
         entryPreference.setChecked(isComponentEnabled(mActivity.getPackageManager(), mActivity.getPackageName(), mEntryClassName));
         entryPreference.setOnPreferenceChangeListener(this);
-        mPanelIconPreference = (SwitchPreferenceCompat) findPreference("panel_icon");
+        mPanelIconPreference = findPreference("panel_icon");
         mPanelIconPreference.setOnPreferenceClickListener(this);
         mPanelIconPreference.setOnPreferenceChangeListener(this);
+        findPreference("lib_info").setOnPreferenceClickListener(this);
     }
 
     private void initAppPreferences() {
@@ -124,7 +126,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         findPreference("app_files").setOnPreferenceClickListener(this);
         findPreference("permission").setOnPreferenceClickListener(this);
         mCurrentActivityView = CurrentActivityView.getInstance();
-        mCurrentActivityPreference = (SwitchPreferenceCompat) findPreference("current_activity");
+        mCurrentActivityPreference = findPreference("current_activity");
         mCurrentActivityPreference.setChecked(mCurrentActivityView.isShowing());
         mCurrentActivityPreference.setOnPreferenceClickListener(this);
         mCurrentActivityPreference.setOnPreferenceChangeListener(this);
@@ -395,6 +397,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         switch (key) {
             case "panel_icon":
                 startActivity(new Intent(mActivity, PanelSettingsActivity.class));
+                return true;
+            case "lib_info":
+                startActivity(new Intent(mActivity, LibActivity.class));
                 return true;
             case "crash_log":
                 startActivity(CrashLogActivity.getLaunchIntent(mActivity));
