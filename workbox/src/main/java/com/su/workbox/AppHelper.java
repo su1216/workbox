@@ -147,7 +147,9 @@ public final class AppHelper {
 
     public static void goAppSettings(@NonNull Context context, String packageName) {
         try {
-            context.startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null)));
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context, R.string.workbox_app_setttings_not_found, Toast.LENGTH_LONG).show();
         }
