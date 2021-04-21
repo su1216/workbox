@@ -1,22 +1,14 @@
 apply plugin: 'java'
-apply plugin: 'com.novoda.bintray-release'
+apply plugin: 'maven'
+
+ext {
+    libName = "annotations"
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 jar {
-    baseName 'workbox-annotations-' + rootProject.ext.version
-}
-
-publish {
-    artifactId = 'workbox.annotations'
-    uploadName = 'workbox.annotations'
-    dryRun = false
-
-    userOrg = rootProject.ext.userOrg
-    repoName = rootProject.ext.repoName
-    desc = rootProject.ext.desc
-    groupId = rootProject.ext.groupId
-    publishVersion = rootProject.ext.version
+    baseName 'annotations'
 }

@@ -1,21 +1,13 @@
 apply plugin: 'java-library'
-apply plugin: 'com.novoda.bintray-release'
+apply plugin: 'com.github.dcendents.android-maven'
+
+ext {
+    libName = "compiler"
+}
 
 dependencies {
     api project(path: ':annotations')
     api 'com.google.auto.service:auto-service:1.0-rc7'
     annotationProcessor 'com.google.auto.service:auto-service:1.0-rc7'
     api 'com.alibaba:fastjson:' + rootProject.ext.fastjson
-}
-
-publish {
-    artifactId = 'workbox.compiler'
-    uploadName = 'workbox.compiler'
-    dryRun = false
-
-    userOrg = rootProject.ext.userOrg
-    repoName = rootProject.ext.repoName
-    desc = rootProject.ext.desc
-    groupId = rootProject.ext.groupId
-    publishVersion = rootProject.ext.version
 }

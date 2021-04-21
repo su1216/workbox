@@ -1,7 +1,11 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
+apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+
+ext {
+    libName = "workbox"
+}
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -82,16 +86,4 @@ dependencies {
     //OkHttp
     compileOnly 'com.squareup.okhttp3:okhttp:' + rootProject.ext.okhttp
     compileOnly 'com.squareup.okhttp3:logging-interceptor:' + rootProject.ext.okhttp
-}
-
-publish {
-    artifactId = 'workbox'
-    uploadName = 'workbox'
-    dryRun = false
-
-    userOrg = rootProject.ext.userOrg
-    repoName = rootProject.ext.repoName
-    desc = rootProject.ext.desc
-    groupId = rootProject.ext.groupId
-    publishVersion = rootProject.ext.version
 }

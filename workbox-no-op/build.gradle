@@ -1,5 +1,9 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
+apply plugin: 'com.github.dcendents.android-maven'
+
+ext {
+    libName = "workbox-no-op"
+}
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -38,16 +42,4 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.annotation:annotation:1.1.0'
     compileOnly 'com.squareup.okhttp3:okhttp:' + rootProject.ext.okhttp
-}
-
-publish {
-    artifactId = 'workbox-no-op'
-    uploadName = 'workbox-no-op'
-    dryRun = false
-
-    userOrg = rootProject.ext.userOrg
-    repoName = rootProject.ext.repoName
-    desc = rootProject.ext.desc
-    groupId = rootProject.ext.groupId
-    publishVersion = rootProject.ext.version
 }
