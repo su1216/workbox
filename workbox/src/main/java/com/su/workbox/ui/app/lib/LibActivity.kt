@@ -11,8 +11,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
-import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.TypeReference
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.su.workbox.R
 import com.su.workbox.entity.MavenArtifact
 import com.su.workbox.entity.Repositories
@@ -30,11 +31,13 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
+
 
 class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
 
@@ -95,7 +98,9 @@ class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
 
     private fun readAssets() {
         val data = IOUtil.readAssetsFile(this, "generated/dependencies.json")
-        val moduleList = JSON.parseArray(data, Module::class.java)
+        val type: Type = object : TypeToken<ArrayList<Module>>() {}.type
+        val moduleList = Gson().fromJson<ArrayList<Module>>(data, type)
+        moduleList.sort()
         mAssetsList.addAll(moduleList)
         for (module in moduleList) {
             module.libs.sort()
@@ -108,7 +113,10 @@ class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
                 list.add(artifact)
             }
             for (repository in module.repositories) {
-                if (!repository.url.endsWith("/")) {
+                if (repository.url == null) {
+                    continue
+                }
+                if (!repository.url!!.endsWith("/")) {
                     repository.url += "/"
                 }
             }
@@ -119,6 +127,10 @@ class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
 
     private fun search(groupId: String, artifactId: String = "", repoList: List<Repository>) {
         for (repo in repoList) {
+            // flatDir
+            if (repo.url == null) {
+                continue
+            }
             val scheme = Uri.parse(repo.url).scheme
             if (scheme?.equals("file", ignoreCase = true) == true) {
                 Log.d(TAG, "local repo: ${repo.url}")
@@ -127,12 +139,12 @@ class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
 
             val repository = Repositories.getRepository(repo.url)
             if (repository == Repositories.GOOGLE) {
-                queryFromGoogle(groupId, repo.url)
+                queryFromGoogle(groupId, repo.url!!)
             } else if (repository == Repositories.JCENTER) {
-                queryFromJCenter(groupId, artifactId, repo.url)
+                queryFromJCenter(groupId, artifactId, repo.url!!)
             } else if (repository == Repositories.MAVEN_CENTER
                     || repository == Repositories.JITPACK) {
-                queryFromMaven(groupId, artifactId, repo.url)
+                queryFromMaven(groupId, artifactId, repo.url!!)
             } else if (repository == Repositories.LOCAL) {
                 val artifact = MavenArtifact()
                 artifact.groupId = groupId
@@ -274,7 +286,8 @@ class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
                             continue
                         }
 
-                        if (MavenArtifact.versionCompare(artifact.artifactVersion ?: "", mavenArtifact.artifactLatestStableVersion ?: "") > 0) {
+                        if (MavenArtifact.versionCompare(artifact.artifactVersion
+                                        ?: "", mavenArtifact.artifactLatestStableVersion ?: "") > 0) {
                             Log.d(TAG, "not newest: $mavenArtifact")
                             continue@loop
                         }

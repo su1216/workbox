@@ -22,7 +22,6 @@ allprojects {
         maven { url "https://dl.google.com/dl/android/maven2/" }
         maven { url "https://jitpack.io" }
         jcenter()
-        maven{ url uri('../repo') }
     }
 
 //    tasks.withType(Javadoc) {
@@ -45,15 +44,8 @@ ext {
     fastjson = '1.1.71.android'
     okhttp = '4.9.1'
 
-    userOrg = 'su1216'
-    repoName = 'maven'
-    desc = 'debug and mock for android'
-    licences = ['Apache-2.0']
-    groupId = 'com.su' // 组名
     version = '0.9.9.2' // 版本号
 }
-
-apply plugin: 'workbox.plugin'
 
 /** Configure publishing and signing for published Java and JavaPlatform subprojects. */
 subprojects { project ->

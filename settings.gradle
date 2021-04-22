@@ -1,1 +1,1 @@
-include ':workbox', ':compiler', ':annotations', ':workbox-no-op', ':sample'
+include ':workbox', ':compiler', ':annotations', ':workbox-no-op', ':sample', ':plugin'

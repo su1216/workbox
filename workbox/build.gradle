@@ -62,6 +62,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     api 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'com.google.code.gson:gson:2.8.6'
     def lifecycle_version = "2.2.0"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     // ViewModel

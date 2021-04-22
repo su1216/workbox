@@ -2,7 +2,7 @@ package com.su.workbox.ui.app.lib;
 
 import java.util.List;
 
-public class Module {
+public class Module implements Comparable<Module> {
     private String name;
     private List<Repository> repositories;
     private List<Lib> libs;
@@ -38,5 +38,10 @@ public class Module {
                 ", repositories=" + repositories +
                 ", libs=" + libs +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Module o) {
+        return name.compareTo(o.name);
     }
 }

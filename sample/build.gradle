@@ -48,10 +48,12 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    compileOnly project(':plugin')
     debugAnnotationProcessor project(':compiler')
     debugApi project(':workbox')
     releaseApi project(':workbox-no-op')
     api project(':annotations')
+
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.preference:preference:1.1.1'
     api 'com.alibaba:fastjson:' + rootProject.ext.fastjson

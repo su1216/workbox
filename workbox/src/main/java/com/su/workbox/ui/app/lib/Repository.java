@@ -1,12 +1,14 @@
 package com.su.workbox.ui.app.lib;
 
+import androidx.annotation.Nullable;
+
 import java.io.File;
 import java.util.Objects;
 import java.util.Set;
 
 public class Repository {
     private String name;
-    private String url;
+    private String url; //flatDir url = null
     private Set<File> dirs;
 
     public String getName() {
@@ -17,6 +19,7 @@ public class Repository {
         this.name = name;
     }
 
+    @Nullable
     public String getUrl() {
         return url;
     }
