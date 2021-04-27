@@ -21,6 +21,8 @@ android {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
+
+        buildConfigField "String", "VERSION_NAME", "\"${rootProject.ext.version}\""
     }
 
     buildTypes {
