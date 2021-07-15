@@ -116,7 +116,7 @@ public class GeneralInfoHelper {
                 sVersionCode = pi.versionCode;
                 sPackageName = pi.packageName;
                 sAppName = pi.applicationInfo.loadLabel(pm).toString();
-                ApplicationInfo applicationInfo = pm.getApplicationInfo(getPackageName(), PackageManager.COMPONENT_ENABLED_STATE_DEFAULT);
+                ApplicationInfo applicationInfo = pm.getApplicationInfo(getPackageName(), 0);
                 sLibVersion = BuildConfig.VERSION_NAME;
                 sUid = applicationInfo.uid;
                 sApplicationClassName = applicationInfo.className;
