@@ -275,6 +275,7 @@
         <!--android 7.0+ status bar快速入口-->
         <service
             android:name=".service.QuickSettingService"
+            android:exported="true"
             android:icon="@drawable/workbox_ic_quick_setting_white"
             android:label="workbox"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">

@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/ToolbarTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SampleListActivity">
+        <activity android:name=".SampleListActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -27,7 +27,7 @@
         </activity>
         <activity android:name=".LifecycleActivity" />
         <activity android:name=".RequestActivity" />
-        <activity android:name=".ObjectParameterActivity">
+        <activity android:name=".ObjectParameterActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
