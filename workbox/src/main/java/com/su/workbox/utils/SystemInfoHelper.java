@@ -98,7 +98,9 @@ public class SystemInfoHelper {
             sSystemVersionCode.put(26, "8.0.0");
             sSystemVersionCode.put(27, "8.1");
             sSystemVersionCode.put(28, "9.0");
-            sSystemVersionCode.put(29, "10.0");
+            sSystemVersionCode.put(29, "10");
+            sSystemVersionCode.put(30, "11");
+            sSystemVersionCode.put(31, "12");
         }
         return sSystemVersionCode.get(sdk);
     }
@@ -135,6 +137,8 @@ public class SystemInfoHelper {
             sSystemVersionName.put(27, "Oreo");
             sSystemVersionName.put(28, "Pie");
             sSystemVersionName.put(29, "Q");
+            sSystemVersionName.put(30, "R");
+            sSystemVersionName.put(31, "S");
         }
         return sSystemVersionName.get(sdk);
     }
