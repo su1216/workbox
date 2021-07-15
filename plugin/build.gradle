@@ -16,7 +16,7 @@ repositories {
 dependencies {
     implementation gradleApi()
     implementation "com.android.tools.build:gradle:3.6.3"
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.code.gson:gson:2.8.7'
 }
 
 jar {

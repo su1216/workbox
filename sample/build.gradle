@@ -54,14 +54,14 @@ dependencies {
     releaseApi project(':workbox-no-op')
     api project(':annotations')
 
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.3.0'
     implementation 'androidx.preference:preference:1.1.1'
     api 'com.alibaba:fastjson:' + rootProject.ext.fastjson
     //OkHttp
     api 'com.squareup.okhttp3:okhttp:' + rootProject.ext.okhttp
     api 'com.squareup.okhttp3:logging-interceptor:' + rootProject.ext.okhttp
-    debugApi "com.github.ChuckerTeam.Chucker:library:3.4.0"
-    releaseApi "com.github.ChuckerTeam.Chucker:library-no-op:3.4.0"
+    debugApi "com.github.ChuckerTeam.Chucker:library:3.5.0"
+    releaseApi "com.github.ChuckerTeam.Chucker:library-no-op:3.5.0"
     api 'org.mozilla:rhino:1.7.13'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }
