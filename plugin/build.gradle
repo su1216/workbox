@@ -22,13 +22,3 @@ dependencies {
 jar {
     baseName 'plugin'
 }
-
-//group='com.github.su1216.workbox'
-//version="0.9.9.2-12"
-//uploadArchives {
-//    repositories {
-//        mavenDeployer {
-//            repository(url: uri('../repo'))
-//        }
-//    }
-//}
