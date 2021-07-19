@@ -84,7 +84,8 @@ public class ComponentInfoFragment extends BaseFragment {
         setTitle(view.findViewById(R.id.id_toolbar));
     }
 
-    private void setTitle(Toolbar toolbar) {
+    @Override
+    public void setTitle(Toolbar toolbar) {
         switch (mType) {
             case "activity":
                 toolbar.setTitle("Activity详情");

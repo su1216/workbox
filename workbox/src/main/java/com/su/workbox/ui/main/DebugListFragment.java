@@ -46,12 +46,14 @@ import com.su.workbox.ui.app.record.ActivityLifecycleListener;
 import com.su.workbox.ui.app.record.CurrentActivitySettingActivity;
 import com.su.workbox.ui.app.record.CurrentActivityView;
 import com.su.workbox.ui.app.record.LifecycleRecordListActivity;
+import com.su.workbox.ui.base.DispatcherActivity;
 import com.su.workbox.ui.data.DataListActivity;
 import com.su.workbox.ui.data.DatabaseListActivity;
 import com.su.workbox.ui.log.common.CommonLogActivity;
 import com.su.workbox.ui.log.crash.CrashLogActivity;
 import com.su.workbox.ui.mock.MockGroupHostActivity;
 import com.su.workbox.ui.system.DeviceInfoActivity;
+import com.su.workbox.ui.system.ShellFragment;
 import com.su.workbox.ui.usage.RecordListActivity;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.NetworkUtil;
@@ -151,6 +153,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 + "密度: " + SystemInfoHelper.getDpiInfo(metrics.densityDpi) + " / " + metrics.density + "x   "
                 + "CPU 位数: " + SystemInfoHelper.getCpuBit());
         findPreference("more_phone_info").setOnPreferenceClickListener(this);
+        findPreference("shell").setOnPreferenceClickListener(this);
     }
 
     private void initNetworkPreferences() {
@@ -446,6 +449,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 return true;
             case "more_phone_info":
                 startActivity(DeviceInfoActivity.getLaunchIntent(mActivity));
+                return true;
+            case "shell":
+                startActivity(DispatcherActivity.getLaunchIntentWithBaseFragment(mActivity, ShellFragment.class));
                 return true;
             case "data_usage":
                 startActivity(new Intent(mActivity, RecordListActivity.class));

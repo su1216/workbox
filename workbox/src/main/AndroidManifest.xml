@@ -37,6 +37,12 @@
         </activity-alias>
         <!--面板设置-->
         <activity
+            android:name=".ui.base.DispatcherActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxListTheme" />
+        <!--面板设置-->
+        <activity
             android:name=".ui.main.PanelSettingsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
