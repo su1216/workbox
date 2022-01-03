@@ -86,12 +86,6 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme" />
-        <!--文件浏览-->
-        <activity
-            android:name=".ui.app.FilesInAppExplorerActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/WorkboxListTheme" />
         <!--应用数据导出-->
         <activity
             android:name=".ui.data.DataListActivity"

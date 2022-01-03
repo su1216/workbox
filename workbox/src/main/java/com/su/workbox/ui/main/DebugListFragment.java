@@ -40,7 +40,6 @@ import com.su.workbox.ui.WebViewListActivity;
 import com.su.workbox.ui.app.AppComponentActivity;
 import com.su.workbox.ui.app.AppInfoListActivity;
 import com.su.workbox.ui.app.ComponentListActivity;
-import com.su.workbox.ui.app.FilesInAppExplorerActivity;
 import com.su.workbox.ui.app.PermissionListActivity;
 import com.su.workbox.ui.app.lib.LibActivity;
 import com.su.workbox.ui.app.record.ActivityLifecycleListener;
@@ -123,7 +122,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         findPreference("app_component_info").setOnPreferenceClickListener(this);
         findPreference("activity_launcher").setOnPreferenceClickListener(this);
         findPreference("data_view_export").setOnPreferenceClickListener(this);
-        findPreference("app_files").setOnPreferenceClickListener(this);
         findPreference("permission").setOnPreferenceClickListener(this);
         mCurrentActivityView = CurrentActivityView.getInstance();
         mCurrentActivityPreference = findPreference("current_activity");
@@ -425,9 +423,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 return true;
             case "data_view_export":
                 startActivity(DataListActivity.getLaunchIntent(mActivity));
-                return true;
-            case "app_files":
-                startActivity(FilesInAppExplorerActivity.getLaunchIntent(mActivity));
                 return true;
             case "current_activity":
                 startActivity(new Intent(mActivity, CurrentActivitySettingActivity.class));

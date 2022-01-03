@@ -43,10 +43,6 @@
             android:summary="manifest/shared preference/sqlite db/apk/so ..."
             android:title="数据查看与导出"/>
         <androidx.preference.Preference
-            android:key="app_files"
-            android:summary="查看apk中的文件目录结构"
-            android:title="应用内文件"/>
-        <androidx.preference.Preference
             android:key="permission"
             android:summary="应用所需权限与用户授权情况"
             android:title="权限列表"/>
