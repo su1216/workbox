@@ -35,14 +35,15 @@ subprojects {
 }
 
 ext {
-    sourceCompatibilityVersion = JavaVersion.VERSION_1_8
-    targetCompatibilityVersion = JavaVersion.VERSION_1_8
-    compileSdkVersion = 30
-    targetSdkVersion = 30
+    sourceCompatibilityVersion = JavaVersion.VERSION_11
+    targetCompatibilityVersion = JavaVersion.VERSION_11
+    jvmTarget = "11"
+    compileSdkVersion = 31
+    targetSdkVersion = 31
     minSdkVersion = 21
     buildToolsVersion = '30.0.3'
     fastjson = '1.1.71.android'
-    okhttp = '4.9.1'
+    okhttp = '4.9.3'
 
     version = '0.9.9.3' // 版本号
 }
