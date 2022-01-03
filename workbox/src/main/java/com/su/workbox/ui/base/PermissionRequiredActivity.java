@@ -25,6 +25,7 @@ public abstract class PermissionRequiredActivity extends BaseAppCompatActivity {
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         boolean granted = true;
         for (int grantResult : grantResults) {
             granted = granted && grantResult == PackageManager.PERMISSION_GRANTED;

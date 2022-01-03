@@ -1,5 +1,6 @@
 package com.su.workbox.shell;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,7 +14,6 @@ import com.su.workbox.entity.PidInfo;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -101,20 +101,12 @@ public class ShellUtil {
         } else {
             try {
                 Class<?> clazz = Class.forName("libcore.io.Libcore");
-                Field osField = clazz.getDeclaredField("os");
+                @SuppressLint("DiscouragedPrivateApi") Field osField = clazz.getDeclaredField("os");
                 Object os = osField.get(null);
                 Class<?> osClazz = Class.forName("libcore.io.Os");
-                Method getenvMethod = osClazz.getDeclaredMethod("getenv", String.class);
+                @SuppressLint("BlockedPrivateApi") Method getenvMethod = osClazz.getDeclaredMethod("getenv", String.class);
                 result = (String) getenvMethod.invoke(os, "PATH");
-            } catch (ClassNotFoundException e) {
-                Log.w(TAG, e);
-            } catch (NoSuchFieldException e) {
-                Log.w(TAG, e);
-            } catch (IllegalAccessException e) {
-                Log.w(TAG, e);
-            } catch (NoSuchMethodException e) {
-                Log.w(TAG, e);
-            } catch (InvocationTargetException e) {
+            } catch (Exception e) {
                 Log.w(TAG, e);
             }
         }
@@ -131,15 +123,6 @@ public class ShellUtil {
             }
         }
         return list;
-    }
-
-    @NonNull
-    public static List<String> readArp() {
-        CommandResult result = shellExec("cat /proc/net/arp | sort | sed '$ d'");
-        if (result == null) {
-            return new ArrayList<>();
-        }
-        return result.getLines();
     }
 
     public static String shellExecIgnoreExitCode(@NonNull String... cmd) {

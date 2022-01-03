@@ -221,10 +221,10 @@ public class SearchActivity extends BaseAppCompatActivity {
 
         private static class ResultAdapter extends RecyclerView.Adapter<BaseRecyclerAdapter.BaseViewHolder> {
 
-            private SearchFragment mFragment;
-            private List<String> mGroupList;
-            private List<FileResults> mFileResultsList;
-            private File mExportedBaseDir = new File(Workbox.getWorkboxSdcardDir(), GeneralInfoHelper.getPackageName());
+            private final SearchFragment mFragment;
+            private final List<String> mGroupList;
+            private final List<FileResults> mFileResultsList;
+            private final File mExportedBaseDir = new File(Workbox.WORKBOX_SDCARD_DIR, GeneralInfoHelper.getPackageName());
 
             ResultAdapter(SearchFragment fragment, List<String> groupList, List<FileResults> functionsList) {
                 mFragment = fragment;

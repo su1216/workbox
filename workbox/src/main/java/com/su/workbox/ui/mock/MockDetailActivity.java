@@ -8,13 +8,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.GravityCompat;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,8 +53,8 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
     public static final String KEY_ENTITY = "mockEntity";
     private Info2Adapter mAdapter;
     private ExpandableListView mListView;
-    private List<Item> mGroupList = new ArrayList<>();
-    private List<List<Item>> mItemList = new ArrayList<>();
+    private final List<Item> mGroupList = new ArrayList<>();
+    private final List<List<Item>> mItemList = new ArrayList<>();
     private RequestResponseRecord mEntity;
     private TextView mMethodView;
     private TextView mContentTypeView;
@@ -64,8 +64,8 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
     private View mContentTypeLayout;
     private SwitchCompat mAutoSwitchView;
     private TextView mDescView;
-    private SearchableHelper mSearchableHelper = new SearchableHelper();
-    private List<Map<Integer, Integer>> responseColorIndexList = new ArrayList<>();
+    private final SearchableHelper mSearchableHelper = new SearchableHelper();
+    private final List<Map<Integer, Integer>> responseColorIndexList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -306,10 +306,10 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
     }
 
     private class Info2Adapter extends BaseExpandableListAdapter {
-        private LayoutInflater mInflater;
-        private Resources mResources;
-        private int mFirstColor;
-        private int mSecondColor;
+        private final LayoutInflater mInflater;
+        private final Resources mResources;
+        private final int mFirstColor;
+        private final int mSecondColor;
 
         private Info2Adapter(Context context) {
             mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -346,11 +346,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
             }
 
             holder.actionView.setOnClickListener(v -> {
-                if (MockUtil.singleElement(item.itemKey)) {
-                    showInputDialog(groupPosition, item.itemKey, null, false, item);
-                } else {
-                    showInputDialog(groupPosition, item.itemKey, null, true, item);
-                }
+                showInputDialog(groupPosition, item.itemKey, null, !MockUtil.singleElement(item.itemKey), item);
             });
             return convertView;
         }
@@ -583,7 +579,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
 
         Map<String, String> headers = new HashMap<>();
         if (!TextUtils.isEmpty(mEntity.getRequestHeaders())) {
-            headers = JSON.parseObject(mEntity.getRequestHeaders(), new TypeReference<Map<String, String>>() {});
+            headers = JSON.parseObject(mEntity.getRequestHeaders(), new TypeReference<>() {});
         }
 
         String requestBody = mEntity.getRequestBody();
@@ -595,7 +591,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
                 bodyMap = parseMap(requestBody);
             }
         }
-        RequestHelper.getRequest(mEntity.getUrl(), mEntity.getMethod(), new TypeReference<String>() {}, new SimpleCallback<String>() {
+        RequestHelper.getRequest(mEntity.getUrl(), mEntity.getMethod(), new TypeReference<>() {}, new SimpleCallback<String>() {
             @Override
             public void onResponseSuccessful(String response) {
                 processResponseString(response);
@@ -646,8 +642,8 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
     }
 
     private void showResult() {
-        if (!mDrawerLayout.isDrawerOpen(Gravity.END)) {
-            mDrawerLayout.openDrawer(Gravity.END);
+        if (!mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+            mDrawerLayout.openDrawer(GravityCompat.END);
         }
     }
 
@@ -672,18 +668,18 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
 
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(Gravity.END)) {
-            mDrawerLayout.closeDrawer(Gravity.END);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+            mDrawerLayout.closeDrawer(GravityCompat.END);
         } else {
             super.onBackPressed();
         }
     }
 
     static class Item {
-        private String value;
+        private final String value;
         private String key;
-        private String itemKey;
-        private boolean group;
+        private final String itemKey;
+        private final boolean group;
 
         Item(String value, String key, String itemKey, boolean group) {
             this.value = value;
@@ -710,9 +706,9 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
     }
 
     private static class ViewHolder {
-        private TextView textView;
-        private ImageView actionView;
-        private ImageView arrowView;
+        private final TextView textView;
+        private final ImageView actionView;
+        private final ImageView arrowView;
 
         ViewHolder(View itemView) {
             this.textView = itemView.findViewById(R.id.content);

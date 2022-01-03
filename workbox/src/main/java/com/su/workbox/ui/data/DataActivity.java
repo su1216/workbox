@@ -21,7 +21,7 @@ import java.io.File;
 public abstract class DataActivity extends BaseAppCompatActivity {
 
     private static final SimpleBlockedDialogFragment DIALOG_FRAGMENT = SimpleBlockedDialogFragment.newInstance();
-    private AppExecutors mAppExecutors = AppExecutors.getInstance();
+    private final AppExecutors mAppExecutors = AppExecutors.getInstance();
     protected String mDataDirPath;
     protected String mVersionName;
     protected File mExportedBaseDir;
@@ -31,7 +31,7 @@ public abstract class DataActivity extends BaseAppCompatActivity {
         super.onCreate(savedInstanceState);
         mDataDirPath = getApplicationInfo().dataDir;
         mVersionName = GeneralInfoHelper.getVersionName();
-        mExportedBaseDir = new File(Workbox.getWorkboxSdcardDir(), getPackageName());
+        mExportedBaseDir = new File(Workbox.WORKBOX_SDCARD_DIR, getPackageName());
     }
 
     public void processExport(@NonNull MenuItem item) {

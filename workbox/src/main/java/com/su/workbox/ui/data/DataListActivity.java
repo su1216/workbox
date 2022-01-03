@@ -48,7 +48,7 @@ public class DataListActivity extends BaseAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.workbox_preference_activity_template);
         String versionName = GeneralInfoHelper.getVersionName();
-        File exportedBaseDir = new File(Workbox.getWorkboxSdcardDir(), getPackageName());
+        File exportedBaseDir = new File(Workbox.WORKBOX_SDCARD_DIR, getPackageName());
         sExportedSoDirFile = new File(exportedBaseDir, versionName + "-native");
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment, new ItemListFragment(), "app_data_export").commit();
     }
@@ -62,8 +62,8 @@ public class DataListActivity extends BaseAppCompatActivity {
     public static class ItemListFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener {
         private FragmentActivity mActivity;
         private String mDataDirPath;
-        private FilenameFilter mSpFilenameFilter = (dir, name) -> name.endsWith(".xml");
-        private AppExecutors mAppExecutors = AppExecutors.getInstance();
+        private final FilenameFilter mSpFilenameFilter = (dir, name) -> name.endsWith(".xml");
+        private final AppExecutors mAppExecutors = AppExecutors.getInstance();
 
         private void exportSoFile() {
             FragmentTransaction ft = getFragmentManager().beginTransaction();

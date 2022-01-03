@@ -30,8 +30,8 @@ import java.util.List;
 
 public class DatabaseListActivity extends DataActivity {
     public static final String TAG = DatabaseListActivity.class.getSimpleName();
-    private List<String> mGroupList = new ArrayList<>();
-    private List<Database> mDatabaseList = new ArrayList<>();
+    private final List<String> mGroupList = new ArrayList<>();
+    private final List<Database> mDatabaseList = new ArrayList<>();
     private DatabaseAdapter mAdapter;
     private File mExportedDatabaseDirFile;
     private File mDatabasesDir;
@@ -96,9 +96,9 @@ public class DatabaseListActivity extends DataActivity {
         }
         cursor.moveToFirst();
         do {
-            String tableName = cursor.getString(cursor.getColumnIndex("name"));
-            String tableSql = cursor.getString(cursor.getColumnIndex("sql"));
-            String tableType = cursor.getString(cursor.getColumnIndex("type"));
+            String tableName = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+            String tableSql = cursor.getString(cursor.getColumnIndexOrThrow("sql"));
+            String tableType = cursor.getString(cursor.getColumnIndexOrThrow("type"));
             Table table = new Table();
             table.setTableName(tableName);
             table.setTableSql(tableSql);
@@ -117,9 +117,9 @@ public class DatabaseListActivity extends DataActivity {
         }
         cursor.moveToFirst();
         do {
-            String sql = cursor.getString(cursor.getColumnIndex("sql"));
-            String name = cursor.getString(cursor.getColumnIndex("name"));
-            String tblName = cursor.getString(cursor.getColumnIndex("tbl_name"));
+            String sql = cursor.getString(cursor.getColumnIndexOrThrow("sql"));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+            String tblName = cursor.getString(cursor.getColumnIndexOrThrow("tbl_name"));
             Trigger trigger = new Trigger();
             trigger.setName(name);
             trigger.setTblName(tblName);

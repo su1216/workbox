@@ -1,5 +1,6 @@
 package com.su.sample;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -27,6 +28,7 @@ import java.util.Set;
 public class SampleApplication extends Application {
 
     public static final String TAG = SampleApplication.class.getSimpleName();
+    @SuppressLint("StaticFieldLeak")
     public static Context sContext;
 
     @Override
@@ -74,16 +76,13 @@ public class SampleApplication extends Application {
 
     @NonNull
     private static List<String> streamToLines(@NonNull InputStream input) throws IOException {
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(input), 8192);
-        try {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(input), 8192)) {
             String line;
             final List<String> buffer = new LinkedList<>();
             while ((line = reader.readLine()) != null) {
                 buffer.add(line);
             }
             return buffer;
-        } finally {
-            reader.close();
         }
     }
 

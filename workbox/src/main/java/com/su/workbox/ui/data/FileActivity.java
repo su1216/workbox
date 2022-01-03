@@ -37,8 +37,8 @@ public class FileActivity extends BaseAppCompatActivity implements RecyclerItemC
 
     public static final String TAG = FileActivity.class.getSimpleName();
     private static final SimpleBlockedDialogFragment DIALOG_FRAGMENT = SimpleBlockedDialogFragment.newInstance();
-    private File mExportedBaseDir = new File(Workbox.getWorkboxSdcardDir(), GeneralInfoHelper.getPackageName());
-    private AppExecutors mAppExecutors = AppExecutors.getInstance();
+    private final File mExportedBaseDir = new File(Workbox.WORKBOX_SDCARD_DIR, GeneralInfoHelper.getPackageName());
+    private final AppExecutors mAppExecutors = AppExecutors.getInstance();
     private RecyclerViewAdapter mAdapter;
     private File mFile;
     private String mRoot;

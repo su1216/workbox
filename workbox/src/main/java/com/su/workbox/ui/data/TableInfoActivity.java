@@ -87,10 +87,10 @@ public class TableInfoActivity extends BaseAppCompatActivity {
         cursor.moveToFirst();
         do {
             TableColumn column = new TableColumn();
-            column.setPk(cursor.getInt(cursor.getColumnIndex("pk")) == 1);
-            column.setCid(cursor.getInt(cursor.getColumnIndex("cid")));
-            column.setName(cursor.getString(cursor.getColumnIndex("name")));
-            column.setType(cursor.getString(cursor.getColumnIndex("type")));
+            column.setPk(cursor.getInt(cursor.getColumnIndexOrThrow("pk")) == 1);
+            column.setCid(cursor.getInt(cursor.getColumnIndexOrThrow("cid")));
+            column.setName(cursor.getString(cursor.getColumnIndexOrThrow("name")));
+            column.setType(cursor.getString(cursor.getColumnIndexOrThrow("type")));
             column.setNotNull(cursor.getInt(cursor.getColumnIndexOrThrow("notnull")) == 1);
             columns.add(column);
         } while (cursor.moveToNext());
@@ -151,9 +151,9 @@ public class TableInfoActivity extends BaseAppCompatActivity {
 
         cursor.moveToFirst();
         do {
-            String name = cursor.getString(cursor.getColumnIndex("name"));
-            int cid = cursor.getInt(cursor.getColumnIndex("cid"));
-            int seqno = cursor.getInt(cursor.getColumnIndex("seqno"));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+            int cid = cursor.getInt(cursor.getColumnIndexOrThrow("cid"));
+            int seqno = cursor.getInt(cursor.getColumnIndexOrThrow("seqno"));
             IndexInfo indexInfo = new IndexInfo(name, cid, seqno);
             list.add(indexInfo);
         } while (cursor.moveToNext());
@@ -169,8 +169,8 @@ public class TableInfoActivity extends BaseAppCompatActivity {
         }
         cursor.moveToFirst();
         do {
-            String name = cursor.getString(cursor.getColumnIndex("name"));
-            int unique = cursor.getInt(cursor.getColumnIndex("unique"));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+            int unique = cursor.getInt(cursor.getColumnIndexOrThrow("unique"));
             indexList.add(new Index(name, unique == 1));
         } while (cursor.moveToNext());
         cursor.close();
@@ -193,7 +193,7 @@ public class TableInfoActivity extends BaseAppCompatActivity {
         return R.menu.workbox_info_menu;
     }
 
-    private class RecyclerViewAdapter extends BaseRecyclerAdapter<TableColumn> {
+    private static class RecyclerViewAdapter extends BaseRecyclerAdapter<TableColumn> {
 
         RecyclerViewAdapter() {
             super(new ArrayList<>());
@@ -221,9 +221,9 @@ public class TableInfoActivity extends BaseAppCompatActivity {
     }
 
     private static class Index {
-        private String name;
-        private boolean unique;
-        private List<IndexInfo> indexInfoList = new ArrayList<>();
+        private final String name;
+        private final boolean unique;
+        private final List<IndexInfo> indexInfoList = new ArrayList<>();
 
         Index(String name, boolean unique) {
             this.name = name;
@@ -241,9 +241,9 @@ public class TableInfoActivity extends BaseAppCompatActivity {
     }
 
     private static class IndexInfo {
-        private String name;
-        private int cid;
-        private int seqno;
+        private final String name;
+        private final int cid;
+        private final int seqno;
 
         IndexInfo(String name, int cid, int seqno) {
             this.name = name;

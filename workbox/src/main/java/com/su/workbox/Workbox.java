@@ -60,7 +60,7 @@ public class Workbox {
     public static final String MODULE_LIFECYCLE = "lifecycle";
     public static final String MODULE_CRASH_LOG = "crash_log";
     public static final String MODULE_MAIN = "main";
-    private static File sWorkboxSdcardDir = new File(Environment.getExternalStorageDirectory(), "workbox");
+    public static final File WORKBOX_SDCARD_DIR = new File(Environment.getExternalStorageDirectory(), "workbox");
 
     private Workbox() {}
 
@@ -120,10 +120,6 @@ public class Workbox {
         return new HostInterceptor();
     }
 
-    public static File getWorkboxSdcardDir() {
-        return sWorkboxSdcardDir;
-    }
-
     @NonNull
     public static String getHost() {
         return SpHelper.getWorkboxSharedPreferences().getString(SpHelper.COLUMN_HOST, "");
@@ -154,7 +150,7 @@ public class Workbox {
         ActivityLifecycleListener.setEnableLog(enableLog);
     }
 
-    @Nullable
+    @NonNull
     public static Intent getWorkboxModuleIntent(@NonNull String module, @NonNull Context context) {
         switch (module) {
             case MODULE_DATA_EXPORT:
@@ -187,9 +183,6 @@ public class Workbox {
 
     public static void startActivity(@NonNull String module, @NonNull Context context) {
         Intent intent = getWorkboxModuleIntent(module, context);
-        if (intent == null) {
-            return;
-        }
         context.startActivity(intent);
     }
 

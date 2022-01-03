@@ -1,5 +1,6 @@
 package com.su.workbox.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
@@ -81,7 +82,7 @@ public final class UiHelper {
     //获取魅族smartbar高度
     public static int getSmartBarHeight(Context context) {
         try {
-            Class<?> clazz = Class.forName("com.android.internal.R$dimen");
+            @SuppressLint("PrivateApi") Class<?> clazz = Class.forName("com.android.internal.R$dimen");
             Object obj = clazz.newInstance();
             Field field = clazz.getField("mz_action_button_min_height");
             int height = Integer.parseInt(field.get(obj).toString());

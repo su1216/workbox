@@ -1,5 +1,6 @@
 package com.su.workbox.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
@@ -115,6 +116,7 @@ public class ToastBuilder {
         return toast;
     }
 
+    @SuppressLint("SoonBlockedPrivateApi")
     private static class HookToastUtil {
         private static Field sField_TN;
         private static Field sField_TN_Handler;

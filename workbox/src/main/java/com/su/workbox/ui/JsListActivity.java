@@ -58,14 +58,14 @@ import java.util.List;
 public class JsListActivity extends BaseAppCompatActivity implements View.OnClickListener {
     private static final String TAG = JsListActivity.class.getSimpleName();
 
-    private File mJsDir = new File(Workbox.getWorkboxSdcardDir(), "js");
-    private BottomSheetBehavior mBehavior;
+    private final File mJsDir = new File(Workbox.WORKBOX_SDCARD_DIR, "js");
+    private BottomSheetBehavior<View> mBehavior;
     private TextView mJsFilepathView;
     private TextView mJsFileNameView;
     private EditText mJsContentView;
     private View mDeleteMenuView;
-    private List<String> mGroupList = new ArrayList<>();
-    private List<Functions> mFunctionsList = new ArrayList<>();
+    private final List<String> mGroupList = new ArrayList<>();
+    private final List<Functions> mFunctionsList = new ArrayList<>();
     private FileAdapter mAdapter;
     private RecyclerView mRecyclerView;
 
@@ -188,7 +188,7 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
 
     private class FileAdapter extends RecyclerView.Adapter<BaseRecyclerAdapter.BaseViewHolder> {
 
-        private Context mContext;
+        private final Context mContext;
 
         FileAdapter(Context context) {
             mContext = context;
@@ -354,8 +354,8 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
 
     private static class Functions {
         private boolean collapse;
-        private String sourceUri;
-        private List<JsFunction> jsFunctionList;
+        private final String sourceUri;
+        private final List<JsFunction> jsFunctionList;
 
         private Functions(String sourceUri, List<JsFunction> jsFunctionList) {
             this.sourceUri = sourceUri;
@@ -379,8 +379,8 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
     }
 
     private static class FunctionNodeVisitor implements NodeVisitor {
-        private String filepath;
-        private List<JsFunction> jsFunctionList = new ArrayList<>();
+        private final String filepath;
+        private final List<JsFunction> jsFunctionList = new ArrayList<>();
 
         private FunctionNodeVisitor(@NonNull String filepath) {
             this.filepath = filepath;
