@@ -579,7 +579,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
 
         Map<String, String> headers = new HashMap<>();
         if (!TextUtils.isEmpty(mEntity.getRequestHeaders())) {
-            headers = JSON.parseObject(mEntity.getRequestHeaders(), new TypeReference<>() {});
+            headers = JSON.parseObject(mEntity.getRequestHeaders(), new TypeReference<Map>() {});
         }
 
         String requestBody = mEntity.getRequestBody();
@@ -591,7 +591,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
                 bodyMap = parseMap(requestBody);
             }
         }
-        RequestHelper.getRequest(mEntity.getUrl(), mEntity.getMethod(), new TypeReference<>() {}, new SimpleCallback<String>() {
+        RequestHelper.getRequest(mEntity.getUrl(), mEntity.getMethod(), new TypeReference<String>() {}, new SimpleCallback<String>() {
             @Override
             public void onResponseSuccessful(String response) {
                 processResponseString(response);

@@ -35,8 +35,8 @@ subprojects {
 }
 
 ext {
-    sourceCompatibilityVersion = JavaVersion.VERSION_11
-    targetCompatibilityVersion = JavaVersion.VERSION_11
+    sourceCompatibilityVersion = JavaVersion.VERSION_1_8
+    targetCompatibilityVersion = JavaVersion.VERSION_1_8
     jvmTarget = "11"
     compileSdkVersion = 31
     targetSdkVersion = 31
