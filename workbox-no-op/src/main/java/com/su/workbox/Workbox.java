@@ -81,6 +81,11 @@ public class Workbox {
         return "";
     }
 
+    @NonNull
+    public static String getWebSocketHost() {
+        return "";
+    }
+
     public static void enableCrashLogEntry(boolean enable) {}
 
     @NonNull

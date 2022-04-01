@@ -76,6 +76,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     public static final String TAG = DebugListFragment.class.getSimpleName();
     private static final int REQUEST_HOST = 1;
     private static final int REQUEST_WEB_VIEW_HOST = 2;
+    private static final int REQUEST_WEB_SOCKET_HOST = 3;
     private SwitchPreferenceCompat mPanelIconPreference;
     private CurrentActivityView mCurrentActivityView;
     private SwitchPreferenceCompat mCurrentActivityPreference;
@@ -84,6 +85,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     private ListPreference mMockPolicyPreference;
     private Preference mHostsPreference;
     private Preference mWebViewHostsPreference;
+    private Preference mWebSocketHostsPreference;
     private String mHost;
     private String mWebViewHost;
     private FragmentActivity mActivity;
@@ -174,6 +176,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
 
         mHostsPreference = findPreference("hosts");
         mWebViewHostsPreference = findPreference("web_view_hosts");
+        mWebSocketHostsPreference = findPreference("web_socket_hosts");
     }
 
     private void initOtherPreferences() {
@@ -201,6 +204,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         mWebViewHost = Workbox.getWebViewHost();
         initHostPreference(mHostsPreference, mHost, HostsActivity.TYPE_HOST);
         initHostPreference(mWebViewHostsPreference, mWebViewHost, HostsActivity.TYPE_WEB_VIEW_HOST);
+        initHostPreference(mWebSocketHostsPreference, mWebViewHost, HostsActivity.TYPE_WEB_SOCKET_HOST);
         setNotificationSummary();
         if (!NetworkUtil.isNetworkAvailable()) {
             mProxyPreference.setSummary("无网络连接");
@@ -219,8 +223,10 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         List<Pair<String, String>> hosts;
         if (hostType == HostsActivity.TYPE_HOST) {
             hosts = supplier.allHosts();
-        } else {
+        } else if (hostType == HostsActivity.TYPE_WEB_VIEW_HOST) {
             hosts = supplier.allWebViewHosts();
+        } else {
+            hosts = supplier.allWebSocketHosts();
         }
         preference.setVisible(!hosts.isEmpty());
         if (!hosts.isEmpty()) {
@@ -377,7 +383,8 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if ((requestCode == REQUEST_HOST || requestCode == REQUEST_WEB_VIEW_HOST) && resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK
+                && (requestCode == REQUEST_HOST || requestCode == REQUEST_WEB_VIEW_HOST || requestCode == REQUEST_WEB_SOCKET_HOST)) {
             final String value = data.getStringExtra("value");
             if (!TextUtils.equals(mHost, value)) {
                 new AlertDialog.Builder(mActivity)
@@ -417,6 +424,11 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 Intent webViewHostIntent = new Intent(mActivity, HostsActivity.class);
                 webViewHostIntent.putExtra("type", HostsActivity.TYPE_WEB_VIEW_HOST);
                 startActivityForResult(webViewHostIntent, REQUEST_WEB_VIEW_HOST);
+                return true;
+            case "web_socket_hosts":
+                Intent webSocketHostIntent = new Intent(mActivity, HostsActivity.class);
+                webSocketHostIntent.putExtra("type", HostsActivity.TYPE_WEB_SOCKET_HOST);
+                startActivityForResult(webSocketHostIntent, REQUEST_WEB_SOCKET_HOST);
                 return true;
             case "system_notification":
                 AppHelper.goNotificationSettings(mActivity);

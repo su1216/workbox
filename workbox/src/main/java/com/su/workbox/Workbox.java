@@ -130,6 +130,11 @@ public class Workbox {
         return SpHelper.getWorkboxSharedPreferences().getString(SpHelper.COLUMN_WEB_VIEW_HOST, "");
     }
 
+    @NonNull
+    public static String getWebSocketHost() {
+        return SpHelper.getWorkboxSharedPreferences().getString(SpHelper.COLUMN_WEB_SOCKET_HOST, "");
+    }
+
     public static Thread.UncaughtExceptionHandler newLogUncaughtExceptionHandler(boolean killProcess) {
         return new CrashLogHandler(killProcess);
     }

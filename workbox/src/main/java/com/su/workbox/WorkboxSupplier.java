@@ -55,6 +55,14 @@ public class WorkboxSupplier {
     }
 
     /**
+     * 所有备选host/ip+端口列表，用于切换地址
+     * */
+    @NonNull
+    public List<Pair<String, String>> allWebSocketHosts() {
+        return new ArrayList<>();
+    }
+
+    /**
      * 请求体中需要忽略的字段
      * 在使用mock功能时，被忽略的字段将从请求体中移除，判断两个请求的请求条件是否相同时，被忽略的字段将不再影响判断结果
      * */

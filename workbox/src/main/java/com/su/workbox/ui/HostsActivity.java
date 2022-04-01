@@ -34,16 +34,28 @@ public class HostsActivity extends BaseAppCompatActivity implements RecyclerItem
     private static final String TAG = HostsActivity.class.getSimpleName();
     public static final int TYPE_HOST = 0;
     public static final int TYPE_WEB_VIEW_HOST = 1;
-    private Pattern mIpPattern = Pattern.compile("^https?://" +
+    public static final int TYPE_WEB_SOCKET_HOST = 2;
+    private final Pattern mHttpIpPattern = Pattern.compile("^https?://" +
                                                 "(?:1\\d\\d|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\." +
                                                 "(?:1\\d\\d|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\." +
                                                 "(?:1\\d\\d|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\." +
                                                 "(?:1\\d\\d|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)" +
                                                 "(?::\\d{1,5})?$");
-    private Pattern mDomainPattern = Pattern.compile("^\n" +
+    private final Pattern mHttpDomainPattern = Pattern.compile("^\n" +
                                                     "^https?://" +
                                                     "([a-z0-9\\-._~%]+" + //Named or IPv4 host. vivo 5.0 不支持命名分组
                                                     "|\\[[a-z0-9\\-._~%!$&'()*+,;=:]+\\])"); //IPv6+ host
+
+    private final Pattern mWebSocketIpPattern = Pattern.compile("^ws?://" +
+            "(?:1\\d\\d|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\." +
+            "(?:1\\d\\d|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\." +
+            "(?:1\\d\\d|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\." +
+            "(?:1\\d\\d|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)" +
+            "(?::\\d{1,5})?$");
+    private final Pattern mWebSocketDomainPattern = Pattern.compile("^\n" +
+            "^ws?://" +
+            "([a-z0-9\\-._~%]+" + //Named or IPv4 host. vivo 5.0 不支持命名分组
+            "|\\[[a-z0-9\\-._~%!$&'()*+,;=:]+\\])"); //IPv6+ host
     private List<Pair<String, String>> mHosts; //name host
     private String mHost;
     private RecyclerViewAdapter mAdapter;
@@ -66,9 +78,12 @@ public class HostsActivity extends BaseAppCompatActivity implements RecyclerItem
         if (mType == TYPE_HOST) {
             mHost = Workbox.getHost();
             mHosts = supplier.allHosts();
-        } else {
+        } else if (mType == TYPE_WEB_VIEW_HOST) {
             mHost = Workbox.getWebViewHost();
             mHosts = supplier.allWebViewHosts();
+        } else {
+            mHost = Workbox.getWebSocketHost();
+            mHosts = supplier.allWebSocketHosts();
         }
         mHosts.add(0, new Pair<>("恢复默认", ""));
         WindowManager.LayoutParams lp = getWindow().getAttributes();
@@ -120,16 +135,37 @@ public class HostsActivity extends BaseAppCompatActivity implements RecyclerItem
     @Override
     public void onClick(View v) {
         String input = mInputView.getText().toString().trim();
-        if (!mIpPattern.matcher(input).find() || !mDomainPattern.matcher(input).find()) {
-            new ToastBuilder("输入不合法").show();
-            return;
+        if (mType == TYPE_WEB_SOCKET_HOST) {
+            if (!mWebSocketIpPattern.matcher(input).find() || !mWebSocketDomainPattern.matcher(input).find()) {
+                new ToastBuilder("输入不合法").show();
+                return;
+            }
+        } else {
+            if (!mHttpIpPattern.matcher(input).find() || !mHttpDomainPattern.matcher(input).find()) {
+                new ToastBuilder("输入不合法").show();
+                return;
+            }
         }
 
         selectHost(input);
     }
 
     private void selectHost(@NonNull String host) {
-        String key = mType == TYPE_HOST ? SpHelper.COLUMN_HOST : SpHelper.COLUMN_WEB_VIEW_HOST;
+        String key;
+        switch (mType) {
+            case TYPE_HOST:
+                key = SpHelper.COLUMN_HOST;
+                break;
+            case TYPE_WEB_VIEW_HOST:
+                key = SpHelper.COLUMN_WEB_VIEW_HOST;
+                break;
+            case TYPE_WEB_SOCKET_HOST:
+                key = SpHelper.COLUMN_WEB_SOCKET_HOST;
+                break;
+            default:
+                key = SpHelper.COLUMN_HOST;
+                break;
+        }
         SpHelper.getWorkboxSharedPreferences()
                 .edit()
                 .putString(key, host)

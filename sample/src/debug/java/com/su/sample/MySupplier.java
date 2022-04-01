@@ -61,6 +61,15 @@ public class MySupplier extends WorkboxSupplier {
 
     @NonNull
     @Override
+    public List<Pair<String, String>> allWebSocketHosts() {
+        List<Pair<String, String>> list = new ArrayList<>();
+        list.add(new Pair<>("test", "ws://www.baidu.com"));
+        list.add(new Pair<>("release", "ws://www.facebook.com"));
+        return list;
+    }
+
+    @NonNull
+    @Override
     public List<List<String>> getRequestBodyExcludeKeys() {
         List<List<String>> keys = new ArrayList<>();
         List<String> key = new ArrayList<>();
