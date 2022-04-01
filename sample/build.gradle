@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
-
-def moduleName =  project.getName()
+apply plugin: 'workbox.plugin'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -12,11 +11,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [MODULE_NAME: moduleName]
-            }
-        }
     }
 
     compileOptions {
@@ -54,14 +48,14 @@ dependencies {
     releaseApi project(':workbox-no-op')
     api project(':annotations')
 
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.preference:preference:1.2.0'
     api 'com.alibaba:fastjson:' + rootProject.ext.fastjson
     //OkHttp
     api 'com.squareup.okhttp3:okhttp:' + rootProject.ext.okhttp
     api 'com.squareup.okhttp3:logging-interceptor:' + rootProject.ext.okhttp
     debugApi "com.github.ChuckerTeam.Chucker:library:3.5.2"
     releaseApi "com.github.ChuckerTeam.Chucker:library-no-op:3.5.2"
-    api 'org.mozilla:rhino:1.7.13'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+    api 'org.mozilla:rhino:1.7.14'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8.1'
 }

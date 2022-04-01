@@ -2,7 +2,7 @@ package com.su.workbox.ui.mock;
 
 import android.app.AlertDialog;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -43,7 +43,7 @@ public class MockUrlListActivity extends BaseAppCompatActivity implements Search
     private String mHost;
     private String mTitle;
     private String mQueryText = "";
-    private SearchableHelper mSearchableHelper = new SearchableHelper();
+    private final SearchableHelper mSearchableHelper = new SearchableHelper();
     private RequestResponseModel mModel;
     private CancelableObserver<List<RequestResponseRecord>> mRequestResponseObserver;
 
@@ -55,7 +55,7 @@ public class MockUrlListActivity extends BaseAppCompatActivity implements Search
         mTitle = intent.getStringExtra("title");
         mHost = intent.getStringExtra("host");
         RequestResponseModel.Factory factory = new RequestResponseModel.Factory(getApplication(), mHost);
-        mModel = ViewModelProviders.of(this, factory).get(RequestResponseModel.class);
+        mModel = new ViewModelProvider(this, factory).get(RequestResponseModel.class);
         mAdapter = new RecordAdapter(this);
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         PreferenceItemDecoration decoration = new PreferenceItemDecoration(this, 0, 0);

@@ -1,7 +1,7 @@
 package com.su.workbox.ui.usage;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -41,7 +41,7 @@ public class UrlGroupActivity extends BaseAppCompatActivity {
         recyclerView.setAdapter(mAdapter);
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, mAdapter));
 
-        DataUsageGroupModel groupModel = ViewModelProviders.of(this).get(DataUsageGroupModel.class);
+        DataUsageGroupModel groupModel = new ViewModelProvider(this).get(DataUsageGroupModel.class);
         MutableLiveData<DataUsageRecord.Summary> summaryData = groupModel.getSummary();
         summaryData.observe(this, new CancelableObserver<DataUsageRecord.Summary>() {
             @Override

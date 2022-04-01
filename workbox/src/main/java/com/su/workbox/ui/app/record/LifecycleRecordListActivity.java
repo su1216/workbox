@@ -2,7 +2,7 @@ package com.su.workbox.ui.app.record;
 
 import android.app.AlertDialog;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,7 +36,7 @@ public class LifecycleRecordListActivity extends BaseAppCompatActivity implement
     public static final String TAG = LifecycleRecordListActivity.class.getSimpleName();
     private RecordAdapter mAdapter;
     private LifecycleRecordModel mModel;
-    private SearchableHelper mSearchableHelper = new SearchableHelper();
+    private final SearchableHelper mSearchableHelper = new SearchableHelper();
 
     public static Intent getLaunchIntent(@NonNull Context context) {
         return new Intent(context, LifecycleRecordListActivity.class);
@@ -46,7 +46,7 @@ public class LifecycleRecordListActivity extends BaseAppCompatActivity implement
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.workbox_template_recycler_list);
-        mModel = ViewModelProviders.of(this).get(LifecycleRecordModel.class);
+        mModel = new ViewModelProvider(this).get(LifecycleRecordModel.class);
         mAdapter = new RecordAdapter();
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         PreferenceItemDecoration decoration = new PreferenceItemDecoration(this, 0, 0);

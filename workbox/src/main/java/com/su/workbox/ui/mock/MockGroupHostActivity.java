@@ -1,7 +1,7 @@
 package com.su.workbox.ui.mock;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -47,7 +47,7 @@ public class MockGroupHostActivity extends BaseAppCompatActivity {
         mHostListTitle = intent.getStringExtra("title");
         setContentView(R.layout.workbox_template_recycler_list);
         RequestResponseModel.Factory factory = new RequestResponseModel.Factory(getApplication(), "");
-        mModel = ViewModelProviders.of(this, factory).get(RequestResponseModel.class);
+        mModel = new ViewModelProvider(this, factory).get(RequestResponseModel.class);
         mAdapter = new HostAdapter(this);
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         PreferenceItemDecoration decoration = new PreferenceItemDecoration(this, 0, 0);

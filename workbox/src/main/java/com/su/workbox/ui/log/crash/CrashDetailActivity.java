@@ -1,7 +1,7 @@
 package com.su.workbox.ui.log.crash;
 
 import android.app.AlertDialog;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -39,7 +39,7 @@ public class CrashDetailActivity extends BaseAppCompatActivity {
         initViews();
 
         CrashLogRecordModel.Factory factory = new CrashLogRecordModel.Factory(getApplication());
-        mModel = ViewModelProviders.of(this, factory).get(CrashLogRecordModel.class);
+        mModel = new ViewModelProvider(this, factory).get(CrashLogRecordModel.class);
     }
 
     @Override

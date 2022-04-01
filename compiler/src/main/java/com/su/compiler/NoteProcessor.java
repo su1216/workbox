@@ -42,7 +42,6 @@ import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
@@ -56,7 +55,6 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic;
 
-@SupportedOptions("MODULE_NAME")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @AutoService(Processor.class)
 public class NoteProcessor extends AbstractProcessor {
@@ -79,10 +77,7 @@ public class NoteProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         mMessager = processingEnv.getMessager();
-        Map<String, String> options =  processingEnv.getOptions();
-        String moduleName = options.get("MODULE_NAME");
-        note(mMessager, "moduleName: " + moduleName);
-        prepareGeneratedDirPath(moduleName);
+        prepareGeneratedDirPath();
         if (roundEnvironment.processingOver()) {
             if (sDone) {
                 return true;
@@ -104,8 +99,8 @@ public class NoteProcessor extends AbstractProcessor {
         return true;
     }
 
-    private void prepareGeneratedDirPath(String moduleName) {
-        GENERATED_DIR_PATH = WORKING_DIR + "/" + moduleName + "/src/main/assets/generated/";
+    private void prepareGeneratedDirPath() {
+        GENERATED_DIR_PATH = WORKING_DIR + "/src/main/assets/generated/";
         File file = new File(GENERATED_DIR_PATH);
         if (!file.exists()) {
             file.mkdirs();

@@ -2,7 +2,7 @@ package com.su.workbox.ui.usage;
 
 import android.app.AlertDialog;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -68,8 +68,8 @@ public class RecordListActivity extends BaseAppCompatActivity implements SearchV
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, mAdapter));
 
         DataUsageModel.Factory factory = new DataUsageModel.Factory(getApplication());
-        mModel = ViewModelProviders.of(this, factory).get(DataUsageModel.class);
-        mListModel = ViewModelProviders.of(this).get(DataUsageListModel.class);
+        mModel = new ViewModelProvider(this, factory).get(DataUsageModel.class);
+        mListModel = new ViewModelProvider(this).get(DataUsageListModel.class);
     }
 
     @Override
