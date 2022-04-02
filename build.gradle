@@ -46,7 +46,7 @@ ext {
     okhttp = '4.9.3'
 
     libGroup = 'com.github.su1216.workbox'
-    version = '0.9.9.4' // 版本号
+    version = '0.9.9.5' // 版本号
 }
 
 /** Configure publishing and signing for published Java and JavaPlatform subprojects. */
