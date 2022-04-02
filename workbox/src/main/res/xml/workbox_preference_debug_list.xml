@@ -30,6 +30,9 @@
             android:key="app_info"
             android:title="应用信息"/>
         <androidx.preference.Preference
+            android:key="git_log"
+            android:title="Git日志"/>
+        <androidx.preference.Preference
             android:key="app_component_info"
             android:summary="activity/service/receiver/provider"
             android:title="组件信息"/>

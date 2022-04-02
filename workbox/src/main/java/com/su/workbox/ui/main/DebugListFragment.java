@@ -41,6 +41,7 @@ import com.su.workbox.ui.app.AppComponentActivity;
 import com.su.workbox.ui.app.AppInfoListActivity;
 import com.su.workbox.ui.app.ComponentListActivity;
 import com.su.workbox.ui.app.PermissionListActivity;
+import com.su.workbox.ui.app.git.GitActivity;
 import com.su.workbox.ui.app.lib.LibActivity;
 import com.su.workbox.ui.app.record.ActivityLifecycleListener;
 import com.su.workbox.ui.app.record.CurrentActivitySettingActivity;
@@ -123,6 +124,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         appInfoPreference.setSummary("debuggable: " + GeneralInfoHelper.isDebuggable() + "    "
                 + "版本:" + GeneralInfoHelper.getVersionName()
                 + "(" + GeneralInfoHelper.getVersionCode() + ")");
+        findPreference("git_log").setOnPreferenceClickListener(this);
         findPreference("app_component_info").setOnPreferenceClickListener(this);
         findPreference("activity_launcher").setOnPreferenceClickListener(this);
         findPreference("data_view_export").setOnPreferenceClickListener(this);
@@ -450,6 +452,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 return true;
             case "app_info":
                 startActivity(AppInfoListActivity.getLaunchIntent(mActivity));
+                return true;
+            case "git_log":
+                startActivity(new Intent(mActivity, GitActivity.class));
                 return true;
             case "app_component_info":
                 startActivity(new Intent(mActivity, AppComponentActivity.class));

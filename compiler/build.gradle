@@ -1,5 +1,5 @@
 apply plugin: 'java-library'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'maven-publish'
 
 ext {
     libName = "compiler"
@@ -12,7 +12,18 @@ dependencies {
     api 'com.alibaba:fastjson:' + rootProject.ext.fastjson
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = rootProject.ext.libGroup
+            artifactId = 'plugin'
+            version = rootProject.ext.version
+            from components.java
+        }
+    }
+}
+
 java {
     sourceCompatibility = rootProject.ext.sourceCompatibilityVersion
-    targetCompatibility = rootProject.ext.targetCompatibilityVersion
+    targetCompatibility = rootProject.ext.sourceCompatibilityVersion
 }

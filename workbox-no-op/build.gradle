@@ -1,15 +1,18 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'maven-publish'
 
 ext {
     libName = "workbox-no-op"
 }
 
 android {
+    namespace = 'com.su.workbox'
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
+        aarMetadata {
+            minCompileSdk = rootProject.ext.compileSdkVersion
+        }
         targetSdkVersion rootProject.ext.targetSdkVersion
         buildConfigField "String", "WORKBOX_VERSION", "\"${rootProject.ext.version}\""
     }
@@ -33,6 +36,22 @@ android {
     compileOptions {
         sourceCompatibility rootProject.ext.sourceCompatibilityVersion
         targetCompatibility rootProject.ext.targetCompatibilityVersion
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId = rootProject.ext.libGroup
+                artifactId = 'workbox-no-op'
+                version = rootProject.ext.version
+
+                afterEvaluate {
+                    from components.release
+                }
+            }
+        }
     }
 }
 

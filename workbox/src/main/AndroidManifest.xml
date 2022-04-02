@@ -47,6 +47,12 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/WorkboxListTheme" />
+        <!--Git-->
+        <activity
+            android:name=".ui.app.git.GitActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/WorkboxSearchViewToolbar" />
         <!--Lib-->
         <activity
             android:name=".ui.app.lib.LibActivity"

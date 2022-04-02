@@ -1,5 +1,5 @@
 apply plugin: 'java'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 ext {
     libName = "annotations"
@@ -13,7 +13,18 @@ jar {
     baseName 'annotations'
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = rootProject.ext.libGroup
+            artifactId = 'annotations'
+            version = rootProject.ext.version
+            from components.java
+        }
+    }
+}
+
 java {
     sourceCompatibility = rootProject.ext.sourceCompatibilityVersion
-    targetCompatibility = rootProject.ext.targetCompatibilityVersion
+    targetCompatibility = rootProject.ext.sourceCompatibilityVersion
 }

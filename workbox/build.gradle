@@ -1,17 +1,20 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'maven-publish'
 
 ext {
     libName = "workbox"
 }
 
 android {
+    namespace = 'com.su.workbox'
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
+        aarMetadata {
+            minCompileSdk = rootProject.ext.compileSdkVersion
+        }
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "${rootProject.ext.version}"
@@ -44,6 +47,22 @@ android {
     compileOptions {
         sourceCompatibility rootProject.ext.sourceCompatibilityVersion
         targetCompatibility rootProject.ext.targetCompatibilityVersion
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId = rootProject.ext.libGroup
+                artifactId = 'workbox'
+                version = rootProject.ext.version
+
+                afterEvaluate {
+                    from components.release
+                }
+            }
+        }
     }
 }
 

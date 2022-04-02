@@ -1,5 +1,5 @@
 apply plugin: 'groovy'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 ext {
     libName = "plugin"
@@ -15,10 +15,21 @@ repositories {
 
 dependencies {
     implementation gradleApi()
-    implementation "com.android.tools.build:gradle:4.2.2"
+    implementation "com.android.tools.build:gradle:7.1.2"
     implementation 'com.google.code.gson:gson:2.9.0'
 }
 
 jar {
     baseName 'plugin'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = rootProject.ext.libGroup
+            artifactId = 'plugin'
+            version = rootProject.ext.version
+            from components.java
+        }
+    }
 }

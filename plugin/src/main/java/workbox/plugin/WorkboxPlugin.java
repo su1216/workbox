@@ -95,7 +95,7 @@ public final class WorkboxPlugin implements Plugin<Project> {
         });
     }
 
-    private void generateDependencyJson(Project project, Map<String, List<Repository>> repositoryMap, Map<String, Set<Lib>> libMap) {
+    private void addGenerationTask(Project project, Map<String, List<Repository>> repositoryMap, Map<String, Set<Lib>> libMap) {
         Set<Project> set = project.getRootProject().getAllprojects();
         for (Project p : set) {
             ExtensionContainer extensionContainer = p.getExtensions();
@@ -103,10 +103,14 @@ public final class WorkboxPlugin implements Plugin<Project> {
                 AppExtension appExtension = extensionContainer.getByType(AppExtension.class);
                 DomainObjectSet<ApplicationVariant> variants = appExtension.getApplicationVariants();
                 for (BaseVariant variant : variants) {
-                    File dirFile = Paths.get(getGenerateTaskDirFile(project, variant).getAbsolutePath(), "assets", "generated").toFile();
+                    File assetsFile = new File(getGenerateTaskDirFile(project, variant), "assets");
+                    File dirFile = new File(assetsFile, "generated");
                     makeGenerateTask("GenerateDependencies", dirFile,
                             project, variant,
                             new GenerateLibDependencyAction(dirFile, repositoryMap, libMap));
+                    makeGenerateTask("GenerateGitLog", dirFile,
+                            project, variant,
+                            new GenerateGitLogAction(dirFile));
                 }
             } catch (UnknownDomainObjectException e) {
                 //ignore
@@ -135,24 +139,25 @@ public final class WorkboxPlugin implements Plugin<Project> {
     }
 
     private File getGenerateTaskDirFile(Project project, BaseVariant variant) {
-        File fullFile = Paths.get(project.getProjectDir().getAbsolutePath(), "src", variant.getDirName()).toFile();
+        File srcFile = new File(project.getProjectDir(), "src");
+        File fullFile = new File(srcFile, variant.getDirName());
         System.out.println("fullFile: " + fullFile);
         if (fullFile.exists()) {
             return fullFile;
         }
-        File flavorFile = Paths.get(project.getProjectDir().getAbsolutePath(), "src", variant.getFlavorName()).toFile();
+        File flavorFile = new File(srcFile, variant.getFlavorName());
         System.out.println("flavorFile: " + flavorFile);
         if (flavorFile.exists()) {
             return flavorFile;
         }
 
-        File nameFile = Paths.get(project.getProjectDir().getAbsolutePath(), "src", variant.getName()).toFile();
+        File nameFile = new File(srcFile, variant.getName());
         System.out.println("nameFile: " + nameFile);
         if (nameFile.exists()) {
             return nameFile;
         }
 
-        File buildTypeFile = Paths.get(project.getProjectDir().getAbsolutePath(), "src", variant.getBuildType().getName()).toFile();
+        File buildTypeFile = new File(srcFile, variant.getBuildType().getName());
         System.out.println("buildTypeFile: " + buildTypeFile);
         return buildTypeFile;
     }
@@ -162,11 +167,11 @@ public final class WorkboxPlugin implements Plugin<Project> {
         List<String> taskNames = project.getGradle().getStartParameter().getTaskNames();
         for (String taskName : taskNames) {
             if (taskName.contains("Release")) {
-                System.out.println("do not install lib info plugin in release version");
+                System.out.println("do not install workbox plugin in release version");
                 return;
             }
         }
-        System.out.println("install lib info plugin.");
+        System.out.println("install workbox plugin.");
         project.getGradle().projectsEvaluated(gradle -> {
             System.out.println();
             Map<String, List<Repository>> repositoryMap = new Hashtable<>();
@@ -191,7 +196,7 @@ public final class WorkboxPlugin implements Plugin<Project> {
                 }
             }
 
-            generateDependencyJson(project, repositoryMap, libMap);
+            addGenerationTask(project, repositoryMap, libMap);
         });
     }
 }
