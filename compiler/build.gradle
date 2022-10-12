@@ -15,10 +15,10 @@ dependencies {
 publishing {
     publications {
         maven(MavenPublication) {
+            from components.java
             groupId = rootProject.ext.libGroup
             artifactId = 'plugin'
             version = rootProject.ext.version
-            from components.java
         }
     }
 }

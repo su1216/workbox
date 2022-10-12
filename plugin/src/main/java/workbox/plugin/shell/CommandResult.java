@@ -1,6 +1,5 @@
 package workbox.plugin.shell;
 
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +9,7 @@ public class CommandResult {
     private int mExitCode;
     private List<String> mLines;
 
-    public CommandResult(int exitCode, @Nullable List<String> lines) {
+    public CommandResult(int exitCode, List<String> lines) {
         this.mExitCode = exitCode;
         if (lines == null) {
             mLines = new ArrayList<>();

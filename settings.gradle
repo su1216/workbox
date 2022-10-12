@@ -1,1 +1,7 @@
-include ':workbox', ':compiler', ':annotations', ':workbox-no-op', ':sample', ':plugin'
+include ':workbox'
+include ':compiler'
+include ':annotations'
+include ':workbox-no-op'
+include ':plugin'
+if (!System.env.JITPACK)
+    include ':sample'

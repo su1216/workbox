@@ -2,7 +2,6 @@ package workbox.plugin;
 
 import org.gradle.api.Action;
 import org.gradle.api.Task;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +20,7 @@ public class GenerateGitLogAction implements Action<Task> {
     }
 
     @Override
-    public void execute(@NotNull Task task) {
+    public void execute(Task task) {
         System.out.println("doTask: " + task.getName());
         if (!dirFile.exists()) {
             System.out.println("mkdir: " + dirFile.getAbsolutePath());

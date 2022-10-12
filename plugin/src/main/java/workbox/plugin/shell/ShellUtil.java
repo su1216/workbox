@@ -1,15 +1,12 @@
 package workbox.plugin.shell;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShellUtil {
 
-    private static boolean isEmptyResult(@Nullable String result, boolean hasTitleLine) {
+    private static boolean isEmptyResult(String result, boolean hasTitleLine) {
         if (result == null || result.trim().equals("")) {
             return true;
         }
@@ -21,7 +18,7 @@ public class ShellUtil {
         return false;
     }
 
-    public static String shellExecIgnoreExitCode(@NotNull String cmd) {
+    public static String shellExecIgnoreExitCode(String cmd) {
         CommandResult result = shellExec(cmd);
         if (result == null) {
             return "";
@@ -32,7 +29,7 @@ public class ShellUtil {
         return result.getLinesString();
     }
 
-    public static CommandResult shellExec(@NotNull String cmd) {
+    public static CommandResult shellExec(String cmd) {
         List<String> stdout = new ArrayList<>();
         List<String> stderr = new ArrayList<>();
         Runtime runtime = Runtime.getRuntime();

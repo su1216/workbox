@@ -15,7 +15,7 @@ repositories {
 dependencies {
     implementation gradleApi()
     implementation "com.android.tools.build:gradle:7.1.2"
-    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.google.code.gson:gson:2.9.1'
 }
 
 jar {
@@ -25,10 +25,10 @@ jar {
 publishing {
     publications {
         maven(MavenPublication) {
+            from components.java
             groupId = rootProject.ext.libGroup
             artifactId = 'plugin'
             version = rootProject.ext.version
-            from components.java
         }
     }
 }
