@@ -59,10 +59,9 @@ import javax.tools.Diagnostic;
 @AutoService(Processor.class)
 public class NoteProcessor extends AbstractProcessor {
 
-    static final String WORKING_DIR = System.getProperty("user.dir");
+    private static File WORKING_DIR;
     private static String GENERATED_DIR_PATH;
     private Messager mMessager;
-    private String buildType;
     private static int sCount;
     private static boolean sDone;
 
@@ -70,8 +69,8 @@ public class NoteProcessor extends AbstractProcessor {
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         Map<String, String> options = processingEnv.getOptions();
-        buildType = options.get("buildType");
-        System.out.println("buildType: " + buildType);
+        WORKING_DIR = new File(options.get("workingDir"));
+        System.out.println("workingDir: " + WORKING_DIR);
     }
 
     @Override
@@ -100,7 +99,7 @@ public class NoteProcessor extends AbstractProcessor {
     }
 
     private void prepareGeneratedDirPath() {
-        GENERATED_DIR_PATH = WORKING_DIR + "/src/main/assets/generated/";
+        GENERATED_DIR_PATH = Path.of(WORKING_DIR.getPath(), "src", "main", "assets", "generated").toFile().getAbsolutePath();
         File file = new File(GENERATED_DIR_PATH);
         if (!file.exists()) {
             file.mkdirs();
@@ -343,7 +342,7 @@ public class NoteProcessor extends AbstractProcessor {
     private void save(String filename, String result) {
         try {
             List<String> lines = Arrays.asList(result);
-            Path path = Paths.get(GENERATED_DIR_PATH + filename + ".json");
+            Path path = Paths.get(GENERATED_DIR_PATH, filename + ".json");
             note(mMessager, "PATH: " + path.toAbsolutePath());
             Files.write(path, lines, Charset.forName("UTF-8"));
         } catch (IOException e) {

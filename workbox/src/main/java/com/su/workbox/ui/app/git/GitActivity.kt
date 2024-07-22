@@ -105,7 +105,9 @@ class GitActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
                 mAllModuleList.add(lastCommit)
             }
         } catch (e: IOException) {
-            ToastBuilder("请检查文件assets/$filepath").setDuration(Toast.LENGTH_LONG).show()
+            runOnUiThread {
+                ToastBuilder("请检查文件assets/$filepath").setDuration(Toast.LENGTH_LONG).show()
+            }
             Log.w(TAG, e)
         } finally {
             IOUtil.close(reader)

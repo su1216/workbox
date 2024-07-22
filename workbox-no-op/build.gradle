@@ -6,7 +6,8 @@ ext {
 }
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion = rootProject.ext.compileSdkVersion
+    buildToolsVersion = rootProject.ext.buildToolsVersion
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         aarMetadata {
@@ -14,6 +15,20 @@ android {
         }
         targetSdkVersion rootProject.ext.targetSdkVersion
         buildConfigField "String", "WORKBOX_VERSION", "\"${rootProject.ext.version}\""
+    }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    testFixtures {
+        enable = true
     }
 
     buildTypes {
@@ -27,53 +42,31 @@ android {
         abortOnError false
     }
 
-    libraryVariants.all { variant ->
-        variant.outputs.all {
-            outputFileName = new File("workbox-no-op-${rootProject.ext.version}.aar")
-        }
-    }
     compileOptions {
         sourceCompatibility rootProject.ext.sourceCompatibilityVersion
         targetCompatibility rootProject.ext.targetCompatibilityVersion
     }
-}
 
-//publishing {
-//    publications {
-//        release(MavenPublication) {
-//            groupId = rootProject.ext.libGroup
-//            artifactId = 'workbox-no-op'
-//            version = rootProject.ext.version
-//            afterEvaluate {
-//                from components.release
-//            }
-//        }
-//    }
-//    repositories {
-//        maven {
-//            name = 'workbox-no-op'
-//            url = "${project.buildDir}/repo"
-//        }
-//    }
-//}
+    namespace 'com.su.workbox'
+}
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     api project(':annotations')
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.annotation:annotation:1.3.0'
+    implementation 'androidx.annotation:annotation:1.8.0'
     compileOnly 'com.squareup.okhttp3:okhttp:' + rootProject.ext.okhttp
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            release(MavenPublication) {
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = rootProject.ext.libGroup
+            artifactId = 'workbox-no-op'
+            version = rootProject.ext.version
+
+            afterEvaluate {
                 from components.release
-                groupId = rootProject.ext.libGroup
-                artifactId = 'workbox-no-op'
-                version = rootProject.ext.version
             }
         }
     }

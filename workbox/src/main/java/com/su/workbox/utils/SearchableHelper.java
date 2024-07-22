@@ -246,8 +246,8 @@ public class SearchableHelper {
     public void initSearchToolbar(@NonNull Toolbar toolbar, @Nullable String queryHint, @NonNull SearchView.OnQueryTextListener listener) {
         MenuItem menuItem = toolbar.getMenu().findItem(R.id.search);
         mSearchView = (SearchView) menuItem.getActionView();
-        EditText searchEdit = mSearchView.findViewById(R.id.search_src_text);
-        mSearchView.findViewById(R.id.search_plate)
+        EditText searchEdit = mSearchView.findViewById(androidx.appcompat.R.id.search_src_text);
+        mSearchView.findViewById(androidx.appcompat.R.id.search_plate)
                 .setBackgroundResource(android.R.color.transparent);
         searchEdit.setTextColor(toolbar.getResources().getColor(android.R.color.white));
         searchEdit.setHintTextColor(Color.WHITE);

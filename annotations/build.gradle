@@ -10,7 +10,7 @@ dependencies {
 }
 
 jar {
-    baseName 'annotations'
+    archivesBaseName = 'annotations'
 }
 
 publishing {

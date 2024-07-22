@@ -7,7 +7,7 @@ import java.util.Set;
 class Repository {
     String name;
     String url; //flatDir url = null
-    Set<File> dirs;
+    Set<String> dirs;
 
     @Override
     public boolean equals(Object o) {
