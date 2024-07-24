@@ -194,11 +194,11 @@ public final class IOUtil {
         return content;
     }
 
-    public static String readAssetsFile(Context context, String filepath) {
+    public static String readAssetsFile(Activity activity, String filepath) {
         BufferedReader reader = null;
         String str = "";
         StringBuilder buf = new StringBuilder();
-        AssetManager manager = context.getAssets();
+        AssetManager manager = activity.getAssets();
         try {
             reader = new BufferedReader(new InputStreamReader(manager.open(filepath), StandardCharsets.UTF_8));
             while ((str = reader.readLine()) != null) {
@@ -206,7 +206,7 @@ public final class IOUtil {
             }
             str = buf.toString();
         } catch (IOException e) {
-            new ToastBuilder("请检查文件assets/" + filepath).setDuration(Toast.LENGTH_LONG).show();
+            activity.runOnUiThread(() -> new ToastBuilder("请检查文件assets/" + filepath).setDuration(Toast.LENGTH_LONG).show());
             Log.w(TAG, e);
         } finally {
             close(reader);

@@ -1,6 +1,5 @@
 package workbox.plugin;
 
-import java.io.File;
 import java.util.Objects;
 import java.util.Set;
 

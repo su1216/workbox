@@ -3,12 +3,14 @@ package com.su.workbox.ui.app.lib
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import com.alibaba.fastjson.TypeReference
@@ -31,12 +33,12 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import kotlin.collections.ArrayList
 
 
 class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
@@ -64,7 +66,7 @@ class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
         val decoration = PreferenceItemDecoration(this, 0, 0)
         mRecyclerView.addItemDecoration(decoration)
         mRecyclerView.adapter = mAdapter
-
+        val semaphore = Semaphore(4)
         mScope.launch(Dispatchers.IO) {
             readAssets()
             runOnUiThread { filter("") }
@@ -77,7 +79,11 @@ class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
                         Log.d(TAG, "ignored: ${lib.groupId}:${lib.artifactId}")
                         continue
                     }
-                    search(lib.groupId, lib.artifactId, moduleItem.repositoryList)
+                    mScope.launch(Dispatchers.IO) {
+                        semaphore.acquire()
+                        search(lib.groupId, lib.artifactId, moduleItem.repositoryList)
+                        semaphore.release()
+                    }
                 }
             }
         }
@@ -98,6 +104,9 @@ class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
 
     private fun readAssets() {
         val data = IOUtil.readAssetsFile(this, "generated/dependencies.json")
+        val downloadsFile = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        IOUtil.writeFile("${downloadsFile.absoluteFile}/debug-${packageName}-dependencies.json", data)
+        runOnUiThread { Toast.makeText(this, "GSON: ${downloadsFile.absoluteFile}/debug-${packageName}-dependencies.json", Toast.LENGTH_LONG).show() }
         val type: Type = object : TypeToken<ArrayList<Module>>() {}.type
         val moduleList = Gson().fromJson<ArrayList<Module>>(data, type)
         moduleList.sort()
@@ -143,14 +152,16 @@ class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
             } else if (repository == Repositories.JCENTER) {
                 queryFromJCenter(groupId, artifactId, repo.url!!)
             } else if (repository == Repositories.MAVEN_CENTER
-                    || repository == Repositories.JITPACK) {
+                || repository == Repositories.JITPACK
+                || repository == Repositories.ALIBABA_NEXUS
+                || repository == Repositories.ALIBABA) {
                 queryFromMaven(groupId, artifactId, repo.url!!)
             } else if (repository == Repositories.LOCAL) {
                 val artifact = MavenArtifact()
                 artifact.groupId = groupId
                 artifact.artifactId = artifactId
                 artifact.repository = repo.url
-                merge(listOf(artifact))
+                runOnUiThread { merge(listOf(artifact)) }
             }
         }
     }
@@ -162,7 +173,7 @@ class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
                 if (!TextUtils.isEmpty(xml)) {
                     val result = parseXml(url, groupId, artifactId, xml!!)
                     Log.d(TAG, "size: ${result.size}")
-                    merge(result)
+                    runOnUiThread { merge(result) }
                 }
             }
         }.showErrorToast(false).setHandler(null)).execute()
@@ -175,7 +186,7 @@ class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
                 if (!TextUtils.isEmpty(xml)) {
                     val result = parseXml(url, groupId, artifactId, xml!!)
                     Log.d(TAG, "size: ${result.size}")
-                    merge(result)
+                    runOnUiThread { merge(result) }
                 }
             }
         }.showErrorToast(false).setHandler(null)).execute()
@@ -199,7 +210,7 @@ class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
                 if (!TextUtils.isEmpty(xml)) {
                     val result = parseGoogleXml(url, realGroupId, xml!!)
                     Log.d(TAG, "group size: ${result.size}")
-                    merge(result)
+                    runOnUiThread { merge(result) }
                 }
             }
         }.showErrorToast(false).setHandler(null)).execute()
@@ -276,49 +287,47 @@ class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
     }
 
     private fun merge(list: List<MavenArtifact>) {
-        runOnUiThread {
-            loop@ for (mavenArtifact in list) {
-                for (moduleItem in mAllModuleList) {
-                    val libList = moduleItem.libList
-                    for (artifact in libList) {
-                        if (!TextUtils.equals(artifact.groupId, mavenArtifact.groupId)
-                                || !TextUtils.equals(artifact.artifactId, mavenArtifact.artifactId)) {
-                            continue
-                        }
-
-                        if (MavenArtifact.versionCompare(artifact.artifactVersion
-                                        ?: "", mavenArtifact.artifactLatestStableVersion ?: "") > 0) {
-                            Log.d(TAG, "not newest: $mavenArtifact")
-                            continue@loop
-                        }
-
-                        var changed = false
-                        if (!TextUtils.equals(artifact.artifactLatestStableVersion, mavenArtifact.artifactLatestStableVersion)) {
-                            artifact.artifactLatestStableVersion = mavenArtifact.artifactLatestStableVersion
-                            changed = true
-                        }
-                        if (!TextUtils.equals(artifact.artifactLatestVersion, mavenArtifact.artifactLatestVersion)) {
-                            artifact.artifactLatestVersion = mavenArtifact.artifactLatestVersion
-                            changed = true
-                        }
-                        if (!TextUtils.equals(artifact.artifactVersions, mavenArtifact.artifactVersions)) {
-                            artifact.artifactVersions = mavenArtifact.artifactVersions
-                            changed = true
-                        }
-                        if (!TextUtils.equals(artifact.repository, mavenArtifact.repository)) {
-                            artifact.repository = mavenArtifact.repository
-                            changed = true
-                        }
-                        if (artifact.time != mavenArtifact.time) {
-                            artifact.time = mavenArtifact.time
-                            changed = true
-                        }
-                        if (!changed) {
-                            continue
-                        }
-                        Log.d(TAG, "merge: $artifact")
-                        notifyRecyclerView(artifact)
+        loop@ for (mavenArtifact in list) {
+            for (moduleItem in mAllModuleList) {
+                val libList = moduleItem.libList
+                for (artifact in libList) {
+                    if (!TextUtils.equals(artifact.groupId, mavenArtifact.groupId)
+                        || !TextUtils.equals(artifact.artifactId, mavenArtifact.artifactId)) {
+                        continue
                     }
+
+                    if (MavenArtifact.versionCompare(artifact.artifactVersion
+                            ?: "", mavenArtifact.artifactLatestStableVersion ?: "") > 0) {
+                        Log.d(TAG, "not newest: $mavenArtifact")
+                        continue@loop
+                    }
+
+                    var changed = false
+                    if (!TextUtils.equals(artifact.artifactLatestStableVersion, mavenArtifact.artifactLatestStableVersion)) {
+                        artifact.artifactLatestStableVersion = mavenArtifact.artifactLatestStableVersion
+                        changed = true
+                    }
+                    if (!TextUtils.equals(artifact.artifactLatestVersion, mavenArtifact.artifactLatestVersion)) {
+                        artifact.artifactLatestVersion = mavenArtifact.artifactLatestVersion
+                        changed = true
+                    }
+                    if (!TextUtils.equals(artifact.artifactVersions, mavenArtifact.artifactVersions)) {
+                        artifact.artifactVersions = mavenArtifact.artifactVersions
+                        changed = true
+                    }
+                    if (!TextUtils.equals(artifact.repository, mavenArtifact.repository)) {
+                        artifact.repository = mavenArtifact.repository
+                        changed = true
+                    }
+                    if (artifact.time != mavenArtifact.time) {
+                        artifact.time = mavenArtifact.time
+                        changed = true
+                    }
+                    if (!changed) {
+                        continue
+                    }
+                    Log.d(TAG, "merge: $artifact")
+                    notifyRecyclerView(artifact)
                 }
             }
         }

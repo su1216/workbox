@@ -60,6 +60,7 @@ public abstract class GenerateLibDependencyTask extends DefaultTask {
             Set<String> nameSet = new HashSet<>();
             nameSet.addAll(repositoryMap.keySet());
             nameSet.addAll(libMap.keySet());
+            System.out.println("libMap=" + libMap);
             List<Module> moduleList = new ArrayList<>();
             for (String projectName : nameSet) {
                 Module module = new Module();

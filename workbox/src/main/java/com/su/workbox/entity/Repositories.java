@@ -18,7 +18,8 @@ public enum Repositories {
     @Keep
     JITPACK("https://jitpack.io/"),
     @Keep
-    ALIBABA("https://maven.aliyun.com/nexus/content/groups/"),
+    ALIBABA_NEXUS("https://maven.aliyun.com/nexus/content/groups/"),
+    ALIBABA("https://maven.aliyun.com/repository/public/"),
 
     @Keep
     LOCAL("");
@@ -61,7 +62,9 @@ public enum Repositories {
             String encodedArtifactId = AppHelper.encodeString(artifactId.replace(".", "/"));
             url = repositoryUrl + encodedGroupId + "/" + encodedArtifactId + "/maven-metadata.xml";
         } else if (repository == MAVEN_CENTER
-                || repository == JITPACK) {
+                || repository == JITPACK
+                || repository == ALIBABA_NEXUS
+                || repository == ALIBABA) {
             String encodedGroupId = groupId.replace(".", "/");
             String encodedArtifactId = artifactId.replace(".", "/");
             url = repositoryUrl + encodedGroupId + "/" + encodedArtifactId + "/maven-metadata.xml";
