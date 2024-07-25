@@ -1,12 +1,13 @@
 package workbox.plugin;
 
+import java.io.File;
 import java.util.Objects;
 import java.util.Set;
 
 class Repository {
     String name;
     String url; //flatDir url = null
-    Set<String> dirs;
+    Set<File> dirs;
 
     @Override
     public boolean equals(Object o) {

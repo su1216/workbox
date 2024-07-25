@@ -20,7 +20,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public abstract class GenerateLibDependencyTask extends DefaultTask {
 
@@ -106,22 +105,17 @@ public abstract class GenerateLibDependencyTask extends DefaultTask {
             repositoryMap.put(projectName, list);
         }
         repositoryHandler.forEach(artifactRepository -> {
-            if (artifactRepository instanceof MavenArtifactRepository) {
-                MavenArtifactRepository mavenArtifactRepository = (MavenArtifactRepository) artifactRepository;
+            if (artifactRepository instanceof MavenArtifactRepository mavenArtifactRepository) {
                 Repository repository = new Repository();
                 repository.name = mavenArtifactRepository.getName();
                 repository.url = String.valueOf(mavenArtifactRepository.getUrl());
                 if (!list.contains(repository)) {
                     list.add(repository);
                 }
-            } else if (artifactRepository instanceof FlatDirectoryArtifactRepository) {
-                FlatDirectoryArtifactRepository flatDirectoryArtifactRepository = (FlatDirectoryArtifactRepository) artifactRepository;
+            } else if (artifactRepository instanceof FlatDirectoryArtifactRepository flatDirectoryArtifactRepository) {
                 Repository repository = new Repository();
                 repository.name = flatDirectoryArtifactRepository.getName();
-                repository.dirs = flatDirectoryArtifactRepository.getDirs()
-                        .stream()
-                        .map(file -> file.getAbsolutePath())
-                        .collect(Collectors.toSet());
+                repository.dirs = flatDirectoryArtifactRepository.getDirs();
                 if (!list.contains(repository)) {
                     list.add(repository);
                 }
@@ -136,7 +130,7 @@ public abstract class GenerateLibDependencyTask extends DefaultTask {
                 .getAllprojects()
                 .stream()
                 .map(Project::getName)
-                .collect(Collectors.toList());
+                .toList();
         ConfigurationContainer configurationContainer = subProject.getConfigurations();
         String projectName = subProject.getName();
         Set<Lib> set;

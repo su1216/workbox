@@ -1,15 +1,10 @@
 package com.su.workbox.ui;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +15,13 @@ import android.webkit.URLUtil;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.alibaba.fastjson.JSON;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.Workbox;
@@ -188,10 +189,10 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
 
     private class FileAdapter extends RecyclerView.Adapter<BaseRecyclerAdapter.BaseViewHolder> {
 
-        private final Context mContext;
+        private final Activity mActivity;
 
-        FileAdapter(Context context) {
-            mContext = context;
+        FileAdapter(Activity activity) {
+            mActivity = activity;
         }
 
         @NonNull
@@ -226,7 +227,7 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
                         String content = "";
                         if (URLUtil.isAssetUrl(filepath)) {
                             String realFilePath = IOUtil.getAssetFilePath(filepath);
-                            content = IOUtil.readAssetsFile(mContext, realFilePath);
+                            content = IOUtil.readAssetsFile(mActivity, realFilePath);
                             mJsContentView.setEnabled(false);
                         } else if (URLUtil.isFileUrl(filepath)) {
                             try {
@@ -283,7 +284,7 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
                     Functions functions = mFunctionsList.get(currentPositions[0]);
                     String filepath = functions.sourceUri;
                     JsFunction currentJsFunction = mFunctionsList.get(currentPositions[0]).jsFunctionList.get(currentPositions[1]);
-                    Intent intent = new Intent(mContext, ExecJsActivity.class);
+                    Intent intent = new Intent(mActivity, ExecJsActivity.class);
                     intent.putExtra("filepath", filepath);
                     intent.putExtra("function", currentJsFunction);
                     startActivity(intent);

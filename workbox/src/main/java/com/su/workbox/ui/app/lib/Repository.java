@@ -9,7 +9,7 @@ import java.util.Set;
 public class Repository {
     private String name;
     private String url; //flatDir url = null
-    private Set<String> dirs;
+    private Set<File> dirs;
 
     public String getName() {
         return name;
@@ -28,11 +28,11 @@ public class Repository {
         this.url = url;
     }
 
-    public Set<String> getDirs() {
+    public Set<File> getDirs() {
         return dirs;
     }
 
-    public void setDirs(Set<String> dirs) {
+    public void setDirs(Set<File> dirs) {
         this.dirs = dirs;
     }
 

@@ -12,6 +12,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:8.5.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.github.su1216.workbox:plugin:0.9.9.6.1'
     }
 }
 
@@ -49,5 +50,5 @@ ext {
     okhttp = '4.10.0'
 
     libGroup = 'com.github.su1216.workbox'
-    version = '0.9.9.6.2' // 版本号
+    version = '0.9.9.6.3' // 版本号
 }
