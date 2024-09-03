@@ -44,7 +44,6 @@ ext {
     compileSdkVersion = 34
     targetSdkVersion = 31
     minSdkVersion = 21
-    buildToolsVersion = '30.0.3'
     fastjson = '1.1.71.android'
     okhttp = '4.10.0'
 
