@@ -52,9 +52,9 @@ android {
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     api project(':annotations')
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.annotation:annotation:1.8.0'
-    compileOnly 'com.squareup.okhttp3:okhttp:' + rootProject.ext.okhttp
+    implementation libs.legacy.support.v4
+    implementation libs.annotation
+    compileOnly libs.okhttp
 }
 
 publishing {

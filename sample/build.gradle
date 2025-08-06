@@ -51,20 +51,20 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation libs.swiperefreshlayout
     debugAnnotationProcessor project(':compiler')
     debugApi project(':workbox')
     releaseApi project(':workbox-no-op')
     api project(':annotations')
 
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'androidx.preference:preference:1.2.1'
-    implementation 'com.google.code.gson:gson:' + rootProject.ext.gson
+    implementation libs.appcompat
+    implementation libs.preference
+    implementation libs.gson
     //OkHttp
-    api 'com.squareup.okhttp3:okhttp:' + rootProject.ext.okhttp
-    api 'com.squareup.okhttp3:logging-interceptor:' + rootProject.ext.okhttp
-    debugApi "com.github.ChuckerTeam.Chucker:library:3.5.2"
-    releaseApi "com.github.ChuckerTeam.Chucker:library-no-op:3.5.2"
-    api 'org.mozilla:rhino:1.7.14'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
+    api libs.okhttp
+    api libs.okhttp.logging.interceptor
+    debugApi libs.chucker.library
+    releaseApi libs.chucker.library.no.op
+    api libs.rhino
+    debugImplementation libs.leakcanary.android
 }

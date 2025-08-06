@@ -1,6 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.9.22'
     repositories {
         maven { url "https://maven.aliyun.com/repository/public" }
         maven { url "https://jitpack.io" }
@@ -10,8 +9,8 @@ buildscript {
         maven { url 'https://repo1.maven.org/maven2/' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.5.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.android.tools.build:gradle:8.5.1"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22"
     }
 }
 
@@ -44,8 +43,6 @@ ext {
     compileSdkVersion = 34
     targetSdkVersion = 31
     minSdkVersion = 21
-    gson = '2.13.1'
-    okhttp = '4.10.0'
 
     libGroup = 'com.github.su1216.workbox'
     version = '0.9.9.7' // 版本号
