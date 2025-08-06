@@ -6,14 +6,14 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.widget.ToastBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +43,7 @@ class OkHttpRequest<T> extends NetRequest<T> {
     private static final String TAG = OkHttpRequest.class.getSimpleName();
     private static final HttpLoggingInterceptor.Level LOG_LEVEL = HttpLoggingInterceptor.Level.BODY;
     private static final MediaType CONTENT_TYPE = MediaType.get("application/x-www-form-urlencoded");
+    private static final Gson gson = new Gson();
 
     private static OkHttpClient sClient;
     private Call mCall;
@@ -61,11 +62,11 @@ class OkHttpRequest<T> extends NetRequest<T> {
         sClient = builder.build();
     }
 
-    public OkHttpRequest(String url, TypeReference<T> typeReference, Callback<T> sydCallback) {
+    public OkHttpRequest(String url, TypeToken<T> typeReference, Callback<T> sydCallback) {
         this(url, "POST", typeReference, sydCallback);
     }
 
-    public OkHttpRequest(String url, String method, TypeReference<T> typeReference, Callback<T> sydCallback) {
+    public OkHttpRequest(String url, String method, TypeToken<T> typeReference, Callback<T> sydCallback) {
         super(url, method, typeReference, sydCallback);
     }
 
@@ -89,7 +90,7 @@ class OkHttpRequest<T> extends NetRequest<T> {
             if (value instanceof String) {
                 mFormBodyBuilder.add(entry.getKey(), (String) value);
             } else {
-                mFormBodyBuilder.add(entry.getKey(), JSON.toJSONString(value));
+                mFormBodyBuilder.add(entry.getKey(), gson.toJson(value));
             }
         }
         return mFormBodyBuilder.build();
@@ -99,7 +100,7 @@ class OkHttpRequest<T> extends NetRequest<T> {
         if (!mMultipartMap.isEmpty()) {
             return createMultipartBody(type);
         }
-        JSONObject jsonObject = new JSONObject();
+        Map<String, Object> jsonObject = new HashMap<>();
         Set<Map.Entry<String, Object>> entrySet = mFormBodyMap.entrySet();
         Iterator<Map.Entry<String, Object>> it = entrySet.iterator();
         while (it.hasNext()) {
@@ -107,7 +108,7 @@ class OkHttpRequest<T> extends NetRequest<T> {
             Object value = entry.getValue();
             jsonObject.put(entry.getKey(), value);
         }
-        String jsonString = jsonObject.toJSONString();
+        String jsonString = gson.toJson(jsonObject);
         return RequestBody.create(type, jsonString);
     }
 
@@ -132,7 +133,7 @@ class OkHttpRequest<T> extends NetRequest<T> {
             if (value instanceof String) {
                 builder.addFormDataPart(entry.getKey(), (String) value);
             } else {
-                builder.addFormDataPart(entry.getKey(), JSON.toJSONString(value));
+                builder.addFormDataPart(entry.getKey(), gson.toJson(value));
             }
         }
 

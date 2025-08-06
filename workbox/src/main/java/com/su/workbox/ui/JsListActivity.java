@@ -20,7 +20,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
@@ -58,6 +59,7 @@ import java.util.List;
 
 public class JsListActivity extends BaseAppCompatActivity implements View.OnClickListener {
     private static final String TAG = JsListActivity.class.getSimpleName();
+    private static final Gson gson = new Gson();
 
     private final File mJsDir = new File(Workbox.WORKBOX_SDCARD_DIR, "js");
     private BottomSheetBehavior<View> mBehavior;
@@ -124,7 +126,7 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
         List<File> files = new ArrayList<>(Arrays.asList(mJsDir.listFiles()));
         String data = IOUtil.readAssetsFile(this, "generated/js.json");
         if (!TextUtils.isEmpty(data)) {
-            List<NoteJsFunction> list = JSON.parseArray(data, NoteJsFunction.class);
+            List<NoteJsFunction> list = gson.fromJson(data, new TypeToken<List<NoteJsFunction>>(){}.getType());
             for (NoteJsFunction noteJsFunction : list) {
                 String url = noteJsFunction.getJsFilepath().getFilepath();
                 String sourceString = null;

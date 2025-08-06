@@ -16,7 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.WorkboxSupplier;
@@ -46,6 +47,7 @@ public class JsInterfaceListActivity extends BaseAppCompatActivity implements Se
 
     private static final String TAG = JsInterfaceListActivity.class.getSimpleName();
     private static final String INIT_URL = "file:///android_asset/web/html/workbox_js_interface_web.html";
+    private static final Gson gson = new Gson();
     private FileAdapter mAdapter;
     private RecyclerView mRecyclerView;
 
@@ -139,7 +141,7 @@ public class JsInterfaceListActivity extends BaseAppCompatActivity implements Se
 
         if (!TextUtils.isEmpty(str)) {
 //            List<MethodItem> list = new ArrayList<>();
-//            JSONArray array = JSON.parseArray(str);
+            //            List<MethodItem> array = gson.fromJson(str, new TypeToken<List<MethodItem>>(){}.getType());
 //            int size = array.size();
 //            for (int i = 0; i < size; i++) {
 //                MethodItem methodItem = new MethodItem();
@@ -149,7 +151,7 @@ public class JsInterfaceListActivity extends BaseAppCompatActivity implements Se
 //                methodItem.setParameters(jsonObject.getString("parameters"));
 //                list.add(methodItem);
 //            }
-            List<MethodItem> list = JSON.parseArray(str, MethodItem.class);
+            List<MethodItem> list = gson.fromJson(str, new TypeToken<List<MethodItem>>(){}.getType());
             if (!list.isEmpty()) {
                 mAllFileList.add(new FileItem(injectName, list));
             }
@@ -270,7 +272,7 @@ public class JsInterfaceListActivity extends BaseAppCompatActivity implements Se
                 String params = "?javascriptInterfaceObjectName=" + fileItem.injectName
                         + "&functionName=" + Uri.encode(functionName);
                 if (!parameters.isEmpty()) {
-                    params = params + "&functionParameter=" + Uri.encode(JSON.toJSONString(parameters));
+                    params = params + "&functionParameter=" + Uri.encode(gson.toJson(parameters));
                 }
                 AppHelper.startWebView(JsInterfaceListActivity.this, "android - js接口调试", INIT_URL + params, false);
             });

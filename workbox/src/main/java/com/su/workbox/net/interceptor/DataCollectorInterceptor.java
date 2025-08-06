@@ -1,16 +1,17 @@
 package com.su.workbox.net.interceptor;
 
 import android.net.Uri;
-import androidx.annotation.NonNull;
 import android.util.Log;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import androidx.annotation.NonNull;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.su.workbox.AppHelper;
-import com.su.workbox.ui.mock.RequestResponseRecord;
 import com.su.workbox.ui.mock.MockUtil;
+import com.su.workbox.ui.mock.RequestResponseRecord;
 import com.su.workbox.ui.mock.RequestResponseRecordDao;
 import com.su.workbox.utils.GeneralInfoHelper;
 
@@ -18,10 +19,13 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import okhttp3.Headers;
@@ -43,9 +47,10 @@ import okio.GzipSource;
 public class DataCollectorInterceptor implements Interceptor {
 
     private static final String TAG = DataCollectorInterceptor.class.getSimpleName();
-    private static final Charset UTF8 = Charset.forName("UTF-8");
+    private static final Charset UTF8 = StandardCharsets.UTF_8;
     private static final File COLLECTOR_DIR = new File(GeneralInfoHelper.getContext().getExternalCacheDir(), "collector");
     private static boolean sDebug = false;
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     static {
         if (!COLLECTOR_DIR.exists()) {
@@ -70,7 +75,7 @@ public class DataCollectorInterceptor implements Interceptor {
             try {
                 responseCollection(entity, response);
                 MockUtil.saveResponseEntity(entity);
-            } catch (JSONException e) {
+            } catch (JsonSyntaxException e) {
                 Log.w(TAG, "data error: " + e.getMessage());
             }
         }
@@ -87,12 +92,12 @@ public class DataCollectorInterceptor implements Interceptor {
             url = fullUrl;
         }
         String method = request.method();
-        JSONObject headersJson = getHeaders(request.headers());
+        Map<String, String> headersMap = getHeaders(request.headers());
         String headers;
-        if (headersJson == null || headersJson.isEmpty()) {
+        if (headersMap == null || headersMap.isEmpty()) {
             headers = "";
         } else {
-            headers = JSON.toJSONString(headersJson, true);
+            headers = gson.toJson(headersMap);
         }
         Uri uri = Uri.parse(fullUrl);
         Set<String> queryKeySet = new HashSet<>(uri.getQueryParameterNames());
@@ -121,15 +126,13 @@ public class DataCollectorInterceptor implements Interceptor {
             Buffer buffer = new Buffer();
             requestBody.writeTo(buffer);
             if (isPlaintext(buffer)) {
-                JSONObject jsonObject;
+                Map<String, Object> jsonObject;
                 String content = buffer.readString(UTF8);
                 try {
-                    jsonObject = JSON.parseObject(content);
+                    jsonObject = gson.fromJson(content, new TypeToken<Map<String, Object>>(){}.getType());
                     MockUtil.removeKeysFromJson(jsonObject);
-                    bodyString = JSON.toJSONString(jsonObject,
-                            SerializerFeature.DisableCircularReferenceDetect,
-                            SerializerFeature.PrettyFormat);
-                } catch (JSONException e) {
+                    bodyString = gson.toJson(jsonObject);
+                } catch (JsonSyntaxException e) {
                     String cleanUpBody = MockUtil.removeKeysFromString(content);
                     bodyString = MockUtil.sortStringBody(cleanUpBody);
                 }
@@ -143,7 +146,7 @@ public class DataCollectorInterceptor implements Interceptor {
             Log.d(TAG, "path: " + path);
             Log.d(TAG, "method: " + method);
             Log.d(TAG, "contentType: " + contentType);
-            Log.d(TAG, "requestHeaders: " + headersJson);
+            Log.d(TAG, "requestHeaders: " + headersMap);
             Log.d(TAG, "isMultipartRequestBody: " + entity.isMultipartRequestBody());
             Log.d(TAG, "requestBody: " + bodyString);
         }
@@ -159,7 +162,7 @@ public class DataCollectorInterceptor implements Interceptor {
 
     private static void responseCollection(RequestResponseRecord entity, Response response) throws IOException {
         Headers headers = response.headers();
-        JSONObject responseHeaders = getHeaders(response.headers());
+        Map<String, String> responseHeaders = getHeaders(response.headers());
         ResponseBody responseBody = response.body();
         entity.setHasResponseBody(responseBody != null);
         long contentLength = responseBody.contentLength();
@@ -191,7 +194,7 @@ public class DataCollectorInterceptor implements Interceptor {
         String responseBodyString = null;
         if (sDebug) {
             Log.d(TAG, "responseHeaders: " + responseHeaders);
-            entity.setResponseHeaders(JSON.toJSONString(responseHeaders, true));
+            entity.setResponseHeaders(gson.toJson(responseHeaders));
         }
         if (isPlaintext(buffer)) {
             if (contentLength != 0) {
@@ -206,7 +209,7 @@ public class DataCollectorInterceptor implements Interceptor {
                 String bodyContent;
                 try {
                     bodyContent = toJSONString(responseBodyString);
-                } catch (JSONException e) {
+                } catch (JsonSyntaxException e) {
                     bodyContent = responseBodyString;
                 }
                 entity.setResponseBody(bodyContent);
@@ -219,16 +222,14 @@ public class DataCollectorInterceptor implements Interceptor {
     }
 
     private static String toJSONString(@NonNull String input) {
-        return JSON.toJSONString(JSON.parse(input),
-                SerializerFeature.DisableCircularReferenceDetect,
-                SerializerFeature.PrettyFormat);
+        return gson.toJson(gson.fromJson(input, Object.class));
     }
 
-    private static JSONObject getHeaders(Headers headers) {
+    private static Map<String, String> getHeaders(Headers headers) {
         if (headers == null) {
             return null;
         }
-        JSONObject jsonObject = new JSONObject();
+        Map<String, String> jsonObject = new HashMap<>();
         int size = headers.size();
         for (int i = 0; i < size; i++) {
             String name = headers.name(i);

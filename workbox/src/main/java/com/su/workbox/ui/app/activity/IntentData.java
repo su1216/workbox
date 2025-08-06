@@ -10,13 +10,16 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "intent_data", indices = {@Index(value = {"componentPackageName", "componentClassName"}, unique = true)})
 public class IntentData implements Parcelable, Cloneable {
+
+    private static final Gson gson = new Gson();
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
@@ -192,10 +195,10 @@ public class IntentData implements Parcelable, Cloneable {
 
     void initExtrasAndCategories() {
         if (!TextUtils.isEmpty(extras)) {
-            extraList = JSON.parseArray(extras, IntentExtra.class);
+            extraList = gson.fromJson(extras, new TypeToken<List<IntentExtra>>(){}.getType());
         }
         if (!TextUtils.isEmpty(categories)) {
-            categoryList = JSON.parseArray(categories, String.class);
+            categoryList = gson.fromJson(categories, new TypeToken<List<String>>(){}.getType());
         }
     }
 

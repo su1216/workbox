@@ -14,10 +14,10 @@ import androidx.fragment.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.su.workbox.AppHelper;
 import com.su.workbox.WorkboxSupplier;
 import com.su.workbox.database.HttpDataDatabase;
@@ -27,6 +27,8 @@ import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.utils.IOUtil;
 import com.su.workbox.widget.ToastBuilder;
 
+import org.json.JSONException;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,12 +36,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class MockUtil {
 
     private static final String TAG = MockUtil.class.getSimpleName();
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     static void startCollection(FragmentActivity activity, DialogFragment dialogFragment) {
         if (!AppHelper.hasPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)) {
@@ -106,8 +110,8 @@ public class MockUtil {
         }
         Map<String, Object> map;
         try {
-            map = JSON.parseObject(body);
-        } catch (JSONException e) {
+            map = gson.fromJson(body, new TypeToken<Map<String, Object>>(){}.getType());
+        } catch (JsonSyntaxException e) {
             String[] pairs = body.split("&");
             map = new HashMap<>();
             for (String pair : pairs) {
@@ -147,7 +151,7 @@ public class MockUtil {
         if (TextUtils.isEmpty(parameters)) {
             return itemList;
         }
-        Map<String, Object> map = JSON.parseObject(parameters);
+        Map<String, Object> map = gson.fromJson(parameters, new TypeToken<Map<String, Object>>(){}.getType());
         List<String> parameterList = new ArrayList<>(map.keySet());
         if (parameterList.isEmpty()) {
             return itemList;
@@ -167,8 +171,8 @@ public class MockUtil {
         }
         Map<String, Object> map;
         try {
-            map = JSON.parseObject(body);
-        } catch (JSONException e) {
+            map = gson.fromJson(body, new TypeToken<Map<String, Object>>(){}.getType());
+        } catch (JsonSyntaxException e) {
             String[] pairs = body.split("&");
             map = new HashMap<>();
             for (String pair : pairs) {
@@ -237,7 +241,7 @@ public class MockUtil {
 
     //更新request headers中一个key，更新数据库
     static int updateRequestHeader(@NonNull Context context, @NonNull RequestResponseRecord entity, String key, String value, String action) {
-        Map<String, Object> map = JSON.parseObject(entity.getRequestHeaders());
+                    Map<String, Object> map = gson.fromJson(entity.getRequestHeaders(), new TypeToken<Map<String, Object>>(){}.getType());
         if (map == null) {
             map = new HashMap<>();
         }
@@ -255,7 +259,7 @@ public class MockUtil {
         if (map.isEmpty()) {
             newHeaders = "";
         } else {
-            newHeaders = JSON.toJSONString(map, true);
+            newHeaders = gson.toJson(map);
         }
 
         RequestResponseRecord clone = entity.clone();
@@ -366,15 +370,15 @@ public class MockUtil {
     static int updateRequestBody(@NonNull Context context, @NonNull RequestResponseRecord entity, String key, String value, String action) {
         String body = entity.getRequestBody();
         try {
-            JSONObject jsonObject = JSON.parseObject(body);
+            Map<String, Object> jsonObject = gson.fromJson(body, new TypeToken<Map<String, Object>>(){}.getType());
             return updateJsonRequestBody(context, jsonObject, entity, key, value, action);
-        } catch (JSONException e) {
+        } catch (JsonSyntaxException e) {
             return updateStringRequestBody(context, body, entity, key, value, action);
         }
     }
 
     private static int updateJsonRequestBody(@NonNull Context context,
-                                             @NonNull JSONObject jsonObject,
+                                             @NonNull Map<String, Object> jsonObject,
                                              @NonNull RequestResponseRecord entity,
                                              String key,
                                              String value,
@@ -386,7 +390,7 @@ public class MockUtil {
         } else if (TextUtils.equals(action, "update")) {
             String contentType = entity.getContentType();
             if (!TextUtils.isEmpty(contentType) && contentType.contains("application/json")) {
-                JSONObject jsonValue = JSON.parseObject(value);
+                Map<String, Object> jsonValue = gson.fromJson(value, new TypeToken<Map<String, Object>>(){}.getType());
                 jsonObject.put(key, jsonValue);
             } else {
                 jsonObject.put(key, value);
@@ -399,7 +403,7 @@ public class MockUtil {
         if (jsonObject.isEmpty()) {
             newParameters = "";
         } else {
-            newParameters = JSON.toJSONString(jsonObject, true);
+            newParameters = gson.toJson(jsonObject);
         }
 
         RequestResponseRecord clone = entity.clone();
@@ -483,9 +487,9 @@ public class MockUtil {
 
     //更新response headers中一个key，更新数据库
     static int updateResponseHeader(@NonNull Context context, @NonNull RequestResponseRecord entity, String key, String value, String action) {
-        JSONObject jsonObject = JSON.parseObject(entity.getResponseHeaders());
+                    Map<String, Object> jsonObject = gson.fromJson(entity.getResponseHeaders(), new TypeToken<Map<String, Object>>(){}.getType());
         if (jsonObject == null) {
-            jsonObject = new JSONObject();
+            jsonObject = new HashMap<>();
         }
         if (TextUtils.equals(action, "remove")) {
             jsonObject.remove(key);
@@ -501,7 +505,7 @@ public class MockUtil {
         if (jsonObject.isEmpty()) {
             newHeaders = "";
         } else {
-            newHeaders = JSON.toJSONString(jsonObject, true);
+            newHeaders = gson.toJson(jsonObject);
         }
 
         RequestResponseRecord clone = entity.clone();
@@ -607,13 +611,13 @@ public class MockUtil {
             String responsesString = IOUtil.readFile(f);
             List<RequestResponseRecord> list = new ArrayList<>();
             try {
-                list = JSON.parseArray(responsesString, RequestResponseRecord.class);
-            } catch (JSONException e) {
+                list = gson.fromJson(responsesString, new TypeToken<List<RequestResponseRecord>>(){}.getType());
+            } catch (JsonSyntaxException e) {
                 RequestResponseRecord entity;
                 try {
-                    entity = JSON.parseObject(responsesString, RequestResponseRecord.class);
+                    entity = gson.fromJson(responsesString, RequestResponseRecord.class);
                     list.add(entity);
-                } catch (JSONException jsonException) {
+                } catch (JsonSyntaxException jsonException) {
                     Log.e(TAG, "filepath: " + filepath, e);
                     return;
                 }
@@ -644,12 +648,10 @@ public class MockUtil {
 
         if (!TextUtils.isEmpty(requestBody)) {
             try {
-                JSONObject jsonObject = JSON.parseObject(requestBody);
+                Map<String, Object> jsonObject = gson.fromJson(requestBody, new TypeToken<Map<String, Object>>(){}.getType());
                 MockUtil.removeKeysFromJson(jsonObject);
-                requestBody = JSON.toJSONString(jsonObject,
-                        SerializerFeature.DisableCircularReferenceDetect,
-                        SerializerFeature.PrettyFormat);
-            } catch (JSONException e) {
+                requestBody = gson.toJson(jsonObject);
+            } catch (JsonSyntaxException e) {
                 requestBody = MockUtil.removeKeysFromString(requestBody);
             }
             entity.setRequestBody(requestBody);
@@ -682,7 +684,7 @@ public class MockUtil {
      * remove指定字段
      * 可以指定层级
      */
-    public static void removeKeysFromJson(@Nullable JSONObject jsonObject) {
+    public static void removeKeysFromJson(@Nullable Map<String, Object> jsonObject) {
         if (jsonObject == null) {
             return;
         }
@@ -693,13 +695,13 @@ public class MockUtil {
         }
 
         for (List<String> key : excludeKeys) {
-            JSONObject temp = jsonObject;
+            Map<String, Object> temp = jsonObject;
             int size = key.size();
             if (size == 1) {
                 temp.remove(key.get(0));
             } else {
                 for (int i = 0; i < size - 1; i++) {
-                    temp = temp.getJSONObject(key.get(i));
+                    temp = (Map<String, Object>) temp.get(key.get(i));
                 }
                 if (size > 0) {
                     temp.remove(key.get(size - 1));

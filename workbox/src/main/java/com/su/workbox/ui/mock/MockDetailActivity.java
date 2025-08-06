@@ -6,12 +6,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.view.GravityCompat;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -25,10 +19,17 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.view.GravityCompat;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.su.workbox.R;
 import com.su.workbox.net.Method;
 import com.su.workbox.net.RequestHelper;
@@ -51,6 +52,7 @@ import java.util.Objects;
 public class MockDetailActivity extends BaseAppCompatActivity implements View.OnClickListener, ExpandableListView.OnChildClickListener, SearchView.OnQueryTextListener {
     public static final String TAG = MockDetailActivity.class.getSimpleName();
     public static final String KEY_ENTITY = "mockEntity";
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private Info2Adapter mAdapter;
     private ExpandableListView mListView;
     private final List<Item> mGroupList = new ArrayList<>();
@@ -579,19 +581,19 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
 
         Map<String, String> headers = new HashMap<>();
         if (!TextUtils.isEmpty(mEntity.getRequestHeaders())) {
-            headers = JSON.parseObject(mEntity.getRequestHeaders(), new TypeReference<Map>() {});
+            headers = gson.fromJson(mEntity.getRequestHeaders(), new TypeToken<Map<String, Object>>(){}.getType());
         }
 
         String requestBody = mEntity.getRequestBody();
         Map<String, Object> bodyMap = new HashMap<>();
         if (!TextUtils.isEmpty(requestBody)) {
             try {
-                bodyMap = JSON.parseObject(requestBody);
+                bodyMap = gson.fromJson(requestBody, new TypeToken<Map<String, Object>>(){}.getType());
             } catch (Exception e) {
                 bodyMap = parseMap(requestBody);
             }
         }
-        RequestHelper.getRequest(mEntity.getUrl(), mEntity.getMethod(), new TypeReference<String>() {}, new SimpleCallback<String>() {
+        RequestHelper.getRequest(mEntity.getUrl(), mEntity.getMethod(), new TypeToken<>() {}, new SimpleCallback<String>() {
             @Override
             public void onResponseSuccessful(String response) {
                 processResponseString(response);
@@ -632,9 +634,9 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
 
     private void processResponseString(String response) {
         try {
-            JSONObject jsonObject = JSON.parseObject(response, JSONObject.class);
-            mResult = JSON.toJSONString(jsonObject, true);
-        } catch (JSONException e) {
+                    Map<String, Object> jsonObject = gson.fromJson(response, new TypeToken<Map<String, Object>>(){}.getType());
+        mResult = gson.toJson(jsonObject);
+        } catch (JsonSyntaxException e) {
             mResult = response;
             Log.d(TAG, "response: " + response, e);
         }

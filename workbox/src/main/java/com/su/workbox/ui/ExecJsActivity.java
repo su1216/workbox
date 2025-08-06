@@ -19,11 +19,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.entity.JsFunction;
@@ -44,6 +43,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by su on 17-10-25.
@@ -53,6 +53,7 @@ public class ExecJsActivity extends BaseAppCompatActivity implements View.OnClic
 
     private static final String TAG = ExecJsActivity.class.getSimpleName();
     private static final int CACHE_SIZE = 16;
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     private LayoutInflater mInflater;
     private String mFilepath;
@@ -98,7 +99,7 @@ public class ExecJsActivity extends BaseAppCompatActivity implements View.OnClic
 
         String data = IOUtil.readAssetsFile(this, "generated/js.json");
         if (!TextUtils.isEmpty(data)) {
-            List<NoteJsFunction> list = JSON.parseArray(data, NoteJsFunction.class);
+            List<NoteJsFunction> list = gson.fromJson(data, new TypeToken<List<NoteJsFunction>>(){}.getType());
             for (NoteJsFunction noteJsFunction : list) {
                 if (isMatch(noteJsFunction)) {
                     mNoteJsFunction = noteJsFunction;
@@ -216,14 +217,14 @@ public class ExecJsActivity extends BaseAppCompatActivity implements View.OnClic
             for (int i = 0; i < size; i++) {
                 Parameter parameter = parameters.get(i);
                 Class<?> clazz = parameter.getParameterClass();
-                objectParameters[i] = JSON.parseObject(parameter.getParameter(), clazz);
+                objectParameters[i] = gson.fromJson(parameter.getParameter(), clazz);
             }
             Object result = function.call(rhino, scope, scope, objectParameters);
             if (Undefined.isUndefined(result)) {
                 mResultString = "Java Class: " + Undefined.class.getName();
             } else {
-                String resultString = JSON.toJSONString(result, SerializerFeature.DisableCircularReferenceDetect, SerializerFeature.PrettyFormat);
-                Object resultObject = JSON.parseObject(resultString, mFinalJsFunction.getResultClass());
+                            String resultString = gson.toJson(result);
+            Object resultObject = gson.fromJson(resultString, mFinalJsFunction.getResultClass());
                 mResultString = "Java Class: " + resultObject.getClass().getName() + "\n\n" + resultString;
                 Log.w(TAG, "resultObject: " + resultObject);
             }
@@ -273,13 +274,13 @@ public class ExecJsActivity extends BaseAppCompatActivity implements View.OnClic
             return parameter;
         }
         try {
-            JSONObject jsonObject = JSON.parseObject(parameter, JSONObject.class);
-            return JSON.toJSONString(jsonObject, true);
-        } catch (JSONException e) {
+            Map<String, Object> jsonObject = gson.fromJson(parameter, new TypeToken<Map<String, Object>>(){}.getType());
+            return gson.toJson(jsonObject);
+        } catch (JsonSyntaxException e) {
             try {
-                JSONArray jsonArray = JSON.parseObject(parameter, JSONArray.class);
-                return JSON.toJSONString(jsonArray, true);
-            } catch (JSONException arrayException) {
+                List<Object> jsonArray = gson.fromJson(parameter, new TypeToken<List<Object>>(){}.getType());
+                return gson.toJson(jsonArray);
+            } catch (JsonSyntaxException arrayException) {
                 //初始化页面的时候已经有json检查,此处不用再次toast
                 Log.w(TAG, "parameter: " + parameter, e);
             }

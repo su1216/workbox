@@ -44,7 +44,7 @@ ext {
     compileSdkVersion = 34
     targetSdkVersion = 31
     minSdkVersion = 21
-    fastjson = '1.1.71.android'
+    gson = '2.13.1'
     okhttp = '4.10.0'
 
     libGroup = 'com.github.su1216.workbox'

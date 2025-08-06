@@ -24,11 +24,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.utils.ReflectUtil;
@@ -40,6 +39,7 @@ import com.su.workbox.widget.recycler.ContextMenuRecyclerView;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by su on 17-12-25.
@@ -48,6 +48,7 @@ import java.util.List;
 public class IntentExtrasFragment extends IntentBaseInfoFragment {
 
     private static final String TAG = IntentExtrasFragment.class.getSimpleName();
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final int DEFAULT_ARRAY_SIZE = 2;
     private RecyclerView mRecyclerView;
     private ParameterViewAdapter mParameterAdapter;
@@ -95,13 +96,13 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
             return parameter;
         }
         try {
-            JSONObject jsonObject = JSON.parseObject(parameter, JSONObject.class);
-            return JSON.toJSONString(jsonObject, true);
-        } catch (JSONException e) {
+            Map<String, Object> jsonObject = gson.fromJson(parameter, new TypeToken<Map<String, Object>>(){}.getType());
+            return gson.toJson(jsonObject);
+        } catch (JsonSyntaxException e) {
             try {
-                JSONArray jsonArray = JSON.parseObject(parameter, JSONArray.class);
-                return JSON.toJSONString(jsonArray, true);
-            } catch (JSONException arrayException) {
+                List<Object> jsonArray = gson.fromJson(parameter, new TypeToken<List<Object>>(){}.getType());
+                return gson.toJson(jsonArray);
+            } catch (JsonSyntaxException arrayException) {
                 //初始化页面的时候已经有json检查,此处不用再次toast
                 Log.w(TAG, "parameter: " + parameter, arrayException);
             }
@@ -212,16 +213,16 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
             Class<?> arrayClass = Class.forName("[L" + extra.getValueClassName() + ";");
             Class<?> componentType = Class.forName(extra.getValueClassName());
             if (Parcelable.class.isAssignableFrom(componentType)) {
-                intent.putExtra(parameterName, (Parcelable[]) JSON.parseObject(parameterValue, arrayClass));
+                intent.putExtra(parameterName, (Parcelable[]) gson.fromJson(parameterValue, arrayClass));
             } else if (Serializable.class.isAssignableFrom(componentType)) {
-                intent.putExtra(parameterName, (Serializable[]) JSON.parseObject(parameterValue, arrayClass));
+                intent.putExtra(parameterName, (Serializable[]) gson.fromJson(parameterValue, arrayClass));
             }
         } else if (isList) {
             Class<?> elementClass = Class.forName(extra.getValueClassName());
             if (elementClass == Integer.class) {
-                intent.putIntegerArrayListExtra(parameterName, new ArrayList<>(JSON.parseArray(parameterValue, Integer.class)));
+                intent.putIntegerArrayListExtra(parameterName, new ArrayList<>(gson.fromJson(parameterValue, new TypeToken<List<Integer>>(){}.getType())));
             } else if (elementClass == String.class) {
-                intent.putStringArrayListExtra(parameterName, new ArrayList<>(JSON.parseArray(parameterValue, String.class)));
+                intent.putStringArrayListExtra(parameterName, new ArrayList<>(gson.fromJson(parameterValue, new TypeToken<List<String>>(){}.getType())));
             }
         } else {
             Class<?> clazz = Class.forName(extra.getValueClassName());
@@ -246,30 +247,30 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
             } else if (clazz.equals(String.class)) {
                 intent.putExtra(parameterName, parameterValue);
             } else if (clazz.equals(int[].class) || clazz.equals(Integer[].class)) {
-                intent.putExtra(parameterName, JSON.parseObject(parameterValue, int[].class));
+                intent.putExtra(parameterName, gson.fromJson(parameterValue, int[].class));
             } else if (clazz.equals(short[].class) || clazz.equals(Short[].class)) {
-                intent.putExtra(parameterName, JSON.parseObject(parameterValue, short[].class));
+                intent.putExtra(parameterName, gson.fromJson(parameterValue, short[].class));
             } else if (clazz.equals(long[].class) || clazz.equals(Long[].class)) {
-                intent.putExtra(parameterName, JSON.parseObject(parameterValue, long[].class));
+                intent.putExtra(parameterName, gson.fromJson(parameterValue, long[].class));
             } else if (clazz.equals(double[].class) || clazz.equals(Double[].class)) {
-                intent.putExtra(parameterName, JSON.parseObject(parameterValue, double[].class));
+                intent.putExtra(parameterName, gson.fromJson(parameterValue, double[].class));
             } else if (clazz.equals(float[].class) || clazz.equals(Float[].class)) {
-                intent.putExtra(parameterName, JSON.parseObject(parameterValue, float[].class));
+                intent.putExtra(parameterName, gson.fromJson(parameterValue, float[].class));
             } else if (clazz.equals(byte[].class) || clazz.equals(Byte[].class)) {
-                intent.putExtra(parameterName, JSON.parseObject(parameterValue, byte[].class));
+                intent.putExtra(parameterName, gson.fromJson(parameterValue, byte[].class));
             } else if (clazz.equals(char[].class) || clazz.equals(Character[].class)) {
-                intent.putExtra(parameterName, JSON.parseObject(parameterValue, char[].class));
+                intent.putExtra(parameterName, gson.fromJson(parameterValue, char[].class));
             } else if (clazz.equals(boolean[].class) || clazz.equals(Boolean[].class)) {
-                intent.putExtra(parameterName, JSON.parseObject(parameterValue, boolean[].class));
+                intent.putExtra(parameterName, gson.fromJson(parameterValue, boolean[].class));
             } else if (clazz.equals(CharSequence[].class)) {
-                intent.putExtra(parameterName, JSON.parseObject(parameterValue, CharSequence[].class));
+                intent.putExtra(parameterName, gson.fromJson(parameterValue, CharSequence[].class));
             } else if (clazz.equals(String[].class)) {
-                intent.putExtra(parameterName, JSON.parseObject(parameterValue, String[].class));
+                intent.putExtra(parameterName, gson.fromJson(parameterValue, String[].class));
             } else {
                 if (Parcelable.class.isAssignableFrom(clazz)) {
-                    intent.putExtra(parameterName, (Parcelable) JSON.parseObject(parameterValue, clazz));
+                    intent.putExtra(parameterName, (Parcelable) gson.fromJson(parameterValue, clazz));
                 } else if (Serializable.class.isAssignableFrom(clazz)) {
-                    intent.putExtra(parameterName, (Serializable) JSON.parseObject(parameterValue, clazz));
+                    intent.putExtra(parameterName, (Serializable) gson.fromJson(parameterValue, clazz));
                 } else {
                     intent.putExtra(parameterName, parameterValue);
                 }
@@ -361,14 +362,7 @@ public class IntentExtrasFragment extends IntentBaseInfoFragment {
     }
 
     private String objectToString(Object object) {
-        return JSON.toJSONString(object,
-                SerializerFeature.DisableCircularReferenceDetect,
-                SerializerFeature.WriteNullStringAsEmpty,
-                SerializerFeature.WriteNullBooleanAsFalse,
-                SerializerFeature.WriteNullNumberAsZero,
-                SerializerFeature.WriteMapNullValue,
-                SerializerFeature.WriteNullListAsEmpty,
-                SerializerFeature.PrettyFormat);
+        return gson.toJson(object);
     }
 
     private void reset(int position) {

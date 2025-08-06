@@ -1,6 +1,6 @@
 package com.su.workbox.net;
 
-import com.alibaba.fastjson.TypeReference;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Created by su on 17-4-12.
@@ -8,11 +8,11 @@ import com.alibaba.fastjson.TypeReference;
 
 public class RequestHelper {
 
-    public static <T> NetRequest<T> getRequest(String url, TypeReference<T> typeReference, SimpleCallback<T> sydCallback) {
+    public static <T> NetRequest<T> getRequest(String url, TypeToken<T> typeReference, SimpleCallback<T> sydCallback) {
         return new OkHttpRequest<>(url, typeReference, sydCallback);
     }
 
-    public static <T> NetRequest<T> getRequest(String url, String method, TypeReference<T> typeReference, SimpleCallback<T> sydCallback) {
+    public static <T> NetRequest<T> getRequest(String url, String method, TypeToken<T> typeReference, SimpleCallback<T> sydCallback) {
         return new OkHttpRequest<>(url, method, typeReference, sydCallback);
     }
 

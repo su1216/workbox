@@ -8,8 +8,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -33,6 +34,7 @@ import okhttp3.Response;
 
 public class RequestActivity extends BaseAppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
@@ -74,8 +76,8 @@ public class RequestActivity extends BaseAppCompatActivity implements SwipeRefre
                     String result = response.body().string();
                     Object object;
                     try {
-                        object = JSON.toJSONString(JSON.parse(result), true);
-                    } catch (JSONException e) {
+                        object = gson.toJson(gson.fromJson(result, Object.class));
+                    } catch (JsonSyntaxException e) {
                         object = result;
                     }
                     String text = object == null ? "" : object.toString();
@@ -112,7 +114,7 @@ public class RequestActivity extends BaseAppCompatActivity implements SwipeRefre
             if (value instanceof String) {
                 builder.add(entry.getKey(), (String) value);
             } else {
-                builder.add(entry.getKey(), JSON.toJSONString(value));
+                builder.add(entry.getKey(), gson.toJson(value));
             }
         }
         return builder.build();

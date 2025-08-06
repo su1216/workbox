@@ -13,7 +13,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
-import com.alibaba.fastjson.TypeReference
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.su.workbox.R
@@ -36,7 +35,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Vector
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -168,7 +168,7 @@ class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
 
     private fun queryFromMaven(groupId: String, artifactId: String, repo: String) {
         val url = Repositories.makeUrl(repo, groupId, artifactId)
-        RequestHelper.getRequest(url, "GET", object : TypeReference<String?>() {}, object : SimpleCallback<String?>() {
+        RequestHelper.getRequest(url, "GET", object : TypeToken<String?>() {}, object : SimpleCallback<String?>() {
             override fun onResponseSuccessful(xml: String?) {
                 if (!TextUtils.isEmpty(xml)) {
                     val result = parseXml(url, groupId, artifactId, xml!!)
@@ -181,7 +181,7 @@ class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
 
     private fun queryFromJCenter(groupId: String, artifactId: String, repo: String) {
         val url = Repositories.makeUrl(repo, groupId, artifactId)
-        RequestHelper.getRequest(url, "GET", object : TypeReference<String?>() {}, object : SimpleCallback<String?>() {
+        RequestHelper.getRequest(url, "GET", object : TypeToken<String?>() {}, object : SimpleCallback<String?>() {
             override fun onResponseSuccessful(xml: String?) {
                 if (!TextUtils.isEmpty(xml)) {
                     val result = parseXml(url, groupId, artifactId, xml!!)
@@ -205,7 +205,7 @@ class LibActivity : BaseAppCompatActivity(), SearchView.OnQueryTextListener {
         }
 
         val url = Repositories.makeUrl(repo, groupId, null)
-        RequestHelper.getRequest(url, "GET", object : TypeReference<String?>() {}, object : SimpleCallback<String?>() {
+        RequestHelper.getRequest(url, "GET", object : TypeToken<String?>() {}, object : SimpleCallback<String?>() {
             override fun onResponseSuccessful(xml: String?) {
                 if (!TextUtils.isEmpty(xml)) {
                     val result = parseGoogleXml(url, realGroupId, xml!!)

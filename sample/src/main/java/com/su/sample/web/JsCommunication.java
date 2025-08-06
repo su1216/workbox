@@ -9,8 +9,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.su.annotations.NoteJsCallAndroid;
 import com.su.annotations.Parameter;
 
@@ -19,6 +19,7 @@ import com.su.annotations.Parameter;
  */
 public class JsCommunication {
     private static final String TAG = JsCommunication.class.getSimpleName();
+    private static final Gson gson = new Gson();
 
     protected Activity mActivity;
 
@@ -43,10 +44,10 @@ public class JsCommunication {
     public void webview(String data) {
         logCall("webview", data);
         if (!TextUtils.isEmpty(data)) {
-            JSONObject param = JSON.parseObject(data);
-            String title = param.getString("title");
-            String url = param.getString("webViewUrl");
-            boolean needToRefresh = param.getBooleanValue("refresh");
+            JsonObject param = gson.fromJson(data, JsonObject.class);
+            String title = param.get("title").getAsString();
+            String url = param.get("webViewUrl").getAsString();
+            boolean needToRefresh = param.get("refresh").getAsBoolean();
             Intent intent = new Intent(mActivity, WebViewActivity.class);
             intent.putExtra("title", title);
             intent.putExtra("url", url);
@@ -63,8 +64,8 @@ public class JsCommunication {
     public void setClipBoard(String data) {
         logCall("setClipBoard", data);
         if (!TextUtils.isEmpty(data)) {
-            JSONObject param = JSON.parseObject(data);
-            String content = param.getString("content");
+            JsonObject param = gson.fromJson(data, JsonObject.class);
+            String content = param.get("content").getAsString();
             copyToClipboard(mActivity, "来自内部网页", content);
         }
     }
@@ -83,10 +84,10 @@ public class JsCommunication {
     @JavascriptInterface
     public void log(String data) {
         if (!TextUtils.isEmpty(data)) {
-            JSONObject param = JSON.parseObject(data);
-            String tag = param.getString("tag");
-            String level = param.getString("level");
-            String content = param.getString("content");
+            JsonObject param = gson.fromJson(data, JsonObject.class);
+            String tag = param.get("tag").getAsString();
+            String level = param.get("level").getAsString();
+            String content = param.get("content").getAsString();
             if (TextUtils.isEmpty(tag)) {
                 tag = TAG;
             }

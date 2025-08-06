@@ -5,14 +5,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.ComponentInfo;
 import android.os.Bundle;
-import androidx.annotation.MenuRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
+import androidx.annotation.MenuRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
 import com.su.workbox.R;
 import com.su.workbox.database.HttpDataDatabase;
 import com.su.workbox.ui.base.BaseAppCompatActivity;
@@ -37,6 +38,7 @@ import java.util.List;
 public class IntentInfoActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = IntentInfoActivity.class.getSimpleName();
+    private static final Gson gson = new Gson();
     private AppExecutors mAppExecutors = AppExecutors.getInstance();
     private ComponentInfo mComponentInfo;
     private IntentData mIntentData;
@@ -167,11 +169,11 @@ public class IntentInfoActivity extends BaseAppCompatActivity implements View.On
         mAppExecutors.diskIO().execute(() -> {
             List<IntentExtra> extraList = mIntentData.getExtraList();
             if (extraList != null) {
-                mIntentData.setExtras(JSON.toJSONString(extraList));
+                mIntentData.setExtras(gson.toJson(extraList));
             }
             List<String> categoryList = mIntentData.getCategoryList();
             if (categoryList != null) {
-                mIntentData.setCategories(JSON.toJSONString(categoryList));
+                mIntentData.setCategories(gson.toJson(categoryList));
             }
             mIntentDataDao.insertActivityExtras(mIntentData);
         });

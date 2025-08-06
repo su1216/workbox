@@ -1,7 +1,7 @@
 package com.su.compiler;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.auto.service.AutoService;
 import com.su.annotations.NoteComponent;
 import com.su.annotations.NoteFilepath;
@@ -64,6 +64,7 @@ public class NoteProcessor extends AbstractProcessor {
     private Messager mMessager;
     private static int sCount;
     private static boolean sDone;
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -141,7 +142,7 @@ public class NoteProcessor extends AbstractProcessor {
         Set<String> keySet = allResults.keySet();
         for (String key : keySet) {
             List<NoteJsCallAndroidEntity> results = allResults.get(key);
-            String jsonString = JSON.toJSONString(results, true);
+            String jsonString = gson.toJson(results);
             String filename = "JsCallAndroid-" + key;
             note(mMessager, filename + ": " + jsonString);
             save(filename, jsonString);
@@ -167,7 +168,7 @@ public class NoteProcessor extends AbstractProcessor {
             note(mMessager, "entity: " + entity);
         }
 
-        String jsonString = JSON.toJSONString(list, true);
+        String jsonString = gson.toJson(list);
         note(mMessager, "webView: " + jsonString);
         save("webView", jsonString);
     }
@@ -212,7 +213,7 @@ public class NoteProcessor extends AbstractProcessor {
 
     //request header/response header/requestBody 等需要key-value形式，解析展示时需要去掉最外层包裹
     private String toKeyValueJSONString(String[] keyValues) {
-        JSONObject jsonObject = new JSONObject();
+        Map<String, String> jsonObject = new HashMap<>();
         if (keyValues == null || keyValues.length == 0) {
             return "";
         }
@@ -220,7 +221,7 @@ public class NoteProcessor extends AbstractProcessor {
             int index = parameter.indexOf("=");
             jsonObject.put(parameter.substring(0, index), parameter.substring(index + 1, parameter.length()));
         }
-        return JSON.toJSONString(jsonObject, true);
+        return gson.toJson(jsonObject);
     }
 
     private void processNoteComponent(RoundEnvironment roundEnvironment) {
@@ -259,7 +260,7 @@ public class NoteProcessor extends AbstractProcessor {
             note(mMessager, "entity: " + entity);
         }
 
-        String jsonString = JSON.toJSONString(list, true);
+        String jsonString = gson.toJson(list);
         note(mMessager, "components: " + jsonString);
         save("components", jsonString);
     }
@@ -313,7 +314,7 @@ public class NoteProcessor extends AbstractProcessor {
             note(mMessager, "entity: " + entity);
         }
 
-        String jsonString = JSON.toJSONString(list, true);
+        String jsonString = gson.toJson(list);
         note(mMessager, "js: " + jsonString);
         save("js", jsonString);
     }

@@ -20,7 +20,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.su.workbox.R;
 import com.su.workbox.entity.NoteComponentEntity;
 import com.su.workbox.ui.app.activity.IntentInfoActivity;
@@ -49,6 +50,7 @@ import java.util.Map;
  */
 public class ComponentListFragment extends BaseFragment implements RecyclerItemClickListener.OnItemClickListener, SearchView.OnQueryTextListener {
     private static final String TAG = ComponentListFragment.class.getSimpleName();
+    private static final Gson gson = new Gson();
     public static final String TYPE_LAUNCHER = "launcher";
     public static final String TYPE_ACTIVITY = "activity";
     public static final String TYPE_SERVICE = "service";
@@ -141,7 +143,7 @@ public class ComponentListFragment extends BaseFragment implements RecyclerItemC
         }
 
         if (!TextUtils.isEmpty(str)) {
-            List<NoteComponentEntity> list = JSON.parseArray(str, NoteComponentEntity.class);
+            List<NoteComponentEntity> list = gson.fromJson(str, new TypeToken<List<NoteComponentEntity>>(){}.getType());
             for (NoteComponentEntity noteComponent : list) {
                 if (TextUtils.equals(mType, noteComponent.getType())) {
                     mNoteComponentMap.put(noteComponent.getClassName(), noteComponent);

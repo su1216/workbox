@@ -6,9 +6,9 @@ import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.su.workbox.database.HttpDataDatabase;
 import com.su.workbox.ui.mock.MockUtil;
 import com.su.workbox.ui.mock.RequestResponseRecord;
@@ -45,6 +45,7 @@ public class MockInterceptor implements Interceptor {
     private static final String TAG = MockInterceptor.class.getSimpleName();
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private static boolean sDebug = false;
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @NonNull
     @Override
@@ -99,7 +100,7 @@ public class MockInterceptor implements Interceptor {
                 String responseHeaders = record.getResponseHeaders();
                 Headers.Builder responseHeadersBuilder = new Headers.Builder();
                 if (!TextUtils.isEmpty(responseHeaders)) {
-                    Map<String, String> map = JSON.parseObject(responseHeaders, new TypeReference<Map<String, String>>() {});
+                    Map<String, String> map = gson.fromJson(responseHeaders, new TypeToken<Map<String, String>>(){}.getType());
                     if (map == null) {
                         map = new HashMap<>();
                     }
@@ -161,7 +162,7 @@ public class MockInterceptor implements Interceptor {
         if (headersMap.isEmpty()) {
             newHeaders = "";
         } else {
-            newHeaders = JSON.toJSONString(headersMap, true);
+                            newHeaders = gson.toJson(headersMap);
         }
 
         RequestBody requestBody = request.body();
@@ -214,9 +215,9 @@ public class MockInterceptor implements Interceptor {
     }
 
     private static String parseApplicationJsonContent(String content) {
-        JSONObject jsonObject = JSON.parseObject(content);
+        Map<String, Object> jsonObject = gson.fromJson(content, new TypeToken<Map<String, Object>>(){}.getType());
         MockUtil.removeKeysFromJson(jsonObject);
-        return JSON.toJSONString(jsonObject, true);
+        return gson.toJson(jsonObject);
     }
 
     private static String parseBody(@NonNull String bodyString) {

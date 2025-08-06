@@ -17,7 +17,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.su.workbox.R;
 import com.su.workbox.ui.base.BaseAppCompatActivity;
 import com.su.workbox.utils.SpHelper;
@@ -36,6 +37,7 @@ import java.util.Set;
 public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implements RecyclerItemClickListener.OnItemClickListener {
 
     public static final String TAG = SharedPreferenceDetailActivity.class.getSimpleName();
+    private static final Gson gson = new Gson();
     private Resources mResources;
     private String mSharedPreferenceName;
     private RecyclerViewAdapter mAdapter;
@@ -86,7 +88,7 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
             Class<?> clazz = entry.getValue().getClass();
             item.setValueClass(clazz);
             if (Set.class.isAssignableFrom(clazz)) {
-                item.setValue(JSON.toJSONString(entry.getValue()));
+                item.setValue(gson.toJson(entry.getValue()));
             } else {
                 item.setValue(String.valueOf(entry.getValue()));
             }
@@ -115,7 +117,7 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
         } else if (clazz == String.class) {
             editor.putString(key, newValue);
         } else if (Set.class.isAssignableFrom(clazz)) {
-            List<String> list = JSON.parseArray(newValue, String.class);
+            List<String> list = gson.fromJson(newValue, new TypeToken<List<String>>(){}.getType());
             Set<String> set = new HashSet<>(list);
             editor.putStringSet(key, set);
         }

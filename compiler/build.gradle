@@ -9,7 +9,7 @@ dependencies {
     api project(path: ':annotations')
     api 'com.google.auto.service:auto-service:1.0.1'
     annotationProcessor 'com.google.auto.service:auto-service:1.0.1'
-    api 'com.alibaba:fastjson:' + rootProject.ext.fastjson
+    implementation 'com.google.code.gson:gson:' + rootProject.ext.gson
 }
 
 publishing {

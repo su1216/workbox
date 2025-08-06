@@ -3,8 +3,8 @@ package com.su.workbox.net;
 import android.os.Handler;
 import android.util.Log;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.su.workbox.BuildConfig;
 import com.su.workbox.utils.GeneralInfoHelper;
 import com.su.workbox.widget.ToastBuilder;
@@ -21,9 +21,10 @@ import java.util.Map;
 public abstract class NetRequest<T> {
 
     private static final String TAG = NetRequest.class.getSimpleName();
+    private static final Gson gson = new Gson();
 
     Object mTag;
-    private final TypeReference<T> mType;
+    private final TypeToken<T> mType;
     static Handler sHandler = new Handler(GeneralInfoHelper.getContext().getMainLooper());
     String mUrl;
     String mMethod = "POST";
@@ -34,7 +35,7 @@ public abstract class NetRequest<T> {
 
     private final Callback<T> mCallback;
 
-    NetRequest(String url, String method, TypeReference<T> typeReference, Callback<T> callback) {
+    NetRequest(String url, String method, TypeToken<T> typeReference, Callback<T> callback) {
         if (!"POST".equals(method) && !"GET".equals(method)) {
             throw new IllegalArgumentException("method is wrong: " + method);
         }
@@ -85,7 +86,7 @@ public abstract class NetRequest<T> {
             if (type.equals(String.class)) {
                 return (T) json;
             } else {
-                return JSON.parseObject(json, mType);
+                return gson.fromJson(json, mType.getType());
             }
         } catch (RuntimeException e) {
             Log.w(TAG, "url: " + mUrl + " \tjson: " + json, e);

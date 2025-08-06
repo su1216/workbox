@@ -13,7 +13,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.su.workbox.AppHelper;
 import com.su.workbox.R;
 import com.su.workbox.WorkboxSupplier;
@@ -39,6 +40,7 @@ import java.util.List;
  */
 public class WebViewListActivity extends BaseAppCompatActivity implements RecyclerItemClickListener.OnItemClickListener, SearchView.OnQueryTextListener {
     private static final String TAG = WebViewListActivity.class.getSimpleName();
+    private static final Gson gson = new Gson();
     private String mTitle;
 
     private RecyclerViewAdapter mAdapter;
@@ -87,7 +89,7 @@ public class WebViewListActivity extends BaseAppCompatActivity implements Recycl
         }
 
         if (!TextUtils.isEmpty(str)) {
-            List<NoteWebViewEntity> list = JSON.parseArray(str, NoteWebViewEntity.class);
+            List<NoteWebViewEntity> list = gson.fromJson(str, new TypeToken<List<NoteWebViewEntity>>(){}.getType());
             mNotes.addAll(list);
         }
         Collections.sort(mNotes);

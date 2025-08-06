@@ -59,7 +59,7 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.preference:preference:1.2.1'
-    api 'com.alibaba:fastjson:' + rootProject.ext.fastjson
+    implementation 'com.google.code.gson:gson:' + rootProject.ext.gson
     //OkHttp
     api 'com.squareup.okhttp3:okhttp:' + rootProject.ext.okhttp
     api 'com.squareup.okhttp3:logging-interceptor:' + rootProject.ext.okhttp

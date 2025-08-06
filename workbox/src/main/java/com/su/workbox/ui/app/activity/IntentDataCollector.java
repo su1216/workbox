@@ -7,7 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.su.workbox.database.HttpDataDatabase;
 import com.su.workbox.ui.base.SimpleActivityLifecycleCallbacks;
 import com.su.workbox.utils.AppExecutors;
@@ -22,8 +23,9 @@ import java.util.Set;
 
 public class IntentDataCollector extends SimpleActivityLifecycleCallbacks {
 
-    private AppExecutors mAppExecutors = AppExecutors.getInstance();
-    private IntentDataDao mIntentDataDao;
+    private static final Gson gson = new GsonBuilder().serializeNulls().create();
+    private final AppExecutors mAppExecutors = AppExecutors.getInstance();
+    private final IntentDataDao mIntentDataDao;
 
     public IntentDataCollector() {
         HttpDataDatabase dataDatabase = HttpDataDatabase.getInstance(GeneralInfoHelper.getContext());
@@ -42,7 +44,7 @@ public class IntentDataCollector extends SimpleActivityLifecycleCallbacks {
         intentData.setFlags(intent.getFlags());
         if (intent.getCategories() != null) {
             intentData.setCategoryList(new ArrayList<>(intent.getCategories()));
-            intentData.setCategories(JSON.toJSONString(intentData.getCategoryList()));
+            intentData.setCategories(gson.toJson(intentData.getCategoryList()));
         }
 
         Bundle extras = intent.getExtras();
@@ -55,7 +57,7 @@ public class IntentDataCollector extends SimpleActivityLifecycleCallbacks {
             return intentData;
         }
         copyFromBundle(intentData, extras);
-        intentData.setExtras(JSON.toJSONString(intentData.getExtraList()));
+        intentData.setExtras(gson.toJson(intentData.getExtraList()));
         return intentData;
     }
 
@@ -98,11 +100,15 @@ public class IntentDataCollector extends SimpleActivityLifecycleCallbacks {
                 }
                 intentExtra.setValueClassName(componentType.getName());
                 if (!ExcludeTypes.exclude(componentType)) {
-                    intentExtra.setValue(JSON.toJSONString(value));
+                    intentExtra.setValue(gson.toJson(value));
                 }
             } else if (ReflectUtil.isPrimitiveClass(valueClass) || ReflectUtil.isPrimitiveWrapperClass(valueClass)) {
                 intentExtra.setValueClassName(valueClass.getName());
-                intentExtra.setValue(JSON.toJSONString(value));
+                if (value instanceof String) {
+                    intentExtra.setValue((String) value);
+                } else {
+                    intentExtra.setValue(gson.toJson(value));
+                }
             } else if (valueClass == ArrayList.class) {
                 intentExtra.setListClassName(valueClass.getName());
                 ArrayList<?> objects = (ArrayList) value;
@@ -114,12 +120,12 @@ public class IntentDataCollector extends SimpleActivityLifecycleCallbacks {
                 }
                 intentExtra.setValueClassName(componentType.getName());
                 if (!ExcludeTypes.exclude(componentType)) {
-                    intentExtra.setValue(JSON.toJSONString(value));
+                    intentExtra.setValue(gson.toJson(value));
                 }
             } else {
                 intentExtra.setValueClassName(valueClass.getName());
                 if (!ExcludeTypes.exclude(valueClass)) {
-                    intentExtra.setValue(JSON.toJSONString(value));
+                    intentExtra.setValue(gson.toJson(value));
                 }
             }
             extraList.add(intentExtra);
@@ -143,10 +149,10 @@ public class IntentDataCollector extends SimpleActivityLifecycleCallbacks {
         String componentClassName = componentName.getClassName();
         mAppExecutors.diskIO().execute(() -> {
             IntentData record = mIntentDataDao.getActivityExtras(componentPackageName, componentClassName);
-            IntentData intentData = intent2ActivityExtras(activity, intent);
             if (record != null) {
                 return;
             }
+            IntentData intentData = intent2ActivityExtras(activity, intent);
             mIntentDataDao.insertActivityExtras(intentData);
         });
     }
